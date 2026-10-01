@@ -1,25 +1,43 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getProject } from '../../projects/api/projectApi'
+import { deleteTicket, updateTicket } from '../../tickets/api/ticketApi'
+import type { Ticket, TicketPriority } from '../../tickets/types/ticket.types'
 import { configureLinearWorkflow, executeTicketTransition, getProjectBoard, getProjectWorkflow, getTicketTransitions } from '../api/workflowApi'
-import type { BoardColumn, ProjectBoard, ProjectWorkflowTransition, TicketTransition } from '../types/workflow.types'
-import type { Ticket } from '../../tickets/types/ticket.types'
+import type { BoardColumn, ProjectBoard, ProjectWorkflowTransition } from '../types/workflow.types'
 import './workflow-board.css'
 import './workflow-setup.css'
 
 function priorityLabel(priority: string) { return priority.charAt(0).toUpperCase() + priority.slice(1) }
 
-function BoardTicket({ ticket, onDragStart, onMoveClick, isBusy }: { ticket: Ticket; onDragStart: (ticket: Ticket) => void; onMoveClick: (ticket: Ticket) => void; isBusy: boolean }) {
+function assigneeLabel(assignedAgent?: string | null) {
+  if (!assignedAgent) return 'Unassigned'
+  return assignedAgent.length > 12 ? `${assignedAgent.slice(0, 8)}…` : assignedAgent
+}
+
+function BoardTicket({ ticket, statusOptions, onDragStart, onMove, onEdit, onDelete, isBusy }: {
+  ticket: Ticket
+  statusOptions: BoardColumn[]
+  onDragStart: (ticket: Ticket) => void
+  onMove: (ticket: Ticket, statusId: string) => void
+  onEdit: (ticket: Ticket) => void
+  onDelete: (ticket: Ticket) => void
+  isBusy: boolean
+}) {
   return <article className={`board-ticket ${isBusy ? 'is-moving' : ''}`} draggable={!isBusy} onDragStart={() => onDragStart(ticket)}>
-    <div className="board-ticket-top"><span className="board-ticket-code">{ticket.ticket_code}</span><button className="ticket-more" onClick={() => onMoveClick(ticket)} aria-label={`Move ${ticket.ticket_code}`}>•••</button></div>
+    <div className="board-ticket-top"><span className="board-ticket-code">{ticket.ticket_code}</span><span className="board-ticket-type">{ticket.issue_type}</span></div>
     <h3>{ticket.title}</h3>
-    <div className="board-ticket-bottom"><span className={`board-priority ${ticket.priority}`}>{priorityLabel(ticket.priority)}</span>{ticket.issue_type && <span className="board-issue-type">{ticket.issue_type}</span>}<button className="move-ticket-button" onClick={() => onMoveClick(ticket)}>Move</button></div>
+    {ticket.description && <p className="board-ticket-description">{ticket.description}</p>}
+    <div className="board-ticket-meta"><span className={`board-priority ${ticket.priority}`}>{priorityLabel(ticket.priority)}</span><span className="board-assignee">Assigned · {assigneeLabel(ticket.assigned_agent)}</span></div>
+    <div className="board-ticket-actions"><button type="button" className="ticket-action" onClick={() => onEdit(ticket)}>✎ Edit</button><button type="button" className="ticket-action delete" onClick={() => onDelete(ticket)} aria-label={`Delete ${ticket.ticket_code}`}>🗑</button></div>
+    <select className="board-status-select" value={ticket.current_status_id || ''} disabled={isBusy} onChange={(event) => onMove(ticket, event.target.value)} aria-label={`Change status for ${ticket.ticket_code}`}>
+      <option value={ticket.current_status_id || ''}>{ticket.current_status_name || 'Current status'}</option>
+      {statusOptions.filter((column) => column.status_id !== ticket.current_status_id).map((column) => <option key={column.status_id} value={column.status_id}>{column.status_name}</option>)}
+    </select>
   </article>
 }
 
-function MoveMenu({ transitions, onMove, onClose }: { transitions: TicketTransition[]; onMove: (transition: TicketTransition) => void; onClose: () => void }) {
-  return <div className="move-menu"><div className="move-menu-header"><strong>Move ticket to</strong><button onClick={onClose} aria-label="Close move menu">×</button></div>{transitions.length === 0 ? <p className="move-empty">No transitions configured from this status.</p> : transitions.map((transition) => <button className="move-option" key={transition._id} disabled={!transition.available} onClick={() => onMove(transition)}><span>{transition.to_status_name || 'Next status'}</span><small>{transition.available ? transition.name : transition.blocked_reason || 'Unavailable'}</small></button>)}</div>
-}
+type EditDraft = { title: string; description: string; priority: TicketPriority }
 
 export function WorkflowBoardPage() {
   const { projectId } = useParams<{ projectId: string }>()
@@ -28,10 +46,10 @@ export function WorkflowBoardPage() {
   const [workflowTransitions, setWorkflowTransitions] = useState<ProjectWorkflowTransition[]>([])
   const [draggedTicket, setDraggedTicket] = useState<Ticket | null>(null)
   const [movingTicketId, setMovingTicketId] = useState('')
-  const [menuTicket, setMenuTicket] = useState<Ticket | null>(null)
-  const [menuTransitions, setMenuTransitions] = useState<TicketTransition[]>([])
-  const [isLoadingMenu, setIsLoadingMenu] = useState(false)
   const [isConfiguringWorkflow, setIsConfiguringWorkflow] = useState(false)
+  const [editingTicket, setEditingTicket] = useState<Ticket | null>(null)
+  const [editDraft, setEditDraft] = useState<EditDraft>({ title: '', description: '', priority: 'medium' })
+  const [isSavingEdit, setIsSavingEdit] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -52,16 +70,17 @@ export function WorkflowBoardPage() {
     getProject(projectId).then((response) => setProjectName(response.project.name)).catch(() => undefined)
   }, [projectId, loadBoard])
 
+  function statusOptionsFor(ticket: Ticket) {
+    const currentStatusId = String(ticket.current_status_id || '')
+    const transitionTargets = workflowTransitions.filter((transition) => transition.from_status_ids.includes(currentStatusId)).map((transition) => transition.to_status_id)
+    return (board?.columns || []).filter((column) => column.status_id === currentStatusId || transitionTargets.includes(column.status_id))
+  }
+
   async function moveToStatus(ticket: Ticket, targetStatusId: string) {
+    if (!targetStatusId || targetStatusId === ticket.current_status_id) return
     setError('')
-    const currentStatusId = ticket.current_status_id
-    const graphTransition = workflowTransitions.find((transition) => transition.to_status_id === targetStatusId && transition.from_status_ids.includes(String(currentStatusId)))
-    if (!graphTransition) {
-      const targetColumn = board?.columns.find((column) => column.status_id === targetStatusId)
-      setError(`No configured transition exists from "${ticket.current_status_name || 'the current status'}" to "${targetColumn?.status_name || 'that status'}". Configure this transition in the project workflow.`)
-      setDraggedTicket(null)
-      return
-    }
+    const graphTransition = workflowTransitions.find((transition) => transition.to_status_id === targetStatusId && transition.from_status_ids.includes(String(ticket.current_status_id)))
+    if (!graphTransition) { setError(`No configured transition exists from "${ticket.current_status_name || 'the current status'}" to that status.`); return }
     setMovingTicketId(ticket._id)
     try {
       const response = await getTicketTransitions(ticket._id)
@@ -69,26 +88,35 @@ export function WorkflowBoardPage() {
       if (!target) throw new Error('No workflow transition exists for this status.')
       if (!target.available) throw new Error(target.blocked_reason || 'You cannot use this transition.')
       await executeTicketTransition(ticket._id, target._id)
-      setMenuTicket(null)
       await loadBoard()
     } catch (requestError) { setError(requestError instanceof Error ? requestError.message : 'Unable to move ticket.') } finally { setMovingTicketId(''); setDraggedTicket(null) }
   }
 
-  async function openMoveMenu(ticket: Ticket) {
-    setMenuTicket(ticket)
-    setIsLoadingMenu(true)
+  function openEditor(ticket: Ticket) {
     setError('')
-    try { const response = await getTicketTransitions(ticket._id); setMenuTransitions(response.transitions) } catch (requestError) { setError(requestError instanceof Error ? requestError.message : 'Unable to load ticket transitions.') } finally { setIsLoadingMenu(false) }
+    setEditingTicket(ticket)
+    setEditDraft({ title: ticket.title, description: ticket.description || '', priority: ticket.priority })
+  }
+
+  async function saveEdit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!editingTicket) return
+    setIsSavingEdit(true)
+    setError('')
+    try { await updateTicket(editingTicket._id, editDraft); setEditingTicket(null); await loadBoard() } catch (requestError) { setError(requestError instanceof Error ? requestError.message : 'Unable to update ticket.') } finally { setIsSavingEdit(false) }
+  }
+
+  async function removeTicket(ticket: Ticket) {
+    if (!window.confirm(`Delete ${ticket.ticket_code}?`)) return
+    setError('')
+    try { await deleteTicket(ticket._id); await loadBoard() } catch (requestError) { setError(requestError instanceof Error ? requestError.message : 'Unable to delete ticket.') }
   }
 
   async function setupLinearWorkflow() {
     if (!projectId || !board || board.columns.length < 2) return
     setIsConfiguringWorkflow(true)
     setError('')
-    try {
-      await configureLinearWorkflow(projectId, board.columns)
-      await loadBoard()
-    } catch (requestError) { setError(requestError instanceof Error ? requestError.message : 'Unable to configure the project workflow.') } finally { setIsConfiguringWorkflow(false) }
+    try { await configureLinearWorkflow(projectId, board.columns); await loadBoard() } catch (requestError) { setError(requestError instanceof Error ? requestError.message : 'Unable to configure the project workflow.') } finally { setIsConfiguringWorkflow(false) }
   }
 
   function handleDrop(event: React.DragEvent<HTMLDivElement>, column: BoardColumn) {
@@ -101,10 +129,11 @@ export function WorkflowBoardPage() {
 
   return <div className="page-content workflow-page">
     <div className="ticket-breadcrumb"><Link to="/projects">Projects</Link><span>/</span><Link to={`/projects/${projectId}`}>{projectName}</Link><span>/</span><span>Board</span></div>
-    <section className="workflow-heading"><div><p className="eyebrow">{projectName}</p><h1>Project board</h1><p className="subtle">Drag tickets between columns to move them through the configured workflow.</p></div><div className="workflow-actions"><Link className="secondary-button" to={`/projects/${projectId}`}>Project overview</Link><Link className="primary-button" to={`/tickets/new?project=${projectId}`}>＋ Create ticket</Link></div></section>
+    <section className="workflow-heading"><div><p className="eyebrow">{projectName}</p><h1>Project board</h1><p className="subtle">Move tickets through the project workflow and keep work visible.</p></div><div className="workflow-actions"><Link className="secondary-button" to={`/projects/${projectId}`}>Project overview</Link><Link className="primary-button" to={`/tickets/new?project=${projectId}`}>＋ Create ticket</Link></div></section>
     {error && <div className="inline-error"><span>{error}</span><button onClick={() => void loadBoard()}>Try again</button></div>}
-    {workflowTransitions.length === 0 && board.columns.length > 1 && <div className="workflow-setup-notice"><div><strong>This project has no workflow transitions yet.</strong><p>The statuses are available, but tickets cannot move until transitions are configured in the project workflow.</p></div><button className="primary-button" onClick={() => void setupLinearWorkflow()} disabled={isConfiguringWorkflow}>{isConfiguringWorkflow ? 'Setting up...' : 'Set up linear workflow'}</button></div>}
-    <div className="workflow-help"><span className="drag-hint">⠿</span><span>Move a ticket by dragging it to another status. The backend checks the project workflow and your permissions.</span><span className="board-scope">{board.scope === 'sprint' ? 'Active sprint' : 'Backlog'} · {board.columns.reduce((total, column) => total + column.tickets.length, 0)} tickets</span></div>
-    <section className="workflow-board">{board.columns.map((column) => { const dropAllowed = !draggedTicket || draggedTicket.current_status_id === column.status_id || workflowTransitions.some((transition) => transition.to_status_id === column.status_id && transition.from_status_ids.includes(String(draggedTicket.current_status_id))); return <div className={`workflow-column ${!dropAllowed ? 'drop-disabled' : ''}`} key={column.status_id} onDragOver={(event) => event.preventDefault()} onDrop={(event) => handleDrop(event, column)}><div className="workflow-column-header"><h2>{column.status_name}</h2><span>{column.tickets.length}</span></div><div className="workflow-column-body">{column.tickets.map((ticket) => <div className="board-ticket-wrap" key={ticket._id}><BoardTicket ticket={ticket} onDragStart={setDraggedTicket} onMoveClick={(selected) => void openMoveMenu(selected)} isBusy={movingTicketId === ticket._id} />{menuTicket?._id === ticket._id && <MoveMenu transitions={isLoadingMenu ? [] : menuTransitions} onMove={(transition) => void moveToStatus(ticket, transition.to_status_id)} onClose={() => setMenuTicket(null)} />}</div>)}{column.tickets.length === 0 && <div className="empty-column">{dropAllowed ? 'Drop tickets here' : 'No transition available'}</div>}</div></div> })}</section>
+    {workflowTransitions.length === 0 && board.columns.length > 1 && <div className="workflow-setup-notice"><div><strong>This project has no workflow transitions yet.</strong><p>The statuses are available, but tickets cannot move until transitions are configured.</p></div><button type="button" className="primary-button" onClick={() => void setupLinearWorkflow()} disabled={isConfiguringWorkflow}>{isConfiguringWorkflow ? 'Setting up...' : 'Set up linear workflow'}</button></div>}
+    <div className="workflow-help"><span className="drag-hint">⠿</span><span>Drag a ticket or use its status selector to move it through the workflow.</span><span className="board-scope">{board.scope === 'sprint' ? 'Active sprint' : 'Backlog'} · {board.columns.reduce((total, column) => total + column.tickets.length, 0)} tickets</span></div>
+    <section className="workflow-board">{board.columns.map((column, index) => <div className={`workflow-column workflow-column-${index % 8}`} key={column.status_id} onDragOver={(event) => event.preventDefault()} onDrop={(event) => handleDrop(event, column)}><div className="workflow-column-header"><h2>{column.status_name}</h2><span>{column.tickets.length}</span></div><div className="workflow-column-body">{column.tickets.map((ticket) => <BoardTicket key={ticket._id} ticket={ticket} statusOptions={statusOptionsFor(ticket)} onDragStart={setDraggedTicket} onMove={(selected, statusId) => void moveToStatus(selected, statusId)} onEdit={openEditor} onDelete={(selected) => void removeTicket(selected)} isBusy={movingTicketId === ticket._id} />)}{column.tickets.length === 0 && <div className="empty-column">Drop tickets here</div>}</div></div>)}</section>
+    {editingTicket && <div className="board-modal-backdrop" role="presentation" onMouseDown={() => setEditingTicket(null)}><form className="board-edit-modal" onSubmit={(event) => void saveEdit(event)} onMouseDown={(event) => event.stopPropagation()}><div className="board-modal-header"><div><span className="eyebrow">{editingTicket.ticket_code}</span><h2>Edit ticket</h2></div><button type="button" className="board-modal-close" onClick={() => setEditingTicket(null)}>×</button></div><label>Title<input value={editDraft.title} onChange={(event) => setEditDraft((draft) => ({ ...draft, title: event.target.value }))} required maxLength={255} /></label><label>Description<textarea value={editDraft.description} onChange={(event) => setEditDraft((draft) => ({ ...draft, description: event.target.value }))} rows={5} maxLength={10000} /></label><label>Priority<select value={editDraft.priority} onChange={(event) => setEditDraft((draft) => ({ ...draft, priority: event.target.value as TicketPriority }))}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="urgent">Urgent</option></select></label><div className="board-modal-actions"><button type="button" className="secondary-button" onClick={() => setEditingTicket(null)}>Cancel</button><button type="submit" className="primary-button" disabled={isSavingEdit}>{isSavingEdit ? 'Saving...' : 'Save changes'}</button></div></form></div>}
   </div>
 }

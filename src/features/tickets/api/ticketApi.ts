@@ -15,3 +15,13 @@ export function getTickets(filters: TicketFilters) {
   const endpoint = filters.project_key ? `/tickets/${encodeURIComponent(filters.project_key)}` : '/tickets/search'
   return apiClient<{ data: Ticket[]; pagination: TicketPagination }>(`${endpoint}?${params.toString()}`)
 }
+
+export type UpdateTicketRequest = Partial<Pick<Ticket, 'title' | 'description' | 'priority' | 'category' | 'labels' | 'components'>>
+
+export function updateTicket(ticketId: string, request: UpdateTicketRequest) {
+  return apiClient<{ message: string }>(`/update_ticket/${ticketId}`, { method: 'PUT', body: JSON.stringify(request) })
+}
+
+export function deleteTicket(ticketId: string) {
+  return apiClient<{ message: string }>(`/tickets/${ticketId}`, { method: 'DELETE' })
+}
