@@ -12,5 +12,6 @@ export function getTickets(filters: TicketFilters) {
   if (filters.category) params.set('category', filters.category)
   if (filters.issue_type) params.set('issue_type', filters.issue_type)
   if (filters.overdue_only) params.set('overdue_only', 'true')
-  return apiClient<{ data: Ticket[]; pagination: TicketPagination }>(`/tickets/search?${params.toString()}`)
+  const endpoint = filters.project_key ? `/tickets/${encodeURIComponent(filters.project_key)}` : '/tickets/search'
+  return apiClient<{ data: Ticket[]; pagination: TicketPagination }>(`${endpoint}?${params.toString()}`)
 }

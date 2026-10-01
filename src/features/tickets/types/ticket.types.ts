@@ -37,6 +37,7 @@ export type Ticket = {
 }
 
 export type TicketFilters = {
+  project_key?: string
   page: number
   page_size: number
   search: string

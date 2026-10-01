@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useProjects } from '../../projects/hooks/useProjects'
 import { createTicket } from '../api/ticketApi'
 import type { CreateTicketRequest, TicketCategory, TicketIssueType, TicketPriority } from '../types/ticket.types'
@@ -14,8 +14,9 @@ function splitValues(value: string) { return value.split(',').map((item) => item
 
 export function CreateTicketPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { projects, isLoading: projectsLoading, error: projectsError } = useProjects()
-  const [form, setForm] = useState<CreateTicketRequest>(initialForm)
+  const [form, setForm] = useState<CreateTicketRequest>(() => ({ ...initialForm, project_id: searchParams.get('project') ?? '' }))
   const [labelsText, setLabelsText] = useState('')
   const [componentsText, setComponentsText] = useState('')
   const [error, setError] = useState('')

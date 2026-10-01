@@ -9,3 +9,5 @@ export type Project = {
 }
 
 export type CreateProjectRequest = { name: string; code: string }
+
+export type ProjectMember = { user_id: string; name: string; email: string; role: 'lead' | 'member' | 'reporter' }
