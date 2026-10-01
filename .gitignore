@@ -10,8 +10,17 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+.vite
+coverage
+storybook-static
+*.tsbuildinfo
+*.tgz
 *.local
+
+# Environment files: keep the safe template, ignore local values
 .env
+.env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*
