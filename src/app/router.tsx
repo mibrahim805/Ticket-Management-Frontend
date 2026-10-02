@@ -2,6 +2,8 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppLayout } from '../components/layout/AppLayout'
 import { ProtectedRoute } from '../features/auth/components/ProtectedRoute'
 import { DashboardPage } from '../pages/DashboardPage'
+import { AnalyticsPage } from '../pages/AnalyticsPage'
+import { MyWorkPage } from '../pages/MyWorkPage'
 import { LoginPage } from '../pages/LoginPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 import { ProjectsPage } from '../features/projects/pages/ProjectsPage'
@@ -12,6 +14,6 @@ import { WorkflowBoardPage } from '../features/workflow/pages/WorkflowBoardPage'
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
-  { element: <ProtectedRoute />, children: [{ element: <AppLayout />, children: [{ path: '/dashboard', element: <DashboardPage /> }, { path: '/projects', element: <ProjectsPage /> }, { path: '/projects/:projectId', element: <ProjectPage /> }, { path: '/projects/:projectId/board', element: <WorkflowBoardPage /> }, { path: '/tickets', element: <TicketsPage /> }, { path: '/tickets/new', element: <CreateTicketPage /> }, { path: '/', element: <Navigate to="/dashboard" replace /> }]}] },
+  { element: <ProtectedRoute />, children: [{ element: <AppLayout />, children: [{ path: '/dashboard', element: <DashboardPage /> }, { path: '/my-work', element: <MyWorkPage /> }, { path: '/projects', element: <ProjectsPage /> }, { path: '/projects/:projectId', element: <ProjectPage /> }, { path: '/projects/:projectId/board', element: <WorkflowBoardPage /> }, { path: '/tickets', element: <TicketsPage /> }, { path: '/tickets/new', element: <CreateTicketPage /> }, { path: '/analytics', element: <AnalyticsPage /> }, { path: '/', element: <Navigate to="/dashboard" replace /> }]}] },
   { path: '*', element: <NotFoundPage /> },
 ])
