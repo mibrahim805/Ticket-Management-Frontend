@@ -20,8 +20,13 @@ export async function apiClient<T>(path: string, options: RequestInit = {}): Pro
   const response = await fetch(`${appConfig.apiUrl}${path}`, { ...options, headers })
   const body = await response.json().catch(() => null)
   if (!response.ok) {
-    const detail = typeof body?.detail === 'string' ? body.detail : 'The request could not be completed.'
-    throw new ApiError(response.status, detail)
+    const detail = body?.detail
+    const message = typeof detail === 'string'
+      ? detail
+      : detail
+        ? JSON.stringify(detail)
+        : `Request failed with status ${response.status}.`
+    throw new ApiError(response.status, message)
   }
   return body as T
 }

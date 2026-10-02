@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom'
 import type { Project } from '../types/project.types'
 
-type Props = { project: Project }
+type Props = { project: Project; view?: 'grid' | 'list' }
 
-export function ProjectCard({ project }: Props) {
+export function ProjectCard({ project, view = 'grid' }: Props) {
   const initials = project.name.split(/\s+/).map((word) => word[0]).join('').slice(0, 2).toUpperCase()
+  if (view === 'list') return <Link className="project-list-row" to={`/projects/${project._id}`}><div className="project-name-cell"><span className="project-icon violet" aria-hidden="true">😎</span><div><strong>{project.name}</strong><small>{project.code}</small></div></div><span className="project-status">Pending</span><span className="project-date">▣ No date</span><span className="project-owner">SU</span><span className="project-following">Following</span><span className="project-updated">—</span><span className="project-row-menu">•••</span></Link>
   return <Link className="project-card" to={`/projects/${project._id}`}>
     <div className="project-card-header"><span className="project-icon violet">{initials}</span><span className="project-code">{project.code}</span><button className="project-menu" aria-label={`Options for ${project.name}`} onClick={(event) => event.preventDefault()}>•••</button></div>
-    <h2>{project.name}</h2>
-    <p className="project-card-description">Project workspace and ticket activity</p>
+    <div className="project-card-main"><h2>{project.name}</h2><p className="project-card-description">Project workspace and ticket activity</p></div>
     <div className="project-card-footer"><span><strong>{project.total_tickets}</strong> {project.total_tickets === 1 ? 'ticket' : 'tickets'}</span><span className="project-open">Open project <b>→</b></span></div>
   </Link>
 }

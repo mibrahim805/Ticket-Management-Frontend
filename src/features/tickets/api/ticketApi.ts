@@ -1,0 +1,27 @@
+import { apiClient } from '../../../services/apiClient'
+import type { CreateTicketRequest, CreatedTicket, Ticket, TicketFilters, TicketPagination } from '../types/ticket.types'
+
+export function createTicket(request: CreateTicketRequest) {
+  return apiClient<CreatedTicket>('/', { method: 'POST', body: JSON.stringify(request) })
+}
+
+export function getTickets(filters: TicketFilters) {
+  const params = new URLSearchParams({ page: String(filters.page), page_size: String(filters.page_size), sort_by: filters.sort_by, sort_order: filters.sort_order })
+  if (filters.search) params.set('search', filters.search)
+  if (filters.priority) params.set('priority', filters.priority)
+  if (filters.category) params.set('category', filters.category)
+  if (filters.issue_type) params.set('issue_type', filters.issue_type)
+  if (filters.overdue_only) params.set('overdue_only', 'true')
+  const endpoint = filters.project_key ? `/tickets/${encodeURIComponent(filters.project_key)}` : '/tickets/search'
+  return apiClient<{ data: Ticket[]; pagination: TicketPagination }>(`${endpoint}?${params.toString()}`)
+}
+
+export type UpdateTicketRequest = Partial<Pick<Ticket, 'title' | 'description' | 'priority' | 'category' | 'labels' | 'components'>>
+
+export function updateTicket(ticketId: string, request: UpdateTicketRequest) {
+  return apiClient<{ message: string }>(`/update_ticket/${ticketId}`, { method: 'PUT', body: JSON.stringify(request) })
+}
+
+export function deleteTicket(ticketId: string) {
+  return apiClient<{ message: string }>(`/tickets/${ticketId}`, { method: 'DELETE' })
+}

@@ -10,7 +10,7 @@ npm run dev
 ```
 
 The Vite development server proxies `/api` requests to the FastAPI server at
-`http://127.0.0.1:8000`. Set `VITE_API_URL` in `.env` when using another API
+`http://127.0.0.1:7000`. Set `VITE_API_URL` in `.env` when using another API
 base URL.
 
 ## Current features

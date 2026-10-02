@@ -3,16 +3,27 @@ import { CreateProjectModal } from '../components/CreateProjectModal'
 import { ProjectList } from '../components/ProjectList'
 import { useProjects } from '../hooks/useProjects'
 import '../components/projects.css'
+import '../components/projects-jira.css'
 
 export function ProjectsPage() {
   const { projects, isLoading, error, reload } = useProjects()
   const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const [sort, setSort] = useState<'name' | 'tickets'>('name')
+  const [view, setView] = useState<'grid' | 'list'>('list')
+
+  const visibleProjects = [...projects]
+    .filter((project) => `${project.name} ${project.code}`.toLowerCase().includes(search.toLowerCase().trim()))
+    .sort((first, second) => sort === 'name' ? first.name.localeCompare(second.name) : second.total_tickets - first.total_tickets)
 
   return <div className="page-content projects-page">
-    <section className="page-heading"><div><p className="eyebrow">Workspace</p><h1>Projects</h1><p className="subtle">Manage your project workspaces and track their ticket activity.</p></div><button className="primary-button" onClick={() => setIsCreateOpen(true)}>＋ New project</button></section>
-    <div className="projects-toolbar"><span>{isLoading ? 'Loading projects...' : `${projects.length} ${projects.length === 1 ? 'project' : 'projects'}`}</span><button className="refresh-button" onClick={() => void reload()} disabled={isLoading}>↻ Refresh</button></div>
+    <section className="project-directory-header"><div><h1>Projects</h1></div><button className="secondary-button" onClick={() => setIsCreateOpen(true)}>Create project</button></section>
+    <nav className="project-tabs" aria-label="Project views"><button className="project-tab active">All projects</button><button className="project-tab">Your projects</button><button className="project-tab project-tab-add">＋</button></nav>
+    <section className="project-directory-toolbar"><label className="project-search project-search-wide"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search projects" aria-label="Search projects" /></label></section>
+    <div className="project-filter-row"><div className="project-filter-chips"><button># &nbsp; Filter by Tag</button><button>▣ &nbsp; Status</button><button>◉ &nbsp; Goal</button><button>♧ &nbsp; Team</button><button>♙ &nbsp; Owner</button><button>♙ &nbsp; Contributor</button><button>◉ &nbsp; Following</button><button>☆ &nbsp; Starred</button><button>⌘ &nbsp; Reporting line</button></div><div className="project-view-actions"><button className="reset-button" onClick={() => setSearch('')}>Reset</button><button className="create-view-button">▣ &nbsp; Create view</button></div></div>
+    <div className="projects-toolbar"><strong>{isLoading ? 'Loading projects...' : `Showing ${visibleProjects.length} ${visibleProjects.length === 1 ? 'project' : 'projects'}`}</strong><div className="project-table-actions"><label className="sort-control"><span>Sort by</span><select value={sort} onChange={(event) => setSort(event.target.value as 'name' | 'tickets')}><option value="name">Following</option><option value="tickets">Ticket count</option></select></label><div className="view-toggle"><button className={view === 'list' ? 'selected' : ''} onClick={() => setView('list')}>☷</button><button className={view === 'grid' ? 'selected' : ''} onClick={() => setView('grid')}>▦</button></div><button className="secondary-button">▥ Columns</button><button className="more-button">•••</button></div></div>
     {error && <div className="inline-error"><span>{error}</span><button onClick={() => void reload()}>Try again</button></div>}
-    {isLoading ? <div className="panel loading-state"><span className="spinner" />Loading your projects...</div> : <ProjectList projects={projects} />}
+    {isLoading ? <div className="panel loading-state"><span className="spinner" />Loading your projects...</div> : <ProjectList projects={visibleProjects} view={view} />}
     {isCreateOpen && <CreateProjectModal onClose={() => setIsCreateOpen(false)} onCreated={reload} />}
   </div>
 }
