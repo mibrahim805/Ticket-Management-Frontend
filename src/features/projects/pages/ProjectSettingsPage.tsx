@@ -21,7 +21,9 @@ import {
 } from '../api/projectApi'
 import type { MyProjectPermissions, Project, ProjectCapabilities, ProjectComponent, ProjectMember, ProjectMemberCandidate, ProjectPermissions, ProjectRole, ProjectStatus } from '../types/project.types'
 import { addWorkflowTransition, configureProjectWorkflow, deleteWorkflowTransition, editWorkflowTransition, getProjectWorkflow, type WorkflowTransitionInput } from '../../workflow/api/workflowApi'
-import type { ProjectWorkflowTransition, WorkflowGuard } from '../../workflow/types/workflow.types'
+import type { ProjectWorkflowTransition } from '../../workflow/types/workflow.types'
+import { getNotificationPreferences, updateNotificationPreferences } from '../../notifications/api/notificationApi'
+import type { NotificationPreferences } from '../../notifications/types/notification.types'
 import '../components/project-settings.css'
 
 const roles: ProjectRole[] = ['lead', 'member', 'reporter']
@@ -79,6 +81,7 @@ export function ProjectSettingsPage() {
   const [memberCandidates, setMemberCandidates] = useState<ProjectMemberCandidate[]>([])
   const [statuses, setStatuses] = useState<ProjectStatus[]>([])
   const [workflow, setWorkflow] = useState<ProjectWorkflowTransition[]>([])
+  const [notificationPreferences, setNotificationPreferences] = useState<NotificationPreferences | null>(null)
   const [selectedRole, setSelectedRole] = useState<ProjectRole>('member')
   const [componentName, setComponentName] = useState('')
   const [editingComponentId, setEditingComponentId] = useState<string | null>(null)
@@ -119,6 +122,11 @@ export function ProjectSettingsPage() {
     if (candidatesResult.status === 'fulfilled') setMemberCandidates(candidatesResult.value)
     if (statusesResult.status === 'fulfilled') setStatuses(statusesResult.value)
     if (workflowResult.status === 'fulfilled') setWorkflow(workflowResult.value.transitions)
+    const loadedPermissions = myPermissionsResult.status === 'fulfilled' ? myPermissionsResult.value.permissions : []
+    if (loadedPermissions.includes('manage_notification_preferences')) {
+      const preferenceResult = await getNotificationPreferences(id)
+      if (preferenceResult) setNotificationPreferences(preferenceResult)
+    }
     setLoading(false)
   }
 
@@ -315,6 +323,31 @@ export function ProjectSettingsPage() {
     } finally { setBusy('') }
   }
 
+  function toggleNotificationEvent(eventType: string) {
+    setNotificationPreferences((current) => {
+      if (!current) return current
+      const disabled = new Set(current.disabled_event_types)
+      if (disabled.has(eventType)) disabled.delete(eventType)
+      else disabled.add(eventType)
+      return { ...current, disabled_event_types: [...disabled].sort() }
+    })
+  }
+
+  async function saveNotificationSettings() {
+    if (!project || !notificationPreferences) return
+    setBusy('notifications')
+    try {
+      const updated = await updateNotificationPreferences(project._id, {
+        enabled: notificationPreferences.enabled,
+        disabled_event_types: notificationPreferences.disabled_event_types,
+      })
+      setNotificationPreferences(updated)
+      showMessage('Notification preferences updated.')
+    } catch (requestError) {
+      setError(errorMessage(requestError, 'Unable to update notification preferences.'))
+    } finally { setBusy('') }
+  }
+
   if (loading) return <div className="page-content"><div className="panel loading-state"><span className="spinner" />Loading project settings...</div></div>
   if (error && !project) return <div className="page-content"><div className="inline-error"><span>{error}</span><Link to="/projects">Back to projects</Link></div></div>
   if (!project) return null
@@ -339,5 +372,7 @@ export function ProjectSettingsPage() {
     <section className="panel settings-panel"><div className="reference-panel-heading"><div><h2>Workflow transitions</h2><p>Define which project statuses can move to each other.</p></div><button className="secondary-button" type="button" onClick={() => void saveWholeWorkflow()} disabled={busy === 'workflow'}>{busy === 'workflow' ? 'Saving...' : 'Save all workflow'}</button></div><form className="workflow-form" onSubmit={(event) => void saveTransition(event)}><label>Transition name<input value={transition.name} onChange={(event) => setTransition((current) => ({ ...current, name: event.target.value }))} maxLength={100} required /></label><label>From status<select value={transition.from_status_ids[0] || ''} onChange={(event) => setTransition((current) => ({ ...current, from_status_ids: event.target.value ? [event.target.value] : [] }))} required><option value="">Select source status</option>{availableStatusOptions.map((status) => <option value={status._id} key={status._id}>{status.name}</option>)}</select></label><label>To status<select value={transition.to_status_id} onChange={(event) => setTransition((current) => ({ ...current, to_status_id: event.target.value }))} required><option value="">Select target status</option>{availableStatusOptions.map((status) => <option value={status._id} key={status._id}>{status.name}</option>)}</select></label><div className="workflow-role-options"><span>Allowed roles</span>{roles.map((role) => <label key={role}><input type="checkbox" checked={transition.guard.allowed_roles.includes(role)} onChange={() => setTransition((current) => { const allowedRoles = current.guard.allowed_roles.includes(role) ? current.guard.allowed_roles.filter((item) => item !== role) : [...current.guard.allowed_roles, role]; return { ...current, guard: { ...current.guard, allowed_roles: allowedRoles } } })} />{role}</label>)}<label><input type="checkbox" checked={transition.guard.requires_assignee} onChange={(event) => setTransition((current) => ({ ...current, guard: { ...current.guard, requires_assignee: event.target.checked } }))} />Requires assignee</label></div><div className="settings-row-actions"><button className="primary-button" type="submit" disabled={busy === 'transition' || transition.guard.allowed_roles.length === 0}>{editingTransitionId ? 'Update transition' : 'Add transition'}</button>{editingTransitionId && <button className="secondary-button" type="button" onClick={resetTransitionForm}>Cancel edit</button>}</div></form><div className="settings-list workflow-list">{workflow.length ? workflow.map((item) => <div className="settings-list-row" key={item._id}><div><strong>{item.name}</strong><small>{item.from_status_ids.map((id) => statusName.get(id) || id).join(', ')} → {statusName.get(item.to_status_id) || item.to_status_id}</small></div><span className="settings-row-actions"><button className="text-button" type="button" onClick={() => editTransition(item)}>Edit</button><button className="text-button danger-text" type="button" onClick={() => void removeTransition(item)} disabled={busy === `delete-transition-${item._id}`}>Delete</button></span></div>) : <p className="settings-muted">No workflow transitions configured.</p>}</div></section>
 
     <section className="panel settings-panel"><div className="reference-panel-heading"><div><h2>Project members</h2><p>Suspend members or transfer project lead ownership.</p></div><span className="settings-badge">{members.length}</span></div>{memberCandidates.length > 0 && <p className="settings-muted">{memberCandidates.length} additional active users can be assigned from the Members section on the project overview.</p>}<div className="settings-list members-settings-list">{members.length ? members.map((member) => <div className="settings-list-row" key={member.user_id}><div className="member-identity"><strong>{member.name} <span className="role-pill">{member.role}</span></strong><small>{member.email}{member.suspended ? ' · Suspended' : ''}</small></div><span className="settings-row-actions"><button className="text-button" type="button" onClick={() => void toggleSuspension(member)} disabled={busy === `suspension-${member.user_id}` || member.role === 'lead'}>{member.suspended ? 'Activate' : 'Suspend'}</button><button className="text-button" type="button" onClick={() => void makeLead(member)} disabled={busy === `lead-${member.user_id}` || member.role === 'lead' || member.suspended}>Make lead</button></span></div>) : <p className="settings-muted">No project members found.</p>}</div></section>
+
+    {notificationPreferences && <section className="panel settings-panel"><div className="reference-panel-heading"><div><h2>Notification preferences</h2><p>Choose which project events appear in your notifications.</p></div><button className="primary-button" type="button" onClick={() => void saveNotificationSettings()} disabled={busy === 'notifications'}>{busy === 'notifications' ? 'Saving...' : 'Save preferences'}</button></div><label className="permission-option"><input type="checkbox" checked={notificationPreferences.enabled} onChange={(event) => setNotificationPreferences((current) => current ? { ...current, enabled: event.target.checked } : current)} /><span>Enable project notifications</span></label><div className="permission-grid notification-preference-grid">{notificationPreferences.available_event_types.map((eventType) => <label className="permission-option" key={eventType}><input type="checkbox" checked={!notificationPreferences.disabled_event_types.includes(eventType)} onChange={() => toggleNotificationEvent(eventType)} /><span>{capabilityLabels[eventType] || eventType.replaceAll('_', ' ')}</span></label>)}</div></section>}
   </div>
 }
