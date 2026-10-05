@@ -1,8 +1,10 @@
 import { createContext, useContext } from 'react'
 import type { LoginRequest } from '../types/auth.types'
+import type { AuthUser } from '../types/auth.types'
 
 export type AuthContextValue = {
   isAuthenticated: boolean
+  user: AuthUser | null
   login: (request: LoginRequest) => Promise<void>
   logout: () => void
 }

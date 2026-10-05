@@ -30,6 +30,8 @@
 .tickets-page .ticket-code { font-size: 13px; }
 .tickets-page .project-pill { padding: 5px 8px; color: #6358e8; background: #eeecff; border-radius: 5px; font-size: 11px; }
 .tickets-page .ticket-table-title { color: #3e4045; font-size: 13px; }
+.ticket-assignee-select { min-width: 125px; max-width: 150px; min-height: 30px; padding: 5px 7px; color: #4e5158; border: 1px solid #d9dadd; border-radius: 5px; background: #fff; font-size: 11px; }
+.ticket-assignee-select:focus { outline: 2px solid #b3d4ff; border-color: #4c9aff; }
 .tickets-page .status-pill, .tickets-page .priority-pill { padding: 5px 8px; border-radius: 5px; font-size: 11px; }
 .tickets-page .pagination button { padding: 7px 11px; border-color: #d9dadd; border-radius: 6px; font-size: 12px; }
 @media (max-width: 700px) { .tickets-page { padding: 26px 16px 40px; }.tickets-page .page-heading { align-items: flex-start; flex-direction: column; gap: 16px; }.tickets-page .page-heading h1 { font-size: 24px; }.tickets-page .ticket-filters { padding: 14px; }.tickets-page .ticket-search { width: 100%; }.tickets-page .filter-row { align-items: stretch; flex-direction: column; }.tickets-page .filter-row label, .tickets-page .filter-row select, .tickets-page .order-button { width: 100%; }.tickets-page .overdue-filter { width: fit-content; } }

@@ -25,3 +25,10 @@ export function updateTicket(ticketId: string, request: UpdateTicketRequest) {
 export function deleteTicket(ticketId: string) {
   return apiClient<{ message: string }>(`/tickets/${ticketId}`, { method: 'DELETE' })
 }
+
+export function assignTicket(ticketId: string, agentId: string) {
+  return apiClient<{ message: string }>(`/tickets/${ticketId}/assign`, {
+    method: 'PUT',
+    body: JSON.stringify({ agent_id: agentId }),
+  })
+}
