@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom'
 import { getProjects } from '../features/projects/api/projectApi'
 import { getTickets } from '../features/tickets/api/ticketApi'
 import type { Ticket } from '../features/tickets/types/ticket.types'
+import { getDashboardActivity } from '../features/activity/api/activityApi'
+import type { ActivityPeriod, DashboardActivity } from '../features/activity/types/activity.types'
 import { apiClient } from '../services/apiClient'
 import './dashboard.css'
 
 type TicketSummary = { total_tickets?: number; open_tickets?: number; closed_tickets?: number }
-type ActivityPeriod = 'week' | 'month' | 'all'
-type DashboardActivity = { id: string; action: string; actor_name: string; changed_at: string; ticket_code: string; ticket_title: string; project_key: string }
 type DashboardData = { summary: TicketSummary; projects: number; dueThisWeek: number; completed: number; tickets: Ticket[]; statusCounts: Record<string, number>; activities: DashboardActivity[] }
 type CurrentUser = { username: string }
 
@@ -60,7 +60,7 @@ export function DashboardPage() {
         apiClient<TicketSummary>('/tickets_summary'),
         getProjects(),
         getAllTickets(),
-        apiClient<{ status_counts: Record<string, number>; activities: DashboardActivity[] }>(`/activities/dashboard?period=${activityPeriod}`).catch(() => ({ status_counts: {}, activities: [] })),
+        getDashboardActivity(activityPeriod).catch(() => ({ status_counts: {}, activities: [] })),
         apiClient<CurrentUser>('/me'),
       ])
       const totalTickets = summary.total_tickets || 0
