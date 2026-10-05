@@ -9,8 +9,10 @@ import { NotFoundPage } from '../pages/NotFoundPage'
 import { UnauthorizedPage } from '../pages/UnauthorizedPage'
 import { ProjectsPage } from '../features/projects/pages/ProjectsPage'
 import { ProjectPage } from '../features/projects/pages/ProjectPage'
+import { ProjectSettingsPage } from '../features/projects/pages/ProjectSettingsPage'
 import { CreateTicketPage } from '../features/tickets/pages/CreateTicketPage'
 import { TicketsPage } from '../features/tickets/pages/TicketsPage'
+import { TicketDetailPage } from '../features/tickets/pages/TicketDetailPage'
 import { WorkflowBoardPage } from '../features/workflow/pages/WorkflowBoardPage'
 import { UserManagementPage } from '../pages/UserManagementPage'
 import { useAuth } from '../features/auth/hooks/useAuth'
@@ -25,6 +27,6 @@ function SuperAdminRoute() {
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
   { path: '/unauthorized', element: <UnauthorizedPage /> },
-  { element: <ProtectedRoute />, children: [{ element: <AppLayout />, children: [{ path: '/dashboard', element: <DashboardPage /> }, { path: '/my-work', element: <MyWorkPage /> }, { path: '/projects', element: <ProjectsPage /> }, { path: '/projects/:projectId', element: <ProjectPage /> }, { path: '/projects/:projectId/board', element: <WorkflowBoardPage /> }, { path: '/tickets', element: <TicketsPage /> }, { path: '/tickets/new', element: <CreateTicketPage /> }, { path: '/analytics', element: <AnalyticsPage /> }, { element: <SuperAdminRoute />, children: [{ path: '/users', element: <UserManagementPage /> }] }, { path: '/', element: <Navigate to="/dashboard" replace /> }]}] },
+  { element: <ProtectedRoute />, children: [{ element: <AppLayout />, children: [{ path: '/dashboard', element: <DashboardPage /> }, { path: '/my-work', element: <MyWorkPage /> }, { path: '/projects', element: <ProjectsPage /> }, { path: '/projects/:projectId', element: <ProjectPage /> }, { path: '/projects/:projectId/settings', element: <ProjectSettingsPage /> }, { path: '/projects/:projectId/board', element: <WorkflowBoardPage /> }, { path: '/tickets', element: <TicketsPage /> }, { path: '/tickets/new', element: <CreateTicketPage /> }, { path: '/tickets/:ticketId', element: <TicketDetailPage /> }, { path: '/analytics', element: <AnalyticsPage /> }, { element: <SuperAdminRoute />, children: [{ path: '/users', element: <UserManagementPage /> }] }, { path: '/', element: <Navigate to="/dashboard" replace /> }]}] },
   { path: '*', element: <NotFoundPage /> },
 ])
