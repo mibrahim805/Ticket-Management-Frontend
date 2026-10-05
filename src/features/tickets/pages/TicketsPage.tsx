@@ -16,7 +16,8 @@ const initialFilters: TicketFilters = { page: 1, page_size: 10, search: '', prio
 export function TicketsPage() {
   const [searchParams] = useSearchParams()
   const projectKey = searchParams.get('project') ?? ''
-  const [filters, setFilters] = useState(() => ({ ...initialFilters, project_key: projectKey }))
+  const searchQuery = searchParams.get('search') ?? ''
+  const [filters, setFilters] = useState(() => ({ ...initialFilters, project_key: projectKey, search: searchQuery }))
   const { tickets, pagination, isLoading, error, reload } = useTickets(filters)
   const { projects } = useProjects()
   const [membersByProject, setMembersByProject] = useState<Record<string, ProjectMember[]>>({})
@@ -31,6 +32,10 @@ export function TicketsPage() {
   const selectedTickets = useMemo(() => tickets.filter((ticket) => selectedTicketIds.includes(ticket._id)), [selectedTicketIds, tickets])
   const bulkProjectKey = selectedTickets.length > 0 && selectedTickets.every((ticket) => ticket.project_key === selectedTickets[0].project_key) ? selectedTickets[0].project_key : ''
   const bulkMembers = (membersByProject[bulkProjectKey] || []).filter((member) => (member.role === 'lead' || member.role === 'member') && !member.suspended)
+
+  useEffect(() => {
+    setFilters((current) => current.project_key === projectKey && current.search === searchQuery ? current : { ...current, project_key: projectKey, search: searchQuery, page: 1 })
+  }, [projectKey, searchQuery])
 
   useEffect(() => {
     const visibleProjects = projectKey ? projects.filter((project) => project.code === projectKey) : projects
