@@ -10,7 +10,12 @@ export type Project = {
 
 export type CreateProjectRequest = { name: string; code: string }
 
-export type ProjectMember = { user_id: string; name: string; email: string; role: 'lead' | 'member' | 'reporter' }
+export type ProjectMember = { user_id: string; name: string; email: string; role: 'lead' | 'member' | 'reporter'; suspended?: boolean }
 export type ProjectRole = ProjectMember['role']
 export type ProjectMemberCandidate = { user_id: string; name: string; email: string }
 export type ProjectStatus = { _id: string; name: string; order: number }
+export type ProjectComponent = { _id: string; project_id: string; name: string; name_key?: string }
+export type ProjectPermissionRole = { defaults: string[]; grants: string[]; revocations: string[]; effective: string[] }
+export type ProjectPermissions = { project_id: string; roles: Record<ProjectRole, ProjectPermissionRole> }
+export type ProjectCapabilities = { project_id: string; role: string; capabilities: string[]; can: Record<string, boolean> }
+export type MyProjectPermissions = { role: string; permissions: string[] }

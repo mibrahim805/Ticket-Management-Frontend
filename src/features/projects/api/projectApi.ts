@@ -1,5 +1,5 @@
 import { apiClient } from '../../../services/apiClient'
-import type { CreateProjectRequest, Project, ProjectMember, ProjectMemberCandidate, ProjectRole, ProjectStatus } from '../types/project.types'
+import type { CreateProjectRequest, MyProjectPermissions, Project, ProjectCapabilities, ProjectComponent, ProjectMember, ProjectMemberCandidate, ProjectPermissionRole, ProjectPermissions, ProjectRole, ProjectStatus } from '../types/project.types'
 import type { Ticket, TicketPagination } from '../../tickets/types/ticket.types'
 
 export function getProject(projectId: string) {
@@ -19,6 +19,55 @@ export function createProject(request: CreateProjectRequest) {
     method: 'POST',
     body: JSON.stringify({ name: request.name.trim(), code: request.code.trim().toUpperCase() }),
   })
+}
+
+export function updateProject(projectId: string, request: Partial<CreateProjectRequest>) {
+  return apiClient<{ message: string }>(`/projects/${projectId}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      ...(request.name === undefined ? {} : { name: request.name.trim() }),
+      ...(request.code === undefined ? {} : { code: request.code.trim().toUpperCase() }),
+    }),
+  })
+}
+
+export function deleteProject(projectId: string) {
+  return apiClient<{ message: string }>(`/projects/${projectId}`, { method: 'DELETE' })
+}
+
+export function getProjectPermissions(projectId: string) {
+  return apiClient<ProjectPermissions>(`/projects/${projectId}/permissions`)
+}
+
+export function updateProjectPermissions(projectId: string, role: ProjectRole, permissions: Pick<ProjectPermissionRole, 'grants' | 'revocations'>) {
+  return apiClient<ProjectPermissions>(`/projects/${projectId}/permissions`, {
+    method: 'PUT',
+    body: JSON.stringify({ role, grants: permissions.grants, revocations: permissions.revocations }),
+  })
+}
+
+export function getProjectCapabilities(projectId: string) {
+  return apiClient<ProjectCapabilities>(`/projects/${projectId}/capabilities`)
+}
+
+export function getMyProjectPermissions(projectId: string) {
+  return apiClient<MyProjectPermissions>(`/projects/${projectId}/my-permissions`)
+}
+
+export function getProjectComponents(projectId: string) {
+  return apiClient<ProjectComponent[]>(`/projects/${projectId}/components`)
+}
+
+export function createProjectComponent(projectId: string, name: string) {
+  return apiClient<ProjectComponent>(`/projects/${projectId}/components`, { method: 'POST', body: JSON.stringify({ name: name.trim() }) })
+}
+
+export function updateProjectComponent(projectId: string, componentId: string, name: string) {
+  return apiClient<ProjectComponent>(`/projects/${projectId}/components/${componentId}`, { method: 'PATCH', body: JSON.stringify({ name: name.trim() }) })
+}
+
+export function deleteProjectComponent(projectId: string, componentId: string) {
+  return apiClient<null>(`/projects/${projectId}/components/${componentId}`, { method: 'DELETE' })
 }
 
 export function getProjectAvailableStatuses(projectId: string) {
@@ -52,6 +101,17 @@ export function updateProjectMemberRole(projectId: string, userId: string, role:
     method: 'PATCH',
     body: JSON.stringify({ role }),
   })
+}
+
+export function setProjectMemberSuspension(projectId: string, userId: string, suspended: boolean) {
+  return apiClient<{ message: string; suspended: boolean }>(`/projects/${projectId}/members/${userId}/suspension`, {
+    method: 'PATCH',
+    body: JSON.stringify({ suspended }),
+  })
+}
+
+export function transferProjectLead(projectId: string, userId: string) {
+  return apiClient<{ message: string; user_id: string }>(`/projects/${projectId}/members/${userId}/transfer-lead`, { method: 'POST' })
 }
 
 export function removeProjectMember(projectId: string, userId: string) {
