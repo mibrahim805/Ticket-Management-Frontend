@@ -37,7 +37,7 @@ export type Ticket = {
   is_overdue?: boolean
 }
 
-export type TicketComment = { _id: string; ticket_id?: string; message?: string; body?: string; content?: string; visibility?: 'public' | 'internal'; created_at?: string; author?: string; created_by?: string }
+export type TicketComment = { _id: string; ticket_id?: string; parent_id?: string | null; author_id?: string; message?: string; body?: string; content?: string; visibility?: 'public' | 'internal'; created_at?: string; updated_at?: string; author?: string; created_by?: string }
 export type TicketDetails = { tickets: Ticket; comments: TicketComment[] }
 export type TicketCapabilities = { ticket_id: string; project_id: string; role: string; capabilities: string[]; can: Record<string, boolean>; context: { is_creator: boolean; is_assignee: boolean; can_upload_attachments: boolean } }
 export type TicketLinkType = 'blocks' | 'relates_to' | 'duplicates'
