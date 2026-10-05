@@ -5,6 +5,7 @@ import { executeTicketTransition, getTicketTransitions } from '../../workflow/ap
 import type { TicketTransition } from '../../workflow/types/workflow.types'
 import { getTicketActivity } from '../../activity/api/activityApi'
 import type { ActivityEvent } from '../../activity/types/activity.types'
+import { deleteAttachment, downloadAttachment, getAttachments, uploadAttachment, type TicketAttachment } from '../api/attachmentApi'
 import { createComment, createCommentReply, deleteComment, getComments, updateComment, type CommentVisibility } from '../api/commentApi'
 import { createTicketLink, getTicketCapabilities, getTicketDetails, getTicketLinks, subscribeToTicket, unsubscribeFromTicket } from '../api/ticketApi'
 import type { Ticket, TicketCapabilities, TicketComment, TicketDetails, TicketLink, TicketLinkType } from '../types/ticket.types'
@@ -24,6 +25,7 @@ const capabilityLabels: Record<string, string> = {
 
 function requestError(error: unknown, fallback: string) { return error instanceof Error ? error.message : fallback }
 function commentText(comment: TicketComment) { return comment.message || comment.body || comment.content || '' }
+function formatFileSize(size: number) { if (size < 1024) return `${size} B`; if (size < 1024 * 1024) return `${Math.round(size / 1024)} KB`; return `${(size / (1024 * 1024)).toFixed(1)} MB` }
 
 export function TicketDetailPage() {
   const { ticketId } = useParams<{ ticketId: string }>()
@@ -34,6 +36,9 @@ export function TicketDetailPage() {
   const [links, setLinks] = useState<TicketLink[]>([])
   const [transitions, setTransitions] = useState<TicketTransition[]>([])
   const [activities, setActivities] = useState<ActivityEvent[]>([])
+  const [attachments, setAttachments] = useState<TicketAttachment[]>([])
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [attachmentError, setAttachmentError] = useState('')
   const [targetTicketId, setTargetTicketId] = useState('')
   const [linkType, setLinkType] = useState<TicketLinkType>('relates_to')
   const [isWatching, setIsWatching] = useState(false)
@@ -51,8 +56,8 @@ export function TicketDetailPage() {
   async function loadTicket(id: string) {
     setIsLoading(true)
     setError('')
-    const results = await Promise.allSettled([getTicketDetails(id), getComments(id), getTicketCapabilities(id), getTicketLinks(id), getTicketTransitions(id), getTicketActivity(id)])
-    const [detailsResult, commentsResult, capabilitiesResult, linksResult, transitionsResult, activityResult] = results
+    const results = await Promise.allSettled([getTicketDetails(id), getComments(id), getTicketCapabilities(id), getTicketLinks(id), getTicketTransitions(id), getTicketActivity(id), getAttachments(id)])
+    const [detailsResult, commentsResult, capabilitiesResult, linksResult, transitionsResult, activityResult, attachmentsResult] = results
     if (detailsResult.status === 'rejected') throw detailsResult.reason
     setDetails(detailsResult.value)
     setComments(commentsResult.status === 'fulfilled' ? commentsResult.value : detailsResult.value.comments)
@@ -60,6 +65,8 @@ export function TicketDetailPage() {
     if (linksResult.status === 'fulfilled') setLinks(linksResult.value.links)
     if (transitionsResult.status === 'fulfilled') setTransitions(transitionsResult.value.transitions)
     if (activityResult.status === 'fulfilled') setActivities(activityResult.value.activities)
+    if (attachmentsResult.status === 'fulfilled') setAttachments(attachmentsResult.value)
+    else setAttachmentError(requestError(attachmentsResult.reason, 'Attachments are not available for this ticket.'))
     const watcherId = user?.user_id
     setIsWatching(Boolean(watcherId && detailsResult.value.tickets.watchers?.includes(watcherId)))
     setIsLoading(false)
@@ -104,6 +111,46 @@ export function TicketDetailPage() {
       setTargetTicketId('')
       setMessage('Ticket link created.')
     } catch (requestErrorValue) { setError(requestError(requestErrorValue, 'Unable to create ticket link.')) } finally { setBusy('') }
+  }
+
+  async function addAttachment(event: FormEvent) {
+    event.preventDefault()
+    if (!ticketId || !selectedFile) return
+    setBusy('attachment')
+    setAttachmentError('')
+    try {
+      await uploadAttachment(ticketId, selectedFile)
+      setAttachments(await getAttachments(ticketId))
+      setSelectedFile(null)
+      setMessage('Attachment uploaded.')
+      const input = event.currentTarget.querySelector('input[type="file"]') as HTMLInputElement | null
+      if (input) input.value = ''
+    } catch (requestErrorValue) { setAttachmentError(requestError(requestErrorValue, 'Unable to upload attachment.')) } finally { setBusy('') }
+  }
+
+  async function downloadFile(attachment: TicketAttachment) {
+    setBusy(`download-${attachment.attachment_id}`)
+    setAttachmentError('')
+    try {
+      const blob = await downloadAttachment(attachment.attachment_id)
+      const url = URL.createObjectURL(blob)
+      const anchor = document.createElement('a')
+      anchor.href = url
+      anchor.download = attachment.original_name
+      anchor.click()
+      URL.revokeObjectURL(url)
+    } catch (requestErrorValue) { setAttachmentError(requestError(requestErrorValue, 'Unable to download attachment.')) } finally { setBusy('') }
+  }
+
+  async function removeAttachment(attachment: TicketAttachment) {
+    if (!window.confirm(`Delete ${attachment.original_name}?`)) return
+    setBusy(`delete-attachment-${attachment.attachment_id}`)
+    setAttachmentError('')
+    try {
+      await deleteAttachment(attachment.attachment_id)
+      setAttachments((current) => current.filter((item) => item.attachment_id !== attachment.attachment_id))
+      setMessage('Attachment deleted.')
+    } catch (requestErrorValue) { setAttachmentError(requestError(requestErrorValue, 'Unable to delete attachment.')) } finally { setBusy('') }
   }
 
   async function addComment(event: FormEvent) {
@@ -176,6 +223,7 @@ export function TicketDetailPage() {
       <aside>
         <section className="panel ticket-detail-panel"><div className="detail-panel-heading"><h2>Capabilities</h2><span className="settings-badge">{capabilities?.role || '—'}</span></div>{capabilities ? <><div className="tag-list">{capabilities.capabilities.map((capability) => <span key={capability}>{capabilityLabels[capability] || capability}</span>)}</div><p className="capability-context">{capabilities.context.is_assignee ? 'You are assigned to this ticket.' : capabilities.context.is_creator ? 'You created this ticket.' : 'Access is based on your project role.'}</p></> : <p className="settings-muted">Ticket capabilities could not be loaded.</p>}</section>
         <section className="panel ticket-detail-panel"><div className="detail-panel-heading"><div><h2>Issue links</h2><p>Connect related tickets.</p></div></div><form className="ticket-link-form" onSubmit={(event) => void addLink(event)}><input value={targetTicketId} onChange={(event) => setTargetTicketId(event.target.value)} placeholder="Target ticket ID" required /><select value={linkType} onChange={(event) => setLinkType(event.target.value as TicketLinkType)}><option value="relates_to">Relates to</option><option value="blocks">Blocks</option><option value="duplicates">Duplicates</option></select><button className="primary-button" type="submit" disabled={busy === 'link'}>{busy === 'link' ? 'Adding...' : 'Add link'}</button></form><div className="ticket-link-list">{links.length ? links.map((link) => <div key={link._id}><span>{link.link_type.replaceAll('_', ' ')}</span><strong>{link.from_ticket_id === ticket._id ? `→ ${link.to_ticket_id}` : `← ${link.from_ticket_id}`}</strong></div>) : <p className="settings-muted">No linked tickets.</p>}</div></section>
+        <section className="panel ticket-detail-panel"><div className="detail-panel-heading"><div><h2>Attachments</h2><p>Files attached to this ticket.</p></div><span className="settings-badge">{attachments.length}</span></div>{attachmentError && <p className="attachment-error">{attachmentError}</p>}{capabilities?.context.can_upload_attachments && <form className="attachment-upload-form" onSubmit={(event) => void addAttachment(event)}><input type="file" onChange={(event) => setSelectedFile(event.target.files?.[0] || null)} /><button className="primary-button" type="submit" disabled={!selectedFile || busy === 'attachment'}>{busy === 'attachment' ? 'Uploading...' : 'Upload file'}</button></form>}{attachments.length ? <div className="attachment-list">{attachments.map((attachment) => <div className="attachment-row" key={attachment.attachment_id}><div><strong>{attachment.original_name}</strong><small>{formatFileSize(attachment.size)} · {new Date(attachment.uploaded_at).toLocaleString()}</small></div><div className="attachment-actions"><button type="button" className="text-button" disabled={busy === `download-${attachment.attachment_id}`} onClick={() => void downloadFile(attachment)}>Download</button>{capabilities?.can.delete_attachments && <button type="button" className="text-button danger-text" disabled={busy === `delete-attachment-${attachment.attachment_id}`} onClick={() => void removeAttachment(attachment)}>Delete</button>}</div></div>)}</div> : !attachmentError && <p className="settings-muted">No attachments yet.</p>}</section>
       </aside>
     </div>
   </div>
