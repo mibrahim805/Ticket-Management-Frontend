@@ -1,5 +1,5 @@
 import { apiClient } from '../../../services/apiClient'
-import type { CreateTicketRequest, CreatedTicket, Ticket, TicketFilters, TicketPagination } from '../types/ticket.types'
+import type { BulkTicketResult, CreateTicketRequest, CreatedTicket, TicketCapabilities, TicketDetails, TicketFilters, TicketLink, TicketLinkType, TicketPagination } from '../types/ticket.types'
 
 export function createTicket(request: CreateTicketRequest) {
   return apiClient<CreatedTicket>('/', { method: 'POST', body: JSON.stringify(request) })
@@ -31,4 +31,36 @@ export function assignTicket(ticketId: string, agentId: string) {
     method: 'PUT',
     body: JSON.stringify({ agent_id: agentId }),
   })
+}
+
+export function getTicketDetails(ticketId: string) {
+  return apiClient<TicketDetails>(`/tickets/detail?ticket_id=${encodeURIComponent(ticketId)}`)
+}
+
+export function subscribeToTicket(ticketId: string) {
+  return apiClient<{ message: string; watchers: string[] }>(`/tickets/${ticketId}/watchers/subscribe`, { method: 'POST' })
+}
+
+export function unsubscribeFromTicket(ticketId: string) {
+  return apiClient<{ message: string; watchers: string[] }>(`/tickets/${ticketId}/watchers/unsubscribe`, { method: 'DELETE' })
+}
+
+export function getTicketCapabilities(ticketId: string) {
+  return apiClient<TicketCapabilities>(`/tickets/${ticketId}/capabilities`)
+}
+
+export function createTicketLink(ticketId: string, toTicketId: string, linkType: TicketLinkType) {
+  return apiClient<TicketLink>(`/tickets/${ticketId}/links`, { method: 'POST', body: JSON.stringify({ to_ticket_id: toTicketId, link_type: linkType }) })
+}
+
+export function getTicketLinks(ticketId: string) {
+  return apiClient<{ links: TicketLink[] }>(`/tickets/${ticketId}/links`)
+}
+
+export function bulkAssignTickets(ticketIds: string[], agentId: string) {
+  return apiClient<BulkTicketResult>('/tickets/bulk/assign', { method: 'POST', body: JSON.stringify({ ticket_ids: ticketIds, agent_id: agentId }) })
+}
+
+export function bulkTransitionTickets(ticketIds: string[], transitionId: string) {
+  return apiClient<BulkTicketResult>('/tickets/bulk/transition', { method: 'POST', body: JSON.stringify({ ticket_ids: ticketIds, transition_id: transitionId }) })
 }

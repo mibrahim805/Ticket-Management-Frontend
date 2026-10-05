@@ -32,9 +32,17 @@ export type Ticket = {
   labels: string[]
   components: string[]
   assigned_agent?: string | null
+  watchers?: string[]
   due_date?: string | null
   is_overdue?: boolean
 }
+
+export type TicketComment = { _id: string; ticket_id?: string; message?: string; body?: string; content?: string; visibility?: 'public' | 'internal'; created_at?: string; author?: string; created_by?: string }
+export type TicketDetails = { tickets: Ticket; comments: TicketComment[] }
+export type TicketCapabilities = { ticket_id: string; project_id: string; role: string; capabilities: string[]; can: Record<string, boolean>; context: { is_creator: boolean; is_assignee: boolean; can_upload_attachments: boolean } }
+export type TicketLinkType = 'blocks' | 'relates_to' | 'duplicates'
+export type TicketLink = { _id: string; from_ticket_id: string; to_ticket_id: string; link_type: TicketLinkType }
+export type BulkTicketResult = { succeeded: Array<{ ticket_id: string }>; failed: Array<{ ticket_id: string; status_code: number; detail: string }>; total: number }
 
 export type TicketFilters = {
   project_key?: string
