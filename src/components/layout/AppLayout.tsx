@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 
 export function AppLayout() {
-  const { pathname } = useLocation()
   const [sidebarWidth, setSidebarWidth] = useState(() => {
     const storedWidth = Number(window.localStorage.getItem('taskline-sidebar-width'))
     return Number.isFinite(storedWidth) && storedWidth >= 220 && storedWidth <= 420 ? storedWidth : 320

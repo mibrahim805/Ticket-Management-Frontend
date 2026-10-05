@@ -1,8 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { getProjectMembers } from '../../projects/api/projectApi'
+import { useProjects } from '../../projects/hooks/useProjects'
 import { TicketTable } from '../components/TicketTable'
+import { assignTicket } from '../api/ticketApi'
 import { useTickets } from '../hooks/useTickets'
-import type { TicketCategory, TicketFilters, TicketIssueType, TicketPriority } from '../types/ticket.types'
+import type { Ticket, TicketCategory, TicketFilters, TicketIssueType, TicketPriority } from '../types/ticket.types'
+import type { ProjectMember } from '../../projects/types/project.types'
 import './tickets.css'
 
 const initialFilters: TicketFilters = { page: 1, page_size: 10, search: '', priority: '', category: '', issue_type: '', overdue_only: false, sort_by: 'created_at', sort_order: 'desc' }
@@ -12,7 +16,34 @@ export function TicketsPage() {
   const projectKey = searchParams.get('project') ?? ''
   const [filters, setFilters] = useState(() => ({ ...initialFilters, project_key: projectKey }))
   const { tickets, pagination, isLoading, error, reload } = useTickets(filters)
+  const { projects } = useProjects()
+  const [membersByProject, setMembersByProject] = useState<Record<string, ProjectMember[]>>({})
+  const [assigningTicketId, setAssigningTicketId] = useState('')
+  const [assignmentError, setAssignmentError] = useState('')
   const update = <K extends keyof TicketFilters>(field: K, value: TicketFilters[K]) => setFilters((current) => ({ ...current, [field]: value, ...(field !== 'page' && { page: 1 }) }))
+
+  useEffect(() => {
+    const visibleProjects = projectKey ? projects.filter((project) => project.code === projectKey) : projects
+    if (!visibleProjects.length) return
+    let cancelled = false
+    void Promise.all(visibleProjects.map(async (project) => [project.code, await getProjectMembers(project._id).catch(() => [])] as const)).then((entries) => {
+      if (!cancelled) setMembersByProject(Object.fromEntries(entries))
+    })
+    return () => { cancelled = true }
+  }, [projects, projectKey])
+
+  async function handleAssign(ticket: Ticket, agentId: string) {
+    setAssigningTicketId(ticket._id)
+    setAssignmentError('')
+    try {
+      await assignTicket(ticket._id, agentId)
+      await reload()
+    } catch (requestError) {
+      setAssignmentError(requestError instanceof Error ? requestError.message : 'Unable to assign ticket.')
+    } finally {
+      setAssigningTicketId('')
+    }
+  }
 
   return <div className="page-content tickets-page">
     <section className="page-heading"><div><p className="eyebrow">{projectKey ? `Project ${projectKey}` : 'Workspace'}</p><h1>{projectKey ? `${projectKey} tickets` : 'Tickets'}</h1><p className="subtle">Search and manage tickets across your accessible projects.</p></div><Link className="primary-button" to="/tickets/new">＋ Create ticket</Link></section>
@@ -22,7 +53,8 @@ export function TicketsPage() {
     </section>
     <div className="tickets-toolbar"><span>{isLoading ? 'Loading tickets...' : `${pagination.total} ${pagination.total === 1 ? 'ticket' : 'tickets'}`}</span><button className="refresh-button" onClick={() => void reload()} disabled={isLoading}>↻ Refresh</button></div>
     {error && <div className="inline-error"><span>{error}</span><button onClick={() => void reload()}>Try again</button></div>}
-    {isLoading ? <div className="panel loading-state"><span className="spinner" />Loading tickets...</div> : <TicketTable tickets={tickets} />}
+    {assignmentError && <div className="inline-error"><span>{assignmentError}</span></div>}
+    {isLoading ? <div className="panel loading-state"><span className="spinner" />Loading tickets...</div> : <TicketTable tickets={tickets} membersByProject={membersByProject} onAssign={(ticket, agentId) => void handleAssign(ticket, agentId)} assigningTicketId={assigningTicketId} />}
     {pagination.total_pages > 1 && <div className="pagination"><button disabled={!pagination.has_prev} onClick={() => update('page', filters.page - 1)}>← Previous</button><span>Page {pagination.page} of {pagination.total_pages}</span><button disabled={!pagination.has_next} onClick={() => update('page', filters.page + 1)}>Next →</button></div>}
   </div>
 }
