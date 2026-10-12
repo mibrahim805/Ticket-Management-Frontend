@@ -1,3 +1,11 @@
 export type LoginRequest = { email: string; password: string }
 export type LoginResponse = { access_token: string; token_type: string }
 export type AuthUser = { user_id?: string; email: string; username?: string; role?: 'super_admin' | 'admin' | null }
+export type MessageResponse = { message: string }
+export type RegisterRequest = { name: string; email: string; password: string; is_active?: boolean }
+export type ManagedRole = 'super_admin' | 'admin' | null
+export type ManagedUser = { id: string; name: string; email: string; role: ManagedRole; is_active: boolean }
+export type UsersResponse = { users: ManagedUser[] }
+export type CreateManagedUserRequest = RegisterRequest & { role: ManagedRole }
+export type UpdateProfileRequest = { name: string; password: string }
+export type ChangePasswordRequest = { old_password: string; new_password: string }
