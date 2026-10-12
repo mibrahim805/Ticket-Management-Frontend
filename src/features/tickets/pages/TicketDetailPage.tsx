@@ -8,7 +8,7 @@ import type { ActivityEvent } from '../../activity/types/activity.types'
 import { deleteAttachment, downloadAttachment, getAttachments, uploadAttachment, type TicketAttachment } from '../api/attachmentApi'
 import { createComment, createCommentReply, deleteComment, getComments, updateComment, type CommentVisibility } from '../api/commentApi'
 import { createTicketLink, getTicketCapabilities, getTicketDetails, getTicketLinks, subscribeToTicket, unsubscribeFromTicket } from '../api/ticketApi'
-import type { Ticket, TicketCapabilities, TicketComment, TicketDetails, TicketLink, TicketLinkType } from '../types/ticket.types'
+import type { TicketCapabilities, TicketComment, TicketDetails, TicketLink, TicketLinkType } from '../types/ticket.types'
 import './ticket-detail.css'
 
 const capabilityLabels: Record<string, string> = {

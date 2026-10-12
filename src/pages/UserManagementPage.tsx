@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { apiClient } from '../services/apiClient'
+import { changeUserRole, createManagedUser, listUsers, registerAdmin, toggleUserActive } from '../features/auth/api/authApi'
+import type { ManagedRole, ManagedUser } from '../features/auth/types/auth.types'
 import './user-management.css'
-
-type ManagedRole = 'super_admin' | 'admin' | null
-type ManagedUser = { id: string; name: string; email: string; role: ManagedRole; is_active: boolean }
-type UsersResponse = { users: ManagedUser[] }
 
 function roleLabel(role: ManagedRole) {
   if (role === 'super_admin') return 'Super admin'
@@ -28,7 +25,7 @@ export function UserManagementPage() {
     setIsLoading(true)
     setError('')
     try {
-      const response = await apiClient<UsersResponse>('/users')
+      const response = await listUsers()
       setUsers(response.users)
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'Unable to load users.')
@@ -45,10 +42,8 @@ export function UserManagementPage() {
     setError('')
     setSuccess('')
     try {
-      await apiClient('/users', {
-        method: 'POST',
-        body: JSON.stringify({ name, email, password, role: role || null, is_active: true }),
-      })
+      if (role === 'admin') await registerAdmin({ name, email, password, is_active: true })
+      else await createManagedUser({ name, email, password, role: null, is_active: true })
       setName('')
       setEmail('')
       setPassword('')
@@ -66,7 +61,7 @@ export function UserManagementPage() {
     setError('')
     setSuccess('')
     try {
-      await apiClient(`/change_role/${user.id}`, { method: 'PUT', body: JSON.stringify({ role: nextRole || null }) })
+      await changeUserRole(user.id, nextRole || null)
       setSuccess(`${user.name}'s role was updated.`)
       await loadUsers()
     } catch (requestError) {
@@ -78,7 +73,7 @@ export function UserManagementPage() {
     setError('')
     setSuccess('')
     try {
-      await apiClient(`/activate_or_deactivate/${user.id}`, { method: 'PUT' })
+      await toggleUserActive(user.id)
       setSuccess(`${user.name} is now ${user.is_active ? 'inactive' : 'active'}.`)
       await loadUsers()
     } catch (requestError) {

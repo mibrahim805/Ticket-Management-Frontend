@@ -1,5 +1,5 @@
 import { apiClient } from '../../../services/apiClient'
-import type { BulkTicketResult, CreateTicketRequest, CreatedTicket, TicketCapabilities, TicketDetails, TicketFilters, TicketLink, TicketLinkType, TicketPagination } from '../types/ticket.types'
+import type { BulkTicketResult, CreateTicketRequest, CreatedTicket, Ticket, TicketCapabilities, TicketDetails, TicketFilters, TicketLink, TicketLinkType, TicketPagination } from '../types/ticket.types'
 
 export function createTicket(request: CreateTicketRequest) {
   return apiClient<CreatedTicket>('/', { method: 'POST', body: JSON.stringify(request) })
