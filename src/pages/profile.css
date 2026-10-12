@@ -1,0 +1,8 @@
+.profile-heading { margin-bottom: 24px; }
+.profile-heading h1 { margin: 0 0 7px; color: #29273f; font: 800 29px var(--font-heading); letter-spacing: -.7px; }
+.profile-heading .subtle { margin: 0; }
+.profile-message { margin-bottom: 16px; padding: 11px 14px; border-radius: 7px; font-size: 12px; }
+.profile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 20px; }
+.profile-grid h2 { margin: 0 0 6px; color: #34344a; font: 700 18px var(--font-heading); }
+.section-copy { min-height: 34px; margin: 0 0 20px; color: #888b9e; font-size: 11px; line-height: 1.5; }
+@media (max-width: 800px) { .profile-grid { grid-template-columns: 1fr; } }
