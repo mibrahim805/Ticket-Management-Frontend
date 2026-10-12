@@ -13,6 +13,7 @@ import { ProjectSettingsPage } from '../features/projects/pages/ProjectSettingsP
 import { CreateTicketPage } from '../features/tickets/pages/CreateTicketPage'
 import { TicketsPage } from '../features/tickets/pages/TicketsPage'
 import { TicketDetailPage } from '../features/tickets/pages/TicketDetailPage'
+import { EpicPage } from '../features/tickets/pages/EpicPage'
 import { WorkflowBoardPage } from '../features/workflow/pages/WorkflowBoardPage'
 import { UserManagementPage } from '../pages/UserManagementPage'
 import { RegistrationPage } from '../pages/RegistrationPage'
@@ -35,6 +36,6 @@ export const router = createBrowserRouter([
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password', element: <ResetPasswordPage /> },
   { path: '/unauthorized', element: <UnauthorizedPage /> },
-  { element: <ProtectedRoute />, children: [{ element: <AppLayout />, children: [{ path: '/dashboard', element: <DashboardPage /> }, { path: '/my-work', element: <MyWorkPage /> }, { path: '/projects', element: <ProjectsPage /> }, { path: '/projects/:projectId', element: <ProjectPage /> }, { path: '/projects/:projectId/settings', element: <ProjectSettingsPage /> }, { path: '/projects/:projectId/board', element: <WorkflowBoardPage /> }, { path: '/tickets', element: <TicketsPage /> }, { path: '/tickets/new', element: <CreateTicketPage /> }, { path: '/tickets/:ticketId', element: <TicketDetailPage /> }, { path: '/analytics', element: <AnalyticsPage /> }, { path: '/profile', element: <ProfilePage /> }, { element: <SuperAdminRoute />, children: [{ path: '/users', element: <UserManagementPage /> }] }, { path: '/', element: <Navigate to="/dashboard" replace /> }]}] },
+  { element: <ProtectedRoute />, children: [{ element: <AppLayout />, children: [{ path: '/dashboard', element: <DashboardPage /> }, { path: '/my-work', element: <MyWorkPage /> }, { path: '/projects', element: <ProjectsPage /> }, { path: '/projects/:projectId', element: <ProjectPage /> }, { path: '/projects/:projectId/settings', element: <ProjectSettingsPage /> }, { path: '/projects/:projectId/board', element: <WorkflowBoardPage /> }, { path: '/tickets', element: <TicketsPage /> }, { path: '/tickets/new', element: <CreateTicketPage /> }, { path: '/tickets/:ticketId', element: <TicketDetailPage /> }, { path: '/epics/:epicId', element: <EpicPage /> }, { path: '/analytics', element: <AnalyticsPage /> }, { path: '/profile', element: <ProfilePage /> }, { element: <SuperAdminRoute />, children: [{ path: '/users', element: <UserManagementPage /> }] }, { path: '/', element: <Navigate to="/dashboard" replace /> }]}] },
   { path: '*', element: <NotFoundPage /> },
 ])
