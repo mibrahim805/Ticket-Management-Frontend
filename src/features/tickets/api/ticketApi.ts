@@ -1,5 +1,5 @@
 import { apiClient } from '../../../services/apiClient'
-import type { BulkTicketResult, CreateTicketRequest, CreatedTicket, Ticket, TicketCapabilities, TicketDetails, TicketFilters, TicketLink, TicketLinkType, TicketPagination } from '../types/ticket.types'
+import type { BulkTicketResult, CreateTicketRequest, CreatedTicket, EpicDetails, Ticket, TicketCapabilities, TicketDetails, TicketFilters, TicketLink, TicketLinkType, TicketPagination } from '../types/ticket.types'
 
 export function createTicket(request: CreateTicketRequest) {
   return apiClient<CreatedTicket>('/', { method: 'POST', body: JSON.stringify(request) })
@@ -35,6 +35,10 @@ export function assignTicket(ticketId: string, agentId: string) {
 
 export function getTicketDetails(ticketId: string) {
   return apiClient<TicketDetails>(`/tickets/detail?ticket_id=${encodeURIComponent(ticketId)}`)
+}
+
+export function getEpic(epicId: string) {
+  return apiClient<EpicDetails>(`/epics/${encodeURIComponent(epicId)}`)
 }
 
 export function subscribeToTicket(ticketId: string) {

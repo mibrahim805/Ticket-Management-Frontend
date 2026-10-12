@@ -4,10 +4,11 @@ import { getProjectMembers } from '../../projects/api/projectApi'
 import { useProjects } from '../../projects/hooks/useProjects'
 import { TicketTable } from '../components/TicketTable'
 import { assignTicket, bulkAssignTickets, bulkTransitionTickets } from '../api/ticketApi'
+import { createSavedFilter, deleteSavedFilter, listSavedFilters } from '../api/filterApi'
 import { getTicketTransitions } from '../../workflow/api/workflowApi'
 import type { TicketTransition } from '../../workflow/types/workflow.types'
 import { useTickets } from '../hooks/useTickets'
-import type { Ticket, TicketCategory, TicketFilters, TicketIssueType, TicketPriority } from '../types/ticket.types'
+import type { SavedFilter, Ticket, TicketCategory, TicketFilters, TicketIssueType, TicketPriority } from '../types/ticket.types'
 import type { ProjectMember } from '../../projects/types/project.types'
 import './tickets.css'
 
@@ -28,6 +29,10 @@ export function TicketsPage() {
   const [bulkTransitionId, setBulkTransitionId] = useState('')
   const [bulkTransitions, setBulkTransitions] = useState<TicketTransition[]>([])
   const [bulkBusy, setBulkBusy] = useState('')
+  const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([])
+  const [savedFilterName, setSavedFilterName] = useState('')
+  const [savedFilterBusy, setSavedFilterBusy] = useState('')
+  const [savedFilterMessage, setSavedFilterMessage] = useState('')
   const update = <K extends keyof TicketFilters>(field: K, value: TicketFilters[K]) => setFilters((current) => ({ ...current, [field]: value, ...(field !== 'page' && { page: 1 }) }))
   const selectedTickets = useMemo(() => tickets.filter((ticket) => selectedTicketIds.includes(ticket._id)), [selectedTicketIds, tickets])
   const bulkProjectKey = selectedTickets.length > 0 && selectedTickets.every((ticket) => ticket.project_key === selectedTickets[0].project_key) ? selectedTickets[0].project_key : ''
@@ -61,6 +66,45 @@ export function TicketsPage() {
     }).catch(() => undefined)
     return () => { cancelled = true }
   }, [bulkProjectKey, selectedTickets])
+
+  useEffect(() => {
+    void listSavedFilters().then((response) => setSavedFilters(response.filters)).catch((requestError) => {
+      setSavedFilterMessage(requestError instanceof Error ? requestError.message : 'Unable to load saved filters.')
+    })
+  }, [])
+
+  async function saveCurrentFilter() {
+    if (!savedFilterName.trim()) return
+    setSavedFilterBusy('create')
+    setSavedFilterMessage('')
+    try {
+      const created = await createSavedFilter(savedFilterName, { ...filters, page: 1 })
+      setSavedFilters((current) => [created, ...current])
+      setSavedFilterName('')
+      setSavedFilterMessage('Filter saved.')
+    } catch (requestError) {
+      setSavedFilterMessage(requestError instanceof Error ? requestError.message : 'Unable to save the filter.')
+    } finally { setSavedFilterBusy('') }
+  }
+
+  function applySavedFilter(savedFilter: SavedFilter) {
+    setFilters({ ...initialFilters, ...savedFilter.query_params, project_key: savedFilter.query_params.project_key ?? '', page: 1 })
+    setSelectedTicketIds([])
+    setSavedFilterMessage(`Applied “${savedFilter.name}”.`)
+  }
+
+  async function removeSavedFilter(savedFilter: SavedFilter) {
+    if (!window.confirm(`Delete saved filter “${savedFilter.name}”?`)) return
+    setSavedFilterBusy(savedFilter.filter_id)
+    setSavedFilterMessage('')
+    try {
+      const response = await deleteSavedFilter(savedFilter.filter_id)
+      setSavedFilters((current) => current.filter((item) => item.filter_id !== savedFilter.filter_id))
+      setSavedFilterMessage(response.message)
+    } catch (requestError) {
+      setSavedFilterMessage(requestError instanceof Error ? requestError.message : 'Unable to delete the filter.')
+    } finally { setSavedFilterBusy('') }
+  }
 
   async function handleAssign(ticket: Ticket, agentId: string) {
     setAssigningTicketId(ticket._id)
@@ -104,6 +148,8 @@ export function TicketsPage() {
     <section className="ticket-filters panel">
       <div className="ticket-search"><span>⌕</span><input value={filters.search} onChange={(event) => update('search', event.target.value)} placeholder="Search by ticket key, title, or description" /></div>
       <div className="filter-row"><label>Priority<select value={filters.priority} onChange={(event) => update('priority', event.target.value as TicketPriority | '')}><option value="">All priorities</option><option value="urgent">Urgent</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></label><label>Category<select value={filters.category} onChange={(event) => update('category', event.target.value as TicketCategory | '')}><option value="">All categories</option><option value="bug">Bug</option><option value="feature_request">Feature request</option><option value="support">Support</option></select></label><label>Issue type<select value={filters.issue_type} onChange={(event) => update('issue_type', event.target.value as TicketIssueType | '')}><option value="">All types</option><option value="task">Task</option><option value="bug">Bug</option><option value="story">Story</option><option value="epic">Epic</option><option value="subtask">Subtask</option></select></label><label>Sort by<select value={filters.sort_by} onChange={(event) => update('sort_by', event.target.value as TicketFilters['sort_by'])}><option value="created_at">Created date</option><option value="priority">Priority</option><option value="due_date">Due date</option></select></label><label className="sort-direction"><span>Order</span><button type="button" className="order-button" onClick={() => update('sort_order', filters.sort_order === 'desc' ? 'asc' : 'desc')}>{filters.sort_order === 'desc' ? 'Newest first ↓' : 'Oldest first ↑'}</button></label><label className="overdue-filter"><input type="checkbox" checked={filters.overdue_only} onChange={(event) => update('overdue_only', event.target.checked)} />Overdue only</label></div>
+      <div className="saved-filter-toolbar"><form onSubmit={(event) => { event.preventDefault(); void saveCurrentFilter() }}><input value={savedFilterName} onChange={(event) => setSavedFilterName(event.target.value)} maxLength={100} placeholder="Name this filter" aria-label="Saved filter name" /><button className="secondary-button" disabled={!savedFilterName.trim() || savedFilterBusy === 'create'}>{savedFilterBusy === 'create' ? 'Saving...' : 'Save filter'}</button></form><div className="saved-filter-list">{savedFilters.map((savedFilter) => <span className="saved-filter-chip" key={savedFilter.filter_id}><button type="button" onClick={() => applySavedFilter(savedFilter)}>{savedFilter.name}</button><button type="button" className="saved-filter-delete" disabled={savedFilterBusy === savedFilter.filter_id} onClick={() => void removeSavedFilter(savedFilter)} aria-label={`Delete ${savedFilter.name}`}>×</button></span>)}{!savedFilters.length && <small>No saved filters yet.</small>}</div></div>
+      {savedFilterMessage && <p className="saved-filter-message">{savedFilterMessage}</p>}
     </section>
     <div className="tickets-toolbar"><span>{isLoading ? 'Loading tickets...' : `${pagination.total} ${pagination.total === 1 ? 'ticket' : 'tickets'}`}</span><button className="refresh-button" onClick={() => void reload()} disabled={isLoading}>↻ Refresh</button></div>
     {selectedTicketIds.length > 0 && <section className="bulk-ticket-toolbar panel"><strong>{selectedTicketIds.length} selected</strong>{bulkProjectKey ? <><label>Assign to<select value={bulkAssignee} onChange={(event) => setBulkAssignee(event.target.value)}><option value="">Select member</option>{bulkMembers.map((member) => <option value={member.user_id} key={member.user_id}>{member.name}</option>)}</select></label><button className="secondary-button" type="button" disabled={!bulkAssignee || bulkBusy === 'assign'} onClick={() => void handleBulkAssign()}>{bulkBusy === 'assign' ? 'Assigning...' : 'Bulk assign'}</button><label>Transition<select value={bulkTransitionId} onChange={(event) => setBulkTransitionId(event.target.value)}><option value="">Select transition</option>{bulkTransitions.map((transition) => <option value={transition._id} key={transition._id}>{transition.name}</option>)}</select></label><button className="secondary-button" type="button" disabled={!bulkTransitionId || bulkBusy === 'transition'} onClick={() => void handleBulkTransition()}>{bulkBusy === 'transition' ? 'Moving...' : 'Bulk transition'}</button></> : <span className="bulk-help">Select tickets from the same project to use bulk actions.</span>}<button className="text-button muted" type="button" onClick={() => setSelectedTicketIds([])}>Clear</button></section>}
