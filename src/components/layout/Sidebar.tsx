@@ -10,6 +10,7 @@ export function Sidebar({ onResizeStart, onHide }: { onResizeStart?: () => void;
     ['Tickets', '/tickets', '☷'],
     ['Sprints', '/sprints', '◷'],
     ['Reports', '/analytics', '⌁'],
+    ['Profile', '/profile', '♙'],
   ]
 
   return <aside className="sidebar">
