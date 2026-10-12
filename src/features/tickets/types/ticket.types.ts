@@ -29,6 +29,9 @@ export type Ticket = {
   priority: TicketPriority
   category: TicketCategory
   issue_type: TicketIssueType
+  epic_id?: string | null
+  parent_id?: string | null
+  story_points?: number | null
   labels: string[]
   components: string[]
   assigned_agent?: string | null
@@ -58,3 +61,5 @@ export type TicketFilters = {
 }
 
 export type TicketPagination = { total: number; page: number; page_size: number; total_pages: number; has_next: boolean; has_prev: boolean }
+export type EpicDetails = { epic: Ticket; issues: Ticket[]; progress: { done: number; total: number } }
+export type SavedFilter = { filter_id: string; user_id: string; name: string; query_params: Partial<TicketFilters>; created_at: string; updated_at: string }
