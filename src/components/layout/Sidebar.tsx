@@ -37,6 +37,10 @@ export function Sidebar({ onResizeStart, onHide }: { onResizeStart?: () => void;
         <span aria-hidden="true">♙</span>
         <b>Users</b>
       </NavLink>}
+      {user?.role === 'super_admin' && <NavLink className="nav-item" to="/statuses">
+        <span aria-hidden="true">◫</span>
+        <b>Statuses</b>
+      </NavLink>}
     </nav>
 
     <div className="sidebar-footer">

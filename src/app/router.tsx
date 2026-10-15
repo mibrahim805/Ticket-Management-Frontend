@@ -20,6 +20,7 @@ import { RegistrationPage } from '../pages/RegistrationPage'
 import { ForgotPasswordPage } from '../pages/ForgotPasswordPage'
 import { ResetPasswordPage } from '../pages/ResetPasswordPage'
 import { ProfilePage } from '../pages/ProfilePage'
+import { StatusManagementPage } from '../features/statuses/pages/StatusManagementPage'
 import { useAuth } from '../features/auth/hooks/useAuth'
 
 function SuperAdminRoute() {
@@ -36,6 +37,6 @@ export const router = createBrowserRouter([
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password', element: <ResetPasswordPage /> },
   { path: '/unauthorized', element: <UnauthorizedPage /> },
-  { element: <ProtectedRoute />, children: [{ element: <AppLayout />, children: [{ path: '/dashboard', element: <DashboardPage /> }, { path: '/my-work', element: <MyWorkPage /> }, { path: '/projects', element: <ProjectsPage /> }, { path: '/projects/:projectId', element: <ProjectPage /> }, { path: '/projects/:projectId/settings', element: <ProjectSettingsPage /> }, { path: '/projects/:projectId/board', element: <WorkflowBoardPage /> }, { path: '/tickets', element: <TicketsPage /> }, { path: '/tickets/new', element: <CreateTicketPage /> }, { path: '/tickets/:ticketId', element: <TicketDetailPage /> }, { path: '/epics/:epicId', element: <EpicPage /> }, { path: '/analytics', element: <AnalyticsPage /> }, { path: '/profile', element: <ProfilePage /> }, { element: <SuperAdminRoute />, children: [{ path: '/users', element: <UserManagementPage /> }] }, { path: '/', element: <Navigate to="/dashboard" replace /> }]}] },
+  { element: <ProtectedRoute />, children: [{ element: <AppLayout />, children: [{ path: '/dashboard', element: <DashboardPage /> }, { path: '/my-work', element: <MyWorkPage /> }, { path: '/projects', element: <ProjectsPage /> }, { path: '/projects/:projectId', element: <ProjectPage /> }, { path: '/projects/:projectId/settings', element: <ProjectSettingsPage /> }, { path: '/projects/:projectId/board', element: <WorkflowBoardPage /> }, { path: '/tickets', element: <TicketsPage /> }, { path: '/tickets/new', element: <CreateTicketPage /> }, { path: '/tickets/:ticketId', element: <TicketDetailPage /> }, { path: '/epics/:epicId', element: <EpicPage /> }, { path: '/analytics', element: <AnalyticsPage /> }, { path: '/profile', element: <ProfilePage /> }, { element: <SuperAdminRoute />, children: [{ path: '/users', element: <UserManagementPage /> }, { path: '/statuses', element: <StatusManagementPage /> }] }, { path: '/', element: <Navigate to="/dashboard" replace /> }]}] },
   { path: '*', element: <NotFoundPage /> },
 ])
