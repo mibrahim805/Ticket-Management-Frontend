@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useNotifications } from '../../features/notifications/hooks/useNotifications'
 import type { Notification } from '../../features/notifications/types/notification.types'
+import { getNotification } from '../../features/notifications/api/notificationApi'
 
 const eventLabels: Record<string, string> = {
   ticket_created: 'A ticket was created',
@@ -47,11 +48,13 @@ export function Topbar() {
   }
 
   async function openNotification(notification: Notification) {
-    if (!notification.is_read) {
-      try { await markAsRead(notification._id) } catch { /* The destination is still useful if marking fails. */ }
+    let selectedNotification = notification
+    try { selectedNotification = await getNotification(notification._id) } catch { /* The list item still contains a valid destination. */ }
+    if (!selectedNotification.is_read) {
+      try { await markAsRead(selectedNotification._id) } catch { /* The destination is still useful if marking fails. */ }
     }
     setNotificationsOpen(false)
-    navigate(`/tickets/${notification.ticket_id}`)
+    navigate(`/tickets/${selectedNotification.ticket_id}`)
   }
 
   async function markEverythingRead() {
