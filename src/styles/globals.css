@@ -14,6 +14,41 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .app-frame { --sidebar-width: 196px; min-height: 100vh; background: #f7f9fd; }
 .app-shell { display: flex; height: calc(100vh - 62px); min-height: 0; }
 .content { flex: 1; min-width: 0; overflow: auto; background: #f7f9fd; }
+.route-transition { min-height: 100%; animation: route-enter 180ms ease-out both; }
+.route-transition > *:not(.dashboard-page) > * { animation: route-section-enter 400ms cubic-bezier(.22, 1, .36, 1) both; }
+.route-transition > *:not(.dashboard-page) > :nth-child(1) { animation-delay: 30ms; }
+.route-transition > *:not(.dashboard-page) > :nth-child(2) { animation-delay: 110ms; }
+.route-transition > *:not(.dashboard-page) > :nth-child(3) { animation-delay: 190ms; }
+.route-transition > *:not(.dashboard-page) > :nth-child(4) { animation-delay: 270ms; }
+.route-transition > *:not(.dashboard-page) > :nth-child(5) { animation-delay: 350ms; }
+.route-transition > *:not(.dashboard-page) > :nth-child(n + 6) { animation-delay: 430ms; }
+
+.route-transition .dashboard-hero,
+.route-transition .dashboard-error,
+.route-transition .stats-grid,
+.route-transition .recent-tickets-panel,
+.route-transition .current-projects-panel,
+.route-transition .status-panel,
+.route-transition .activity-panel,
+.route-transition .deadline-panel { animation: route-section-enter 400ms cubic-bezier(.22, 1, .36, 1) both; }
+.route-transition .dashboard-hero { animation-delay: 30ms; }
+.route-transition .dashboard-error { animation-delay: 90ms; }
+.route-transition .stats-grid { animation-delay: 110ms; }
+.route-transition .recent-tickets-panel { animation-delay: 190ms; }
+.route-transition .current-projects-panel { animation-delay: 270ms; }
+.route-transition .status-panel { animation-delay: 350ms; }
+.route-transition .activity-panel { animation-delay: 430ms; }
+.route-transition .deadline-panel { animation-delay: 510ms; }
+
+@keyframes route-enter {
+  from { opacity: .82; }
+  to { opacity: 1; }
+}
+
+@keyframes route-section-enter {
+  from { opacity: 0; transform: translate3d(0, 12px, 0) scale(.995); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
 .topbar { position: relative; z-index: 20; display: grid; grid-template-columns: var(--sidebar-width) minmax(260px, 1fr) auto; align-items: center; height: 62px; background: #fff; border-bottom: 1px solid #e5eaf2; }
 .topbar-brand-area { align-self: stretch; display: flex; align-items: center; padding: 0 24px 0 32px; border-right: 1px solid #e5eaf2; }
 .topbar-brand { display: flex; align-items: center; gap: 10px; color: #121c36; font: 800 16px var(--font-heading); letter-spacing: -.35px; }
@@ -195,4 +230,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .topbar-icon-button { width: 27px; }
   .notification-popover { position: fixed; top: 58px; right: 8px; }
   .auth-card { padding: 28px 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-transition,
+  .route-transition > * > *,
+  .route-transition .dashboard-hero,
+  .route-transition .dashboard-error,
+  .route-transition .stats-grid,
+  .route-transition .recent-tickets-panel,
+  .route-transition .current-projects-panel,
+  .route-transition .status-panel,
+  .route-transition .activity-panel,
+  .route-transition .deadline-panel { animation: none; }
 }
