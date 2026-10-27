@@ -14,6 +14,41 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .app-frame { --sidebar-width: 196px; min-height: 100vh; background: #f7f9fd; }
 .app-shell { display: flex; height: calc(100vh - 62px); min-height: 0; }
 .content { flex: 1; min-width: 0; overflow: auto; background: #f7f9fd; }
+.route-transition { min-height: 100%; animation: route-enter 180ms ease-out both; }
+.route-transition > *:not(.dashboard-page) > * { animation: route-section-enter 400ms cubic-bezier(.22, 1, .36, 1) both; }
+.route-transition > *:not(.dashboard-page) > :nth-child(1) { animation-delay: 30ms; }
+.route-transition > *:not(.dashboard-page) > :nth-child(2) { animation-delay: 110ms; }
+.route-transition > *:not(.dashboard-page) > :nth-child(3) { animation-delay: 190ms; }
+.route-transition > *:not(.dashboard-page) > :nth-child(4) { animation-delay: 270ms; }
+.route-transition > *:not(.dashboard-page) > :nth-child(5) { animation-delay: 350ms; }
+.route-transition > *:not(.dashboard-page) > :nth-child(n + 6) { animation-delay: 430ms; }
+
+.route-transition .dashboard-hero,
+.route-transition .dashboard-error,
+.route-transition .stats-grid,
+.route-transition .recent-tickets-panel,
+.route-transition .current-projects-panel,
+.route-transition .status-panel,
+.route-transition .activity-panel,
+.route-transition .deadline-panel { animation: route-section-enter 400ms cubic-bezier(.22, 1, .36, 1) both; }
+.route-transition .dashboard-hero { animation-delay: 30ms; }
+.route-transition .dashboard-error { animation-delay: 90ms; }
+.route-transition .stats-grid { animation-delay: 110ms; }
+.route-transition .recent-tickets-panel { animation-delay: 190ms; }
+.route-transition .current-projects-panel { animation-delay: 270ms; }
+.route-transition .status-panel { animation-delay: 350ms; }
+.route-transition .activity-panel { animation-delay: 430ms; }
+.route-transition .deadline-panel { animation-delay: 510ms; }
+
+@keyframes route-enter {
+  from { opacity: .82; }
+  to { opacity: 1; }
+}
+
+@keyframes route-section-enter {
+  from { opacity: 0; transform: translate3d(0, 12px, 0) scale(.995); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
 .topbar { position: relative; z-index: 20; display: grid; grid-template-columns: var(--sidebar-width) minmax(260px, 1fr) auto; align-items: center; height: 62px; background: #fff; border-bottom: 1px solid #e5eaf2; }
 .topbar-brand-area { align-self: stretch; display: flex; align-items: center; padding: 0 24px 0 32px; border-right: 1px solid #e5eaf2; }
 .topbar-brand { display: flex; align-items: center; gap: 10px; color: #121c36; font: 800 16px var(--font-heading); letter-spacing: -.35px; }
@@ -97,6 +132,42 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .collapse-button:hover { color: #5d3ee7; }
 .collapse-button svg { width: 13px; }
 
+/* Refined Jira-style sidebar */
+.sidebar { padding: 12px 10px 11px; border-right-color: #d9dadd; }
+.main-nav { gap: 2px; }
+.account-nav { margin-top: 9px; padding-top: 9px; border-top: 1px solid #e1e2e4; }
+.nav-item { height: 37px; gap: 12px; padding: 0 12px; color: #4e5158; border-radius: 6px; font-size: 13px; font-weight: 500; }
+.nav-item::before { position: absolute; top: 7px; bottom: 7px; left: 0; width: 3px; border-radius: 0 3px 3px 0; background: transparent; content: ''; }
+.nav-item > svg { width: 17px; height: 17px; color: #5e6c84; stroke-width: 1.7; }
+.nav-item:hover { color: #0c66e4; background: #f4f5f7; }
+.nav-item:hover > svg { color: #0c66e4; }
+.nav-item.active { color: #0c66e4; background: #e9f2ff; font-weight: 600; }
+.nav-item.active::before { background: #0c66e4; }
+.nav-item.active > svg { color: #0c66e4; }
+.favorites { margin-top: 10px; padding-top: 14px; border-top-color: #e1e2e4; }
+.sidebar-section-title { gap: 8px; padding: 0 10px 9px; color: #6f737d; font-size: 10px; letter-spacing: .7px; }
+.sidebar-section-title svg { width: 13px; color: #f2a900; fill: #f2a900; }
+.favorite-list { gap: 3px; }
+.favorite-item { grid-template-columns: 26px minmax(0, 1fr) 13px; gap: 9px; min-height: 38px; padding: 5px 9px; color: #4e5158; border-radius: 6px; font-size: 12px; font-weight: 500; }
+.favorite-item:hover, .favorite-item.active { color: #0c66e4; background: #f4f5f7; }
+.favorite-item > svg { width: 12px; color: #7a869a; opacity: .72; }
+.favorite-item:hover > svg, .favorite-item.active > svg { color: #0c66e4; opacity: 1; }
+.favorite-project-mark { width: 26px; height: 26px; border-radius: 5px; font-size: 8px; }
+.favorite-project-mark.blue { background: #0c66e4; }
+.favorite-project-mark.violet { background: #6554c0; }
+.favorite-project-mark.green { background: #00875a; }
+.favorite-empty { padding: 7px 10px; color: #7a869a; font-size: 11px; }
+.sidebar-footer { padding-top: 10px; border-top: 1px solid #e1e2e4; }
+.workspace-card { grid-template-columns: 34px 1fr 14px; gap: 10px; min-height: 62px; padding: 10px; border-color: #d9dadd; border-radius: 6px; box-shadow: none; }
+.workspace-card:hover { border-color: #4c9aff; background: #f7faff; }
+.workspace-avatar { width: 34px; height: 34px; color: #0c66e4; border-radius: 6px; background: #deebff; font-size: 12px; }
+.workspace-card strong { color: #292a2e; font-size: 12px; font-weight: 600; }
+.workspace-card small { margin-top: 4px; color: #6f737d; font-size: 10px; }
+.workspace-card > svg { width: 13px; color: #5e6c84; }
+.collapse-button { gap: 9px; min-height: 34px; margin-top: 5px; padding: 7px 11px; color: #5e6c84; border-radius: 6px; font-size: 11px; }
+.collapse-button:hover { color: #0c66e4; background: #f4f5f7; }
+.collapse-button svg { width: 14px; }
+
 /* Shared application components */
 .page-content { max-width: 1340px; margin: 0 auto; padding: 28px 30px 60px; }
 .primary-button, .secondary-button { display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
@@ -159,4 +230,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .topbar-icon-button { width: 27px; }
   .notification-popover { position: fixed; top: 58px; right: 8px; }
   .auth-card { padding: 28px 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-transition,
+  .route-transition > * > *,
+  .route-transition .dashboard-hero,
+  .route-transition .dashboard-error,
+  .route-transition .stats-grid,
+  .route-transition .recent-tickets-panel,
+  .route-transition .current-projects-panel,
+  .route-transition .status-panel,
+  .route-transition .activity-panel,
+  .route-transition .deadline-panel { animation: none; }
 }

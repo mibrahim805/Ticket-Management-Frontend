@@ -148,6 +148,114 @@
 .deadline-item time { color: #d57e12; font-size: 10px; font-weight: 700; white-space: nowrap; }
 .deadline-item time.urgent { color: #ed4560; }
 
+/* Match the Projects directory visual system */
+.dashboard-page { padding: 28px 32px 40px; color: #292a2e; background: #f4f5f7; font-family: var(--font-body); }
+.dashboard-hero { height: auto; margin: 0 0 20px; padding: 0; overflow: visible; background: transparent; }
+.dashboard-greeting time { margin-bottom: 7px; color: #6f737d; font-size: 13px; }
+.dashboard-greeting h1 { margin-bottom: 6px; color: #292a2e; font: 700 28px/1.2 var(--font-body); letter-spacing: -.35px; }
+.dashboard-greeting h1 span { font-size: 22px; }
+.dashboard-greeting p { color: #6f737d; font-size: 14px; }
+.dashboard-hero blockquote, .hero-landscape { display: none; }
+.dashboard-error { margin: 0 0 16px; padding: 10px 13px; color: #ae2a19; border-color: #ffbdad; border-radius: 6px; background: #ffebe6; font-size: 12px; }
+.dashboard-layout { grid-template-columns: minmax(0, 1fr) 310px; gap: 16px; margin-top: 0; }
+.dashboard-side { gap: 16px; }
+.dashboard-panel { border-color: #d9dadd; border-radius: 6px; box-shadow: none; }
+
+.stats-grid { gap: 12px; margin-bottom: 16px; }
+.stat-card { grid-template-columns: 40px 1fr; height: 112px; padding: 16px; border-color: #d9dadd; border-radius: 6px; box-shadow: none; }
+.stat-card:hover { border-color: #4c9aff; background: #f7faff; box-shadow: none; transform: none; }
+.stat-icon { width: 38px; height: 38px; border-radius: 6px; }
+.stat-icon svg { width: 18px; }
+.stat-blue .stat-icon { color: #0c66e4; background: #deebff; }
+.stat-amber .stat-icon { color: #974f0c; background: #fffae6; }
+.stat-green .stat-icon { color: #006644; background: #e3fcef; }
+.stat-pink .stat-icon { color: #bf2600; background: #ffebe6; }
+.stat-copy { padding-left: 10px; }
+.stat-copy small { margin: 0 0 5px; color: #5e6c84; font-size: 13px; font-weight: 500; }
+.stat-copy strong { color: #292a2e; font: 700 26px/1 var(--font-body); }
+.stat-copy em { margin-top: 8px; color: #006644; font-size: 11px; font-weight: 600; }
+.stat-sparkline { right: 12px; bottom: 13px; width: 68px; height: 30px; }
+
+.panel-heading { min-height: 64px; padding: 14px 16px 11px; }
+.panel-heading h2, .side-heading h2 { color: #292a2e; font: 700 16px/1.25 var(--font-body); letter-spacing: 0; }
+.panel-heading p { margin-top: 5px; color: #6f737d; font-size: 12px; }
+.panel-heading > a, .panel-actions > a, .side-heading > a { color: #0c66e4; font-size: 12px; font-weight: 600; }
+.panel-heading a svg, .panel-actions a svg, .side-heading a svg { width: 12px; }
+.panel-actions { gap: 14px; }
+.panel-actions select, .side-heading select { height: 34px; padding: 0 29px 0 11px; color: #4e5158; border-color: #d9dadd; border-radius: 6px; font-size: 13px; }
+.panel-actions select:focus, .side-heading select:focus { border-color: #0c66e4; box-shadow: 0 0 0 1px #0c66e4; }
+
+.recent-tickets-panel { min-height: 328px; margin-bottom: 16px; }
+.ticket-table-head, .ticket-table-row { grid-template-columns: 78px minmax(200px, 1.7fr) minmax(130px, 1fr) 80px 88px 126px 112px 72px 24px; column-gap: 10px; min-width: 1040px; }
+.ticket-table-head { height: 44px; padding: 0 16px; color: #565960; border-color: #d9dadd; background: #fff; font-size: 12px; font-weight: 600; }
+.ticket-table-row { height: 50px; padding: 0 16px; color: #4e5158; border-color: #e1e2e4; font-size: 13px; }
+.ticket-table-row:hover { background: #f7faff; }
+.ticket-table-row > strong { color: #3e4045; font-size: 13px; font-weight: 500; }
+.ticket-id { color: #0c66e4; font-size: 12px; }
+.ticket-mark { width: 18px; height: 18px; border-radius: 3px; background: #0c66e4; font-size: 10px; }
+.ticket-mark.mark-1 { background: #6554c0; }
+.ticket-mark.mark-2 { background: #00875a; }
+.mini-project-mark { width: 24px; height: 24px; border-radius: 4px; font-size: 8px; }
+.type-cell svg { width: 14px; color: #0c66e4; }
+.priority-badge, .status-badge { padding: 3px 7px; border: 1px solid transparent; border-radius: 3px; font-size: 11px; font-weight: 600; }
+.priority-badge.high, .priority-badge.urgent { color: #bf2600; border-color: #ffbdad; background: #ffebe6; }
+.priority-badge.medium { color: #974f0c; border-color: #ffe380; background: #fffae6; }
+.priority-badge.low { color: #006644; border-color: #abf5d1; background: #e3fcef; }
+.status-badge.todo { color: #3e4045; border-color: #c9cbd0; background: #f1f2f3; }
+.status-badge.progress { color: #0052cc; border-color: #b3d4ff; background: #deebff; }
+.status-badge.development { color: #403294; border-color: #c0b6f2; background: #eae6ff; }
+.status-badge.done { color: #006644; border-color: #abf5d1; background: #e3fcef; }
+.assignee-cell > i { width: 24px; height: 24px; color: #fff; background: #20385f; font-size: 9px; }
+.ticket-table-row time, .row-menu { color: #5e6c84; font-size: 12px; }
+.dashboard-empty { color: #6f737d; font-size: 13px; }
+
+.current-projects-panel { min-height: 218px; }
+.current-projects-panel > .panel-heading { min-height: 62px; padding-top: 14px; }
+.project-card-grid { gap: 12px; padding: 0 14px 14px; }
+.project-summary-card { padding: 14px; border-color: #d9dadd; border-radius: 6px; }
+.project-summary-card:hover { border-color: #4c9aff; background: #f7faff; box-shadow: none; }
+.project-summary-card header { grid-template-columns: 34px 1fr 14px; gap: 10px; }
+.project-logo { width: 34px; height: 34px; border-radius: 5px; font-size: 10px; }
+.project-summary-card header strong { color: #3e4045; font-size: 14px; font-weight: 600; }
+.project-summary-card header small { color: #6f737d; font-size: 11px; }
+.project-summary-card header b { color: #5e6c84; font-size: 14px; }
+.project-progress { height: 6px; margin-top: 13px; background: #ebecf0; }
+.project-progress span { background: #0c66e4; }
+.project-meta { margin-top: 8px; color: #5e6c84; font-size: 11px; }
+.project-summary-card footer { margin-top: 11px; padding-top: 10px; color: #5e6c84; border-color: #e1e2e4; font-size: 10px; }
+.project-summary-card footer i { color: #0c66e4; }
+
+.dashboard-side .dashboard-panel { padding: 16px; }
+.side-heading { min-height: 28px; }
+.side-heading select { height: 32px; }
+.status-panel { min-height: 190px; }
+.status-content { grid-template-columns: 116px 1fr; gap: 12px; margin-top: 12px; }
+.status-donut { width: 108px; height: 108px; }
+.status-donut::before { width: 78px; height: 78px; }
+.status-donut strong { color: #292a2e; font: 700 20px var(--font-body); }
+.status-donut small { color: #6f737d; font-size: 10px; }
+.status-legend { gap: 10px; }
+.status-legend > div { color: #4e5158; font-size: 12px; }
+.status-legend strong { color: #292a2e; font-size: 12px; }
+.status-legend p { color: #6f737d; font-size: 11px; }
+.activity-panel { min-height: 278px; }
+.activity-list { margin-top: 7px; }
+.activity-item { grid-template-columns: 32px minmax(0, 1fr) auto; min-height: 48px; border-color: #e1e2e4; }
+.activity-symbol { width: 30px; height: 30px; color: #0c66e4; border-radius: 5px; background: #deebff; }
+.activity-copy { color: #4e5158; font-size: 11px; }
+.activity-copy strong { color: #292a2e; }
+.activity-copy b { color: #0c66e4; }
+.activity-item small { margin-top: 4px; color: #6f737d; font-size: 10px; }
+.activity-item time { color: #6f737d; font-size: 10px; }
+.deadline-panel { min-height: 176px; }
+.deadline-list { margin-top: 8px; }
+.deadline-item { grid-template-columns: 24px 48px minmax(0, 1fr) auto; min-height: 39px; color: #4e5158; border-color: #e1e2e4; font-size: 11px; }
+.deadline-item > span { width: 23px; height: 23px; color: #bf2600; border-radius: 4px; background: #ffebe6; }
+.deadline-item svg { width: 12px; }
+.deadline-item strong { color: #0c66e4; font-size: 11px; }
+.deadline-item time { color: #974f0c; font-size: 11px; }
+.deadline-item time.urgent { color: #bf2600; }
+
 @media (max-width: 1180px) {
   .dashboard-layout { grid-template-columns: 1fr; }
   .dashboard-side { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -166,8 +274,8 @@
 }
 
 @media (max-width: 760px) {
-  .dashboard-page { padding: 0 10px 16px; }
-  .dashboard-hero { height: 118px; margin: 0 -10px; padding: 22px 18px; }
+  .dashboard-page { padding: 20px 14px 32px; }
+  .dashboard-hero { height: auto; margin: 0 0 16px; padding: 0; }
   .dashboard-greeting h1 { font-size: 20px; }
   .hero-landscape { width: 310px; opacity: .45; }
   .dashboard-layout { margin-top: 0; }

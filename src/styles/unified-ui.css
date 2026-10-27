@@ -1,0 +1,247 @@
+/* Final application-wide visual layer. Loaded after page styles. */
+:where(
+  .analytics-page,
+  .profile-page,
+  .user-management-page,
+  .status-management-page,
+  .ticket-detail-page,
+  .ticket-create-page,
+  .epic-page,
+  .project-page,
+  .project-settings-page,
+  .workflow-page,
+  .sprints-overview-page
+) {
+  min-height: 100%;
+  max-width: none;
+  padding: 28px 32px 48px;
+  color: #292a2e;
+  background: #f4f5f7;
+  font-family: var(--font-body);
+}
+
+.route-transition .panel,
+.route-transition .analytics-card,
+.route-transition .analytics-panel,
+.route-transition .form-panel,
+.route-transition .workflow-column,
+.route-transition .sprint-project-card {
+  border-color: #d9dadd;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: none;
+}
+
+.route-transition .primary-button {
+  min-height: 36px;
+  padding: 7px 13px;
+  border: 1px solid #0c66e4;
+  border-radius: 6px;
+  background: #0c66e4;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.route-transition .primary-button:hover:not(:disabled) { border-color: #0052cc; background: #0052cc; }
+.route-transition .secondary-button {
+  min-height: 36px;
+  padding: 7px 12px;
+  color: #4e5158;
+  border-color: #d9dadd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 500;
+}
+.route-transition .secondary-button:hover:not(:disabled) { color: #0c66e4; border-color: #4c9aff; background: #f7faff; }
+.route-transition .text-button { color: #0c66e4; }
+.route-transition .danger-text { color: #ae2a19; }
+.route-transition .danger-button { color: #ae2a19; border-color: #ffbdad; border-radius: 5px; background: #ffebe6; }
+.route-transition .eyebrow { color: #5e6c84; font-size: 11px; font-weight: 700; letter-spacing: .55px; text-transform: uppercase; }
+.route-transition .subtle { color: #6f737d; font-size: 14px; }
+
+/* Reports */
+.analytics-heading { align-items: center; margin-bottom: 20px; }
+.analytics-heading h1 { margin-bottom: 6px; color: #292a2e; font: 700 28px/1.2 var(--font-body); letter-spacing: -.35px; }
+.analytics-grid { gap: 12px; margin-bottom: 16px; }
+.analytics-card { position: relative; min-height: 112px; padding: 18px 16px; overflow: hidden; transition: border-color .15s, background .15s; }
+.analytics-card::before { position: absolute; top: 0; right: 0; left: 0; height: 3px; background: #0c66e4; content: ''; }
+.analytics-card:nth-child(2)::before { background: #6554c0; }
+.analytics-card:nth-child(3)::before { background: #de350b; }
+.analytics-card:nth-child(4)::before { background: #00875a; }
+.analytics-card:hover { border-color: #4c9aff; background: #f7faff; }
+.analytics-card p { color: #5e6c84; font-size: 12px; }
+.analytics-card strong { color: #292a2e; font: 700 26px/1 var(--font-body); }
+.analytics-card small { color: #6f737d; }
+.analytics-layout, .analytics-bottom { gap: 16px; }
+.analytics-panel { padding: 20px; }
+.analytics-panel h2 { color: #292a2e; font: 700 16px var(--font-body); }
+.analytics-panel > p { color: #6f737d; }
+.throughput { border-color: #d9dadd; }
+.throughput-bar, .breakdown-track span { background: #0c66e4; }
+.breakdown-track, .team-track, .sprint-progress { background: #ebecf0; }
+.ranking-row { border-color: #e1e2e4; }
+.ranking-row strong, .velocity-summary strong, .active-sprint-report > strong { color: #292a2e; }
+.report-panel-heading select { min-height: 36px; color: #3e4045; border-color: #d9dadd; border-radius: 6px; font-size: 12px; }
+.report-panel-heading select:focus { border-color: #0c66e4; outline: 1px solid #0c66e4; }
+.report-ticket-list, .report-table-wrap { border-color: #d9dadd; border-radius: 6px; }
+.report-ticket-row, .report-table th, .report-table td { border-color: #e1e2e4; }
+.report-ticket-row:hover, .report-table tbody tr:hover { background: #f7faff; }
+.report-table th { height: 42px; color: #565960; background: #fff; font-size: 11px; letter-spacing: 0; text-transform: none; }
+.report-table td { color: #4e5158; font-size: 12px; }
+.velocity-summary > div { border-color: #d9dadd; border-radius: 5px; background: #fff; }
+
+/* Profile, users, and workflow-status administration */
+.profile-heading, .user-management-heading, .status-management-heading { margin-bottom: 20px; }
+.profile-heading h1, .user-management-heading h1, .status-management-heading h1 { margin-bottom: 6px; color: #292a2e; font: 700 28px/1.2 var(--font-body); letter-spacing: -.35px; }
+.profile-grid, .user-management-layout, .status-management-layout { gap: 16px; }
+.profile-grid > .panel, .create-user-panel, .users-list-panel, .status-form-panel, .status-list-panel { position: relative; padding: 20px; overflow: hidden; }
+.profile-grid > .panel::before, .create-user-panel::before, .status-form-panel::before { position: absolute; top: 0; right: 0; left: 0; height: 3px; background: #0c66e4; content: ''; }
+.profile-grid > .panel:nth-child(2)::before { background: #6554c0; }
+.profile-grid h2, .user-panel-heading h2, .status-form-panel h2, .status-list-heading h2 { color: #292a2e; font: 700 16px var(--font-body); }
+.section-copy, .user-panel-heading p, .status-form-panel > p, .status-list-heading p { color: #6f737d; font-size: 11px; }
+.user-count { padding: 5px 9px; color: #0052cc; border-color: #b3d4ff; border-radius: 12px; background: #deebff; }
+.user-form label, .status-form label { color: #4e5158; font-size: 12px; font-weight: 600; }
+.user-form input, .user-form select, .role-select, .status-form input, .status-form select { min-height: 40px; color: #292a2e; border-color: #d9dadd; border-radius: 6px; font-size: 13px; }
+.user-form input:focus, .user-form select:focus, .role-select:focus, .status-form input:focus, .status-form select:focus { border-color: #0c66e4; outline: 0; box-shadow: 0 0 0 1px #0c66e4; }
+.users-table th { height: 42px; padding: 0 12px; color: #565960; border-color: #d9dadd; background: #fff; font-size: 11px; letter-spacing: 0; text-transform: none; }
+.users-table td { height: 54px; padding: 8px 12px; color: #4e5158; border-color: #e1e2e4; font-size: 12px; }
+.users-table tbody tr:hover, .status-row:hover { background: #f7faff; }
+.role-badge, .user-management-page .status-badge { padding: 3px 7px; border: 1px solid transparent; border-radius: 3px; font-size: 11px; }
+.super-admin-role { color: #403294; border-color: #c0b6f2; background: #eae6ff; }
+.active-status { color: #006644; border-color: #abf5d1; background: #e3fcef; }
+.inactive-status { color: #974f0c; border-color: #ffe380; background: #fffae6; }
+.table-action { color: #0c66e4; }
+.error-message { color: #ae2a19; border-color: #ffbdad; background: #ffebe6; }
+.success-message { color: #006644; border-color: #abf5d1; background: #e3fcef; }
+.status-list { overflow: hidden; border: 1px solid #d9dadd; border-radius: 6px; }
+.status-row { min-height: 58px; padding: 8px 12px; border-color: #e1e2e4; }
+.workflow-status-order { color: #0052cc; border: 1px solid #b3d4ff; border-radius: 4px; background: #deebff; }
+.status-row strong { color: #292a2e; font-size: 12px; }
+.status-row small { color: #6f737d; font-size: 10px; }
+.status-row-actions button { color: #0c66e4; }
+.status-row-actions .danger-text { color: #ae2a19; }
+
+/* Ticket create and ticket detail */
+.ticket-create-page { max-width: none; }
+.ticket-breadcrumb { margin-bottom: 20px; color: #6f737d; font-size: 12px; }
+.ticket-breadcrumb a { color: #0c66e4; }
+.ticket-create-heading, .ticket-detail-heading { margin-bottom: 20px; }
+.ticket-create-heading h1, .ticket-detail-heading h1 { color: #292a2e; font: 700 27px/1.25 var(--font-body); letter-spacing: -.35px; }
+.ticket-form { gap: 16px; }
+.form-panel { position: relative; padding: 20px; overflow: hidden; }
+.form-panel::before { position: absolute; top: 0; right: 0; left: 0; height: 3px; background: #0c66e4; content: ''; }
+.form-panel:nth-of-type(2)::before { background: #6554c0; }
+.form-panel:nth-of-type(3)::before { background: #00875a; }
+.form-section-heading { border-color: #d9dadd; }
+.form-section-heading h2 { color: #292a2e; font: 700 15px var(--font-body); }
+.form-section-heading p { color: #6f737d; font-size: 11px; }
+.form-panel > label, .form-grid label { color: #4e5158; font-size: 12px; }
+.form-panel input, .form-panel textarea, .form-panel select { min-height: 40px; color: #292a2e; border-color: #d9dadd; border-radius: 6px; font-size: 13px; }
+.form-panel input:focus, .form-panel textarea:focus, .form-panel select:focus { border-color: #0c66e4; outline: 0; box-shadow: 0 0 0 1px #0c66e4; }
+.form-panel small { color: #6f737d; font-size: 10px; }
+.ticket-detail-page { max-width: none; }
+.ticket-detail-grid { gap: 16px; }
+.ticket-detail-panel { margin-bottom: 16px; padding: 18px; border-color: #d9dadd; }
+.detail-panel-heading { padding-bottom: 12px; border-bottom: 1px solid #e1e2e4; }
+.detail-panel-heading h2 { color: #292a2e; font: 700 15px var(--font-body); }
+.detail-panel-heading p, .ticket-fact-grid small, .detail-transition-row small, .comment-row small { color: #6f737d; }
+.ticket-description { color: #4e5158; font-size: 13px; }
+.ticket-fact-grid { border-color: #d9dadd; }
+.ticket-fact-grid strong { color: #292a2e; font-size: 12px; }
+.detail-transition-list, .comment-list, .ticket-link-list, .attachment-list, .ticket-activity-list { border-color: #d9dadd; border-radius: 6px; }
+.detail-transition-row, .comment-row, .ticket-link-list > div, .attachment-row, .ticket-activity-row { border-color: #e1e2e4; }
+.detail-transition-row:hover, .comment-row:hover, .ticket-link-list > div:hover, .attachment-row:hover, .ticket-activity-row:hover { background: #f7faff; }
+.comment-row.comment-reply { border-left-color: #4c9aff; }
+.comment-form textarea, .comment-edit-form textarea, .reply-form textarea, .comment-form-actions select, .ticket-link-form input, .ticket-link-form select { color: #292a2e; border-color: #d9dadd; border-radius: 6px; font-size: 12px; }
+.comment-form textarea:focus, .comment-edit-form textarea:focus, .reply-form textarea:focus, .ticket-link-form input:focus, .ticket-link-form select:focus { border-color: #0c66e4; outline: 1px solid #0c66e4; }
+.ticket-detail-page .settings-badge { color: #0052cc; border: 1px solid #b3d4ff; background: #deebff; }
+.ticket-detail-page .tag-list span { color: #4e5158; border: 1px solid #d9dadd; background: #f1f2f3; }
+
+/* Project overview and settings */
+.project-page, .project-settings-page { max-width: none; }
+.project-reference-hero, .settings-header { margin-bottom: 20px; }
+.project-reference-hero h1, .settings-header h1 { color: #292a2e; font: 700 27px/1.2 var(--font-body); }
+.project-hero-icon { border-radius: 6px; background: #deebff; color: #0c66e4; }
+.project-active-badge { color: #006644; border: 1px solid #abf5d1; background: #e3fcef; }
+.project-detail-tabs { border-color: #d9dadd; }
+.project-detail-tabs a { color: #4e5158; font-size: 13px; }
+.project-page .panel, .settings-panel { border-color: #d9dadd; }
+.reference-panel-heading h2, .project-page .panel > h2, .settings-panel h2 { color: #292a2e; font: 700 15px var(--font-body); }
+.reference-panel-heading p, .settings-header p, .settings-muted { color: #6f737d; }
+.progress-track, .goal-progress > div { background: #ebecf0; }
+.progress-track span, .goal-progress i { background: #0c66e4; }
+.sprint-stats div, .member-assign-box, .workflow-form { border-color: #d9dadd; border-radius: 5px; background: #f7f8fa; }
+.sprint-stats small { color: #6f737d; }
+.member-list, .settings-list, .project-activity-list { border-color: #d9dadd; border-radius: 6px; }
+.member-row, .settings-list-row, .project-activity-row { border-color: #e1e2e4; }
+.member-row:hover, .settings-list-row:hover, .project-activity-row:hover { background: #f7faff; }
+.status-assignment-row { border-color: #d9dadd; }
+.status-assignment-row:hover, .status-assignment-row:has(input:checked) { border-color: #4c9aff; background: #f7faff; }
+.settings-form label, .settings-label, .workflow-form label { color: #4e5158; font-size: 11px; }
+.settings-form input, .settings-label select, .workflow-form input, .workflow-form select, .inline-settings-form input, .settings-list-row input, .member-assign-box select, .member-row select, .status-migrations select { color: #292a2e; border-color: #d9dadd; border-radius: 5px; font-size: 11px; }
+.settings-form input:focus, .settings-label select:focus, .workflow-form input:focus, .workflow-form select:focus, .inline-settings-form input:focus { border-color: #0c66e4; outline: 1px solid #0c66e4; }
+.settings-badge, .role-pill, .member-count, .status-count { color: #0052cc; border: 1px solid #b3d4ff; background: #deebff; }
+
+/* Workflow board */
+.workflow-page { max-width: none; }
+.workflow-heading { align-items: center; margin-bottom: 20px; }
+.workflow-heading h1 { color: #292a2e; font: 700 28px/1.2 var(--font-body); letter-spacing: -.35px; }
+.workflow-page .project-tabs { margin: -28px -32px 24px; padding: 0 32px; border-color: #d9dadd; font-size: 13px; }
+.workflow-help { color: #0052cc; border: 1px solid #b3d4ff; border-radius: 6px; background: #deebff; }
+.board-search, .board-filter { min-height: 36px; color: #4e5158; border-color: #d9dadd; border-radius: 6px; }
+.board-search:focus-within { border-color: #0c66e4; box-shadow: 0 0 0 1px #0c66e4; }
+.workflow-board { gap: 14px; }
+.workflow-column { border-color: #d9dadd; background: #f1f2f3; }
+.workflow-column-header { border-color: #d9dadd; background: #fff; }
+.workflow-column-header h2 { color: #292a2e; font: 600 13px var(--font-body); }
+.workflow-column-header span { color: #4e5158; border-color: #d9dadd; }
+.board-ticket { border-color: #d9dadd; border-radius: 6px; box-shadow: none; }
+.board-ticket:hover { border-color: #4c9aff; background: #f7faff; box-shadow: none; }
+.board-ticket h3 { color: #292a2e; }
+.board-priority, .board-assignee { border: 1px solid transparent; border-radius: 3px; }
+.board-priority.low { color: #006644; border-color: #abf5d1; background: #e3fcef; }
+.board-priority.medium { color: #974f0c; border-color: #ffe380; background: #fffae6; }
+.board-priority.high, .board-priority.urgent { color: #bf2600; border-color: #ffbdad; background: #ffebe6; }
+.board-assignee { color: #4e5158; border-color: #d9dadd; background: #f1f2f3; }
+.board-edit-modal { border: 1px solid #d9dadd; border-radius: 6px; }
+.board-edit-modal input, .board-edit-modal textarea, .board-edit-modal select { border-color: #d9dadd; border-radius: 6px; }
+.board-edit-modal input:focus, .board-edit-modal textarea:focus, .board-edit-modal select:focus { border-color: #0c66e4; outline: 1px solid #0c66e4; }
+
+/* Sprint selection */
+.sprints-overview-page { max-width: none; }
+.sprints-overview-page > header { align-items: center; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid #d9dadd; }
+.sprints-overview-page h1 { color: #292a2e; font: 700 28px/1.2 var(--font-body); }
+.sprint-project-grid { gap: 12px; }
+.sprint-project-card { position: relative; min-height: 94px; overflow: hidden; border-color: #d9dadd; transition: border-color .15s, background .15s; }
+.sprint-project-card::before { position: absolute; top: 0; bottom: 0; left: 0; width: 3px; background: #0c66e4; content: ''; }
+.sprint-project-card:hover { border-color: #4c9aff; background: #f7faff; transform: none; }
+.sprint-project-icon { border-radius: 5px; background: #0c66e4; }
+.sprint-project-card strong { color: #292a2e; font-size: 13px; }
+.sprint-project-card small { color: #6f737d; font-size: 10px; }
+.sprints-loading { color: #6f737d; border-color: #b7bdc9; border-radius: 6px; box-shadow: none; }
+
+/* Authentication and utility screens */
+.auth-page { background: #f4f5f7; }
+.auth-card { border-color: #d9dadd; border-radius: 6px; box-shadow: 0 8px 24px #091e420d; }
+.auth-brand span { color: #292a2e; }
+.auth-heading h1 { color: #292a2e; }
+.auth-footer a, .auth-links a { color: #0c66e4; }
+.simple-page { color: #292a2e; background: #f4f5f7; }
+
+@media (max-width: 950px) {
+  :where(.analytics-page, .profile-page, .user-management-page, .status-management-page, .ticket-detail-page, .ticket-create-page, .epic-page, .project-page, .project-settings-page, .workflow-page, .sprints-overview-page) { padding: 26px 24px 44px; }
+  .workflow-page .project-tabs { margin-right: -24px; margin-left: -24px; padding: 0 24px; }
+}
+
+@media (max-width: 620px) {
+  :where(.analytics-page, .profile-page, .user-management-page, .status-management-page, .ticket-detail-page, .ticket-create-page, .epic-page, .project-page, .project-settings-page, .workflow-page, .sprints-overview-page) { padding: 22px 16px 40px; }
+  .profile-heading h1, .user-management-heading h1, .status-management-heading h1, .analytics-heading h1, .workflow-heading h1, .sprints-overview-page h1 { font-size: 25px; }
+  .workflow-page .project-tabs { margin-right: -16px; margin-left: -16px; padding: 0 16px; overflow-x: auto; }
+  .sprints-overview-page > header { align-items: flex-start; flex-direction: column; }
+  .sprints-overview-page > header .primary-button { width: 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-transition *, .route-transition *::before, .route-transition *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
