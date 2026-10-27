@@ -35,8 +35,14 @@ export type Ticket = {
   labels: string[]
   components: string[]
   assigned_agent?: string | null
+  assigned_to?: string | null
+  created_by?: string | null
   watchers?: string[]
   due_date?: string | null
+  created_at?: string
+  created_date?: string
+  updated_at?: string
+  last_updated?: string
   is_overdue?: boolean
 }
 

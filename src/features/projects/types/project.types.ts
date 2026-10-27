@@ -6,6 +6,7 @@ export type Project = {
   total_tickets: number
   assigned_statuses: string[]
   default_status_id: string | null
+  created_at?: string
 }
 
 export type CreateProjectRequest = { name: string; code: string }
