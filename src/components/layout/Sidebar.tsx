@@ -33,12 +33,12 @@ export function Sidebar({ onHide }: { onHide?: () => void }) {
   const accountItems: NavigationItem[] = [
     ...(user?.role === 'super_admin' ? [{ label: 'Users', path: '/users', icon: 'users' as IconName }] : []),
     { label: 'Profile', path: '/profile', icon: 'profile' },
-    { label: 'Settings', path: user?.role === 'super_admin' ? '/statuses' : '/profile', icon: 'settings' },
+    ...(user?.role === 'super_admin' ? [{ label: 'Settings', path: '/statuses', icon: 'settings' as IconName }] : []),
   ]
 
   return <aside className="sidebar" aria-label="Workspace navigation">
-    <nav className="main-nav" aria-label="Main navigation">
-      {[...workspaceItems, ...accountItems].map((item, index) => <NavLink
+    <nav className="main-nav workspace-nav" aria-label="Workspace navigation">
+      {workspaceItems.map((item) => <NavLink
         className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
         to={item.path}
         end={item.exact}
@@ -46,7 +46,18 @@ export function Sidebar({ onHide }: { onHide?: () => void }) {
       >
         <Icon name={item.icon} />
         <span>{item.label}</span>
-        {index === 0 && <span className="nav-active-dot" aria-hidden="true" />}
+      </NavLink>)}
+    </nav>
+
+    <nav className="main-nav account-nav" aria-label="Account and administration">
+      {accountItems.map((item) => <NavLink
+        className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+        to={item.path}
+        end={item.exact}
+        key={`${item.label}-${item.path}`}
+      >
+        <Icon name={item.icon} />
+        <span>{item.label}</span>
       </NavLink>)}
     </nav>
 

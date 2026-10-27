@@ -97,6 +97,42 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .collapse-button:hover { color: #5d3ee7; }
 .collapse-button svg { width: 13px; }
 
+/* Refined Jira-style sidebar */
+.sidebar { padding: 12px 10px 11px; border-right-color: #d9dadd; }
+.main-nav { gap: 2px; }
+.account-nav { margin-top: 9px; padding-top: 9px; border-top: 1px solid #e1e2e4; }
+.nav-item { height: 37px; gap: 12px; padding: 0 12px; color: #4e5158; border-radius: 6px; font-size: 13px; font-weight: 500; }
+.nav-item::before { position: absolute; top: 7px; bottom: 7px; left: 0; width: 3px; border-radius: 0 3px 3px 0; background: transparent; content: ''; }
+.nav-item > svg { width: 17px; height: 17px; color: #5e6c84; stroke-width: 1.7; }
+.nav-item:hover { color: #0c66e4; background: #f4f5f7; }
+.nav-item:hover > svg { color: #0c66e4; }
+.nav-item.active { color: #0c66e4; background: #e9f2ff; font-weight: 600; }
+.nav-item.active::before { background: #0c66e4; }
+.nav-item.active > svg { color: #0c66e4; }
+.favorites { margin-top: 10px; padding-top: 14px; border-top-color: #e1e2e4; }
+.sidebar-section-title { gap: 8px; padding: 0 10px 9px; color: #6f737d; font-size: 10px; letter-spacing: .7px; }
+.sidebar-section-title svg { width: 13px; color: #f2a900; fill: #f2a900; }
+.favorite-list { gap: 3px; }
+.favorite-item { grid-template-columns: 26px minmax(0, 1fr) 13px; gap: 9px; min-height: 38px; padding: 5px 9px; color: #4e5158; border-radius: 6px; font-size: 12px; font-weight: 500; }
+.favorite-item:hover, .favorite-item.active { color: #0c66e4; background: #f4f5f7; }
+.favorite-item > svg { width: 12px; color: #7a869a; opacity: .72; }
+.favorite-item:hover > svg, .favorite-item.active > svg { color: #0c66e4; opacity: 1; }
+.favorite-project-mark { width: 26px; height: 26px; border-radius: 5px; font-size: 8px; }
+.favorite-project-mark.blue { background: #0c66e4; }
+.favorite-project-mark.violet { background: #6554c0; }
+.favorite-project-mark.green { background: #00875a; }
+.favorite-empty { padding: 7px 10px; color: #7a869a; font-size: 11px; }
+.sidebar-footer { padding-top: 10px; border-top: 1px solid #e1e2e4; }
+.workspace-card { grid-template-columns: 34px 1fr 14px; gap: 10px; min-height: 62px; padding: 10px; border-color: #d9dadd; border-radius: 6px; box-shadow: none; }
+.workspace-card:hover { border-color: #4c9aff; background: #f7faff; }
+.workspace-avatar { width: 34px; height: 34px; color: #0c66e4; border-radius: 6px; background: #deebff; font-size: 12px; }
+.workspace-card strong { color: #292a2e; font-size: 12px; font-weight: 600; }
+.workspace-card small { margin-top: 4px; color: #6f737d; font-size: 10px; }
+.workspace-card > svg { width: 13px; color: #5e6c84; }
+.collapse-button { gap: 9px; min-height: 34px; margin-top: 5px; padding: 7px 11px; color: #5e6c84; border-radius: 6px; font-size: 11px; }
+.collapse-button:hover { color: #0c66e4; background: #f4f5f7; }
+.collapse-button svg { width: 14px; }
+
 /* Shared application components */
 .page-content { max-width: 1340px; margin: 0 auto; padding: 28px 30px 60px; }
 .primary-button, .secondary-button { display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
