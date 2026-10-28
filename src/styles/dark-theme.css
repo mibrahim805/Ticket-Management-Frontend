@@ -63,6 +63,7 @@
 [data-theme='dark'] .sidebar-account-trigger { color: #edf1f6; border-color: #344052; background: #18212c; }
 [data-theme='dark'] :is(.sidebar-account-trigger:hover, .sidebar-account-trigger[aria-expanded='true']) { border-color: #579dff; background: #1d2937; }
 [data-theme='dark'] .sidebar-account-avatar { color: #c9beff; background: #30285a; }
+[data-theme='dark'] .sidebar-account-copy strong { color: #edf1f6; }
 [data-theme='dark'] .sidebar-account-menu { border-color: #344052; background: #18212c; box-shadow: 0 14px 32px #0008; }
 [data-theme='dark'] :is(.sidebar-account-menu a, .sidebar-account-menu button) { color: #cbd3df; }
 [data-theme='dark'] :is(.sidebar-account-menu a:hover, .sidebar-account-menu button:hover) { color: #8fbdff; background: #202b39; }
