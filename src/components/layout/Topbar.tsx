@@ -6,6 +6,7 @@ import { useNotifications } from '../../features/notifications/hooks/useNotifica
 import { useCreateTicketDrawer } from '../../features/tickets/components/createTicketDrawerContext'
 import type { Notification } from '../../features/notifications/types/notification.types'
 import { Icon } from '../ui/Icon'
+import { ThemeToggle } from '../ui/ThemeToggle'
 
 const eventLabels: Record<string, string> = {
   ticket_created: 'A ticket was created', ticket_updated: 'A ticket was updated',
@@ -93,6 +94,7 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
 
     <div className="topbar-actions">
       <button className="create-ticket-button" type="button" onClick={() => openCreateTicket()}><Icon name="plus" /> <span>Create ticket</span></button>
+      <ThemeToggle />
       <div className="notification-menu" ref={notificationMenu}>
         <button className={`topbar-icon-button ${unreadCount ? 'has-unread' : ''}`} type="button" aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`} aria-expanded={notificationsOpen} onClick={() => { setNotificationsOpen((current) => !current); setProfileOpen(false) }}><Icon name="bell" />{unreadCount > 0 && <span className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</span>}</button>
         {notificationsOpen && <div className="notification-popover" role="dialog" aria-label="Notifications">

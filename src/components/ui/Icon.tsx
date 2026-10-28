@@ -5,7 +5,7 @@ export type IconName =
   | 'calendar' | 'check' | 'chevron-down' | 'collapse' | 'dashboard' | 'edit'
   | 'help' | 'layers' | 'menu' | 'plus' | 'pin' | 'profile' | 'projects'
   | 'reports' | 'search' | 'settings' | 'sprints' | 'star' | 'task'
-  | 'tickets' | 'users' | 'work'
+  | 'tickets' | 'users' | 'work' | 'moon' | 'sun'
 
 export function Icon({ name, ...props }: { name: IconName } & SVGProps<SVGSVGElement>) {
   const common = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
@@ -40,6 +40,8 @@ export function Icon({ name, ...props }: { name: IconName } & SVGProps<SVGSVGEle
     case 'bug': paths = <><path d="M8 9h8v7a4 4 0 0 1-8 0V9ZM9 5l2 2M15 5l-2 2M5 12h3M16 12h3M5 16h3M16 16h3" /></>; break
     case 'task': paths = <><rect x="4" y="3" width="16" height="18" rx="2" /><path d="m8 9 1.5 1.5L12 8M14 10h3M8 15h9" /></>; break
     case 'edit': paths = <><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" /></>; break
+    case 'moon': paths = <path d="M20.5 14.2A8 8 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z" />; break
+    case 'sun': paths = <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></>; break
   }
 
   return <svg viewBox="0 0 24 24" aria-hidden="true" {...common} {...props}>{paths}</svg>

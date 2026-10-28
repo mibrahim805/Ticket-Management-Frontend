@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { register, registerSuperAdmin } from '../features/auth/api/authApi'
+import { ThemeToggle } from '../components/ui/ThemeToggle'
 
 export function RegistrationPage({ superAdmin = false }: { superAdmin?: boolean }) {
   const navigate = useNavigate()
@@ -26,7 +27,7 @@ export function RegistrationPage({ superAdmin = false }: { superAdmin?: boolean 
     }
   }
 
-  return <main className="auth-page"><section className="auth-card">
+  return <main className="auth-page"><ThemeToggle className="auth-theme-toggle" /><section className="auth-card">
     <div className="brand auth-brand"><div className="brand-mark">T</div><span>Taskline</span></div>
     <div className="auth-heading"><p className="eyebrow">{superAdmin ? 'Workspace setup' : 'Create account'}</p><h1>{superAdmin ? 'Create the super admin' : 'Join your workspace'}</h1><p className="subtle">{superAdmin ? 'Use this once when initializing a new workspace.' : 'Create an account to start managing work.'}</p></div>
     <form className="login-form" onSubmit={submit}>

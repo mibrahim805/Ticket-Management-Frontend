@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { requestPasswordReset } from '../features/auth/api/authApi'
+import { ThemeToggle } from '../components/ui/ThemeToggle'
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -23,7 +24,7 @@ export function ForgotPasswordPage() {
     }
   }
 
-  return <main className="auth-page"><section className="auth-card">
+  return <main className="auth-page"><ThemeToggle className="auth-theme-toggle" /><section className="auth-card">
     <div className="brand auth-brand"><div className="brand-mark">T</div><span>Taskline</span></div>
     <div className="auth-heading"><p className="eyebrow">Account recovery</p><h1>Forgot your password?</h1><p className="subtle">Enter your email address to request a reset link.</p></div>
     <form className="login-form" onSubmit={submit}>
