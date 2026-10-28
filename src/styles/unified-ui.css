@@ -496,7 +496,7 @@ body,
 
 .creation-drawer,
 .project-creation-drawer {
-  width: 50vw;
+  width: min(680px, 44vw);
   max-width: 100%;
   height: 100dvh;
   overflow-y: auto;
@@ -504,7 +504,7 @@ body,
   border: 0;
   border-left: 1px solid #c9cbd0;
   border-radius: 0;
-  background: var(--surface);
+  background: var(--background);
   box-shadow: -18px 0 48px #091e4224;
 }
 
@@ -518,7 +518,7 @@ body,
 .ticket-create-drawer-content {
   min-height: 100%;
   padding: 26px 28px 32px;
-  background: var(--surface);
+  background: var(--background);
 }
 
 .ticket-create-drawer-content .ticket-create-heading {
@@ -552,7 +552,7 @@ body,
   margin: 0 -4px -6px;
   padding: 14px 4px 6px;
   border-top: 1px solid #d9dadd;
-  background: #fffffff2;
+  background: #f4f5f7f2;
   backdrop-filter: blur(8px);
 }
 .creation-drawer :is(.primary-button, .secondary-button) { min-height: 38px; padding: 8px 14px; font-size: 12px; }
@@ -560,7 +560,7 @@ body,
 .creation-drawer .primary-button:hover:not(:disabled) { border-color: #0052cc; background: #0052cc; }
 .creation-drawer .secondary-button:hover:not(:disabled) { color: #0c66e4; border-color: #4c9aff; background: #f7faff; }
 
-.project-creation-drawer { padding: 0; background: var(--surface); }
+.project-creation-drawer { padding: 0; background: var(--background); }
 .project-creation-drawer .modal-header { padding: 26px 28px 22px; border-bottom: 1px solid #d9dadd; }
 .project-creation-drawer .modal-header h2 { color: #292a2e; font: 700 25px/1.25 var(--font-body); letter-spacing: -.3px; }
 .project-creation-drawer .modal-close { display: grid; width: 34px; height: 34px; place-items: center; padding: 0; border: 1px solid #d9dadd; border-radius: 6px; background: #fff; }
@@ -574,7 +574,7 @@ body,
 
 @media (max-width: 900px) {
   .creation-drawer,
-  .project-creation-drawer { width: min(100%, 680px); }
+  .project-creation-drawer { width: min(100%, 600px); }
 }
 
 @media (max-width: 620px) {
