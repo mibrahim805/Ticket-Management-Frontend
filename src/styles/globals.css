@@ -61,7 +61,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .search-box input::placeholder { color: #7b8ba7; }
 .search-box kbd { padding: 2px 5px; color: #6e7e9a; border: 1px solid #dce3ed; border-radius: 4px; background: #fff; box-shadow: 0 1px 1px #1d2e4b12; font: 9px var(--font-body); white-space: nowrap; }
 .topbar-actions { display: flex; align-items: center; gap: 7px; height: 100%; padding: 0 20px 0 12px; }
-.create-ticket-button { display: inline-flex; align-items: center; gap: 7px; height: 33px; margin-right: 8px; padding: 0 14px; color: #fff; border-radius: 7px; background: #176af0; box-shadow: 0 4px 10px #176af030; font-size: 10px; font-weight: 700; }
+.create-ticket-button { display: inline-flex; align-items: center; gap: 7px; height: 33px; margin-right: 8px; padding: 0 14px; color: #fff; border: 0; border-radius: 7px; background: #176af0; box-shadow: 0 4px 10px #176af030; cursor: pointer; font-size: 10px; font-weight: 700; }
 .create-ticket-button:hover { background: #0e5ddd; }
 .create-ticket-button svg { width: 14px; }
 .topbar-icon-button { position: relative; display: grid; place-items: center; width: 31px; height: 31px; padding: 6px; color: #53617e; border: 0; border-radius: 7px; background: transparent; cursor: pointer; }

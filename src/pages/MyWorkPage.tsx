@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Icon } from '../components/ui/Icon'
 import { useAuth } from '../features/auth/hooks/useAuth'
 import { getTickets } from '../features/tickets/api/ticketApi'
+import { useCreateTicketDrawer } from '../features/tickets/components/createTicketDrawerContext'
 import type { Ticket, TicketFilters } from '../features/tickets/types/ticket.types'
 import './my-work.css'
 
@@ -40,6 +41,7 @@ type WorkTab = 'assigned' | 'created' | 'watching'
 
 export function MyWorkPage() {
   const { user } = useAuth()
+  const { openCreateTicket } = useCreateTicketDrawer()
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [tab, setTab] = useState<WorkTab>('assigned')
   const [loading, setLoading] = useState(true)
@@ -47,14 +49,19 @@ export function MyWorkPage() {
 
   useEffect(() => {
     let active = true
-    void loadAllTickets().then((response) => {
-      if (active) setTickets(response)
-    }).catch((reason: unknown) => {
-      if (active) setError(reason instanceof Error ? reason.message : 'Unable to load your work.')
-    }).finally(() => {
-      if (active) setLoading(false)
-    })
-    return () => { active = false }
+    function refreshWork() {
+      setLoading(true)
+      void loadAllTickets().then((response) => {
+        if (active) setTickets(response)
+      }).catch((reason: unknown) => {
+        if (active) setError(reason instanceof Error ? reason.message : 'Unable to load your work.')
+      }).finally(() => {
+        if (active) setLoading(false)
+      })
+    }
+    refreshWork()
+    window.addEventListener('ticket-created', refreshWork)
+    return () => { active = false; window.removeEventListener('ticket-created', refreshWork) }
   }, [])
 
   const work = useMemo(() => {
@@ -83,7 +90,7 @@ export function MyWorkPage() {
   return <div className="my-work-page">
     <header className="work-heading">
       <div><p className="work-eyebrow"><span><Icon name="work" /></span> Personal workspace</p><h1>My work</h1><p>Everything that needs your attention, organized in one place.</p></div>
-      <Link className="work-create-button" to="/tickets/new"><Icon name="plus" /> Create ticket</Link>
+      <button className="work-create-button" type="button" onClick={() => openCreateTicket()}><Icon name="plus" /> Create ticket</button>
     </header>
 
     {error && <div className="work-error" role="alert">{error}</div>}
@@ -124,7 +131,7 @@ export function MyWorkPage() {
         <section className="work-side-card action-card">
           <header><span><Icon name="activity" /></span><div><h2>Quick actions</h2><p>Jump straight back into work</p></div></header>
           <div className="quick-actions">
-            <Link to="/tickets/new"><span className="action-icon violet"><Icon name="plus" /></span><span><strong>Create a ticket</strong><small>Capture a new issue</small></span><Icon name="arrow-right" /></Link>
+            <button type="button" onClick={() => openCreateTicket()}><span className="action-icon violet"><Icon name="plus" /></span><span><strong>Create a ticket</strong><small>Capture a new issue</small></span><Icon name="arrow-right" /></button>
             <Link to="/tickets"><span className="action-icon blue"><Icon name="search" /></span><span><strong>Search tickets</strong><small>Find work across projects</small></span><Icon name="arrow-right" /></Link>
             <Link to="/projects"><span className="action-icon green"><Icon name="projects" /></span><span><strong>Open a project</strong><small>View boards and progress</small></span><Icon name="arrow-right" /></Link>
           </div>

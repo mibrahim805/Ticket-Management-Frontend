@@ -3,7 +3,7 @@ import type { FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useProjects } from '../../projects/hooks/useProjects'
 import { createTicket } from '../api/ticketApi'
-import type { CreateTicketRequest, TicketCategory, TicketIssueType, TicketPriority } from '../types/ticket.types'
+import type { CreatedTicket, CreateTicketRequest, TicketCategory, TicketIssueType, TicketPriority } from '../types/ticket.types'
 import './tickets.css'
 
 const initialForm: CreateTicketRequest = {
@@ -12,11 +12,18 @@ const initialForm: CreateTicketRequest = {
 
 function splitValues(value: string) { return value.split(',').map((item) => item.trim()).filter(Boolean) }
 
-export function CreateTicketPage() {
+type Props = {
+  presentation?: 'page' | 'drawer'
+  initialProjectId?: string
+  onClose?: () => void
+  onCreated?: (ticket: CreatedTicket) => void
+}
+
+export function CreateTicketPage({ presentation = 'page', initialProjectId, onClose, onCreated }: Props) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { projects, isLoading: projectsLoading, error: projectsError } = useProjects()
-  const [form, setForm] = useState<CreateTicketRequest>(() => ({ ...initialForm, project_id: searchParams.get('project') ?? '' }))
+  const [form, setForm] = useState<CreateTicketRequest>(() => ({ ...initialForm, project_id: initialProjectId ?? searchParams.get('project') ?? '' }))
   const [labelsText, setLabelsText] = useState('')
   const [componentsText, setComponentsText] = useState('')
   const [error, setError] = useState('')
@@ -35,15 +42,16 @@ export function CreateTicketPage() {
     setIsSubmitting(true)
     try {
       const ticket = await createTicket({ ...form, labels: splitValues(labelsText), components: splitValues(componentsText), epic_id: form.epic_id || undefined, parent_id: form.parent_id || undefined, story_points: form.story_points || undefined })
-      navigate('/dashboard', { replace: true, state: { createdTicket: ticket.ticket_code } })
+      if (presentation === 'drawer') onCreated?.(ticket)
+      else navigate('/dashboard', { replace: true, state: { createdTicket: ticket.ticket_code } })
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'Unable to create ticket.')
     } finally { setIsSubmitting(false) }
   }
 
-  return <div className="page-content ticket-create-page">
-    <div className="ticket-breadcrumb"><Link to="/dashboard">Dashboard</Link><span>/</span><span>Create ticket</span></div>
-    <section className="ticket-create-heading"><div><p className="eyebrow">Ticket management</p><h1>Create ticket</h1><p className="subtle">Capture the issue details and place it in the correct project workflow.</p></div></section>
+  return <div className={`page-content ticket-create-page ${presentation === 'drawer' ? 'ticket-create-drawer-content' : ''}`}>
+    {presentation === 'page' && <div className="ticket-breadcrumb"><Link to="/dashboard">Dashboard</Link><span>/</span><span>Create ticket</span></div>}
+    <section className="ticket-create-heading"><div><p className="eyebrow">Ticket management</p><h1 id={presentation === 'drawer' ? 'create-ticket-drawer-title' : undefined}>Create ticket</h1><p className="subtle">Capture the issue details and place it in the correct project workflow.</p></div>{presentation === 'drawer' && <button className="creation-drawer-close" type="button" onClick={onClose} aria-label="Close create ticket panel" autoFocus>×</button>}</section>
     <form className="ticket-form" onSubmit={handleSubmit}>
       <section className="form-panel"><div className="form-section-heading"><h2>Basic details</h2><p>Describe the work that needs to be done.</p></div>
         <div className="form-grid two-columns">
@@ -72,7 +80,7 @@ export function CreateTicketPage() {
       </section>}
 
       {error && <p className="form-error ticket-form-error">{error}</p>}
-      <div className="ticket-form-actions"><Link className="secondary-button" to="/dashboard">Cancel</Link><button className="primary-button" disabled={isSubmitting || projectsLoading}>{isSubmitting ? 'Creating ticket...' : 'Create ticket'}</button></div>
+      <div className="ticket-form-actions">{presentation === 'drawer' ? <button className="secondary-button" type="button" onClick={onClose}>Cancel</button> : <Link className="secondary-button" to="/dashboard">Cancel</Link>}<button className="primary-button" disabled={isSubmitting || projectsLoading}>{isSubmitting ? 'Creating ticket...' : 'Create ticket'}</button></div>
     </form>
   </div>
 }

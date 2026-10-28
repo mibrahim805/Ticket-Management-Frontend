@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../features/auth/hooks/useAuth'
 import { getNotification } from '../../features/notifications/api/notificationApi'
 import { useNotifications } from '../../features/notifications/hooks/useNotifications'
+import { useCreateTicketDrawer } from '../../features/tickets/components/createTicketDrawerContext'
 import type { Notification } from '../../features/notifications/types/notification.types'
 import { Icon } from '../ui/Icon'
 
@@ -29,6 +30,7 @@ function initials(name: string) {
 
 export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const navigate = useNavigate()
+  const { openCreateTicket } = useCreateTicketDrawer()
   const { user, logout } = useAuth()
   const searchInput = useRef<HTMLInputElement>(null)
   const notificationMenu = useRef<HTMLDivElement>(null)
@@ -90,7 +92,7 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
     </form>
 
     <div className="topbar-actions">
-      <Link className="create-ticket-button" to="/tickets/new"><Icon name="plus" /> <span>Create ticket</span></Link>
+      <button className="create-ticket-button" type="button" onClick={() => openCreateTicket()}><Icon name="plus" /> <span>Create ticket</span></button>
       <div className="notification-menu" ref={notificationMenu}>
         <button className={`topbar-icon-button ${unreadCount ? 'has-unread' : ''}`} type="button" aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`} aria-expanded={notificationsOpen} onClick={() => { setNotificationsOpen((current) => !current); setProfileOpen(false) }}><Icon name="bell" />{unreadCount > 0 && <span className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</span>}</button>
         {notificationsOpen && <div className="notification-popover" role="dialog" aria-label="Notifications">

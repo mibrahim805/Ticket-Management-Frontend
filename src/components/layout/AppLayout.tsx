@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { CreateTicketDrawerProvider } from '../../features/tickets/components/CreateTicketDrawer'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 
@@ -7,7 +8,7 @@ export function AppLayout() {
   const [isSidebarHidden, setIsSidebarHidden] = useState(false)
   const location = useLocation()
 
-  return <div className={`app-frame ${isSidebarHidden ? 'sidebar-is-hidden' : ''}`}>
+  return <CreateTicketDrawerProvider><div className={`app-frame ${isSidebarHidden ? 'sidebar-is-hidden' : ''}`}>
     <Topbar onToggleSidebar={() => setIsSidebarHidden((current) => !current)} />
     <div className="app-shell">
       {!isSidebarHidden && <Sidebar onHide={() => setIsSidebarHidden(true)} />}
@@ -17,5 +18,5 @@ export function AppLayout() {
         </div>
       </main>
     </div>
-  </div>
+  </div></CreateTicketDrawerProvider>
 }
