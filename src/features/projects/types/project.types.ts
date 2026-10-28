@@ -2,6 +2,10 @@ export type Project = {
   _id: string
   name: string
   code: string
+  /** Optional repository metadata returned by projects created with repo integration. */
+  repository_url?: string | null
+  repo_url?: string | null
+  repository?: string | null
   created_by: string
   total_tickets: number
   assigned_statuses: string[]
@@ -9,7 +13,7 @@ export type Project = {
   created_at?: string
 }
 
-export type CreateProjectRequest = { name: string; code: string }
+export type CreateProjectRequest = { name: string; code: string; repository_url?: string | null }
 
 export type ProjectMember = { user_id: string; name: string; email: string; role: 'lead' | 'member' | 'reporter'; suspended?: boolean }
 export type ProjectRole = ProjectMember['role']
