@@ -5,13 +5,14 @@ import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 
 export function AppLayout() {
-  const [isSidebarHidden, setIsSidebarHidden] = useState(false)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const location = useLocation()
+  const toggleSidebar = () => setIsSidebarCollapsed((current) => !current)
 
-  return <CreateTicketDrawerProvider><div className={`app-frame ${isSidebarHidden ? 'sidebar-is-hidden' : ''}`}>
-    <Topbar onToggleSidebar={() => setIsSidebarHidden((current) => !current)} />
+  return <CreateTicketDrawerProvider><div className={`app-frame ${isSidebarCollapsed ? 'sidebar-is-collapsed' : ''}`}>
+    <Topbar isSidebarCollapsed={isSidebarCollapsed} onToggleSidebar={toggleSidebar} />
     <div className="app-shell">
-      {!isSidebarHidden && <Sidebar onHide={() => setIsSidebarHidden(true)} />}
+      <Sidebar isCollapsed={isSidebarCollapsed} onToggle={toggleSidebar} />
       <main className="content">
         <div className="route-transition" key={location.pathname}>
           <Outlet />

@@ -18,7 +18,7 @@ const workspaceItems: NavigationItem[] = [
 
 const projectColors = ['blue', 'violet', 'green']
 
-export function Sidebar({ onHide }: { onHide?: () => void }) {
+export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boolean; onToggle?: () => void }) {
   const { user } = useAuth()
   const [favorites, setFavorites] = useState<Project[]>([])
 
@@ -36,13 +36,15 @@ export function Sidebar({ onHide }: { onHide?: () => void }) {
     ...(user?.role === 'super_admin' ? [{ label: 'Settings', path: '/statuses', icon: 'settings' as IconName }] : []),
   ]
 
-  return <aside className="sidebar" aria-label="Workspace navigation">
+  return <aside className={`sidebar ${isCollapsed ? 'sidebar-collapsed' : ''}`} aria-label="Workspace navigation">
     <nav className="main-nav workspace-nav" aria-label="Workspace navigation">
       {workspaceItems.map((item) => <NavLink
         className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
         to={item.path}
         end={item.exact}
         key={`${item.label}-${item.path}`}
+        title={isCollapsed ? item.label : undefined}
+        aria-label={isCollapsed ? item.label : undefined}
       >
         <Icon name={item.icon} />
         <span>{item.label}</span>
@@ -55,6 +57,8 @@ export function Sidebar({ onHide }: { onHide?: () => void }) {
         to={item.path}
         end={item.exact}
         key={`${item.label}-${item.path}`}
+        title={isCollapsed ? item.label : undefined}
+        aria-label={isCollapsed ? item.label : undefined}
       >
         <Icon name={item.icon} />
         <span>{item.label}</span>
@@ -64,7 +68,7 @@ export function Sidebar({ onHide }: { onHide?: () => void }) {
     <section className="favorites" aria-label="Favorite projects">
       <div className="sidebar-section-title"><Icon name="star" /><span>Favorites</span></div>
       <div className="favorite-list">
-        {favorites.map((project, index) => <NavLink to={`/projects/${project._id}`} className="favorite-item" key={project._id}>
+        {favorites.map((project, index) => <NavLink to={`/projects/${project._id}`} className="favorite-item" key={project._id} title={isCollapsed ? project.name : undefined} aria-label={isCollapsed ? project.name : undefined}>
           <span className={`favorite-project-mark ${projectColors[index]}`}>{project.code.slice(0, 2).toUpperCase()}</span>
           <span>{project.name}</span>
           <Icon name="pin" />
@@ -74,12 +78,12 @@ export function Sidebar({ onHide }: { onHide?: () => void }) {
     </section>
 
     <div className="sidebar-footer">
-      <NavLink className="workspace-card" to="/profile">
+      <NavLink className="workspace-card" to="/profile" title={isCollapsed ? 'My workspace' : undefined} aria-label={isCollapsed ? 'My workspace' : undefined}>
         <span className="workspace-avatar">T</span>
         <span><strong>Taskline</strong><small>My workspace</small></span>
         <Icon name="arrow-right" />
       </NavLink>
-      <button className="collapse-button" type="button" onClick={onHide}><Icon name="collapse" /> <span>Collapse</span></button>
+      <button className="collapse-button" type="button" onClick={onToggle} aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}><Icon name="collapse" /> <span>{isCollapsed ? 'Expand' : 'Collapse'}</span></button>
     </div>
   </aside>
 }

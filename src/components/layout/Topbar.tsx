@@ -29,7 +29,7 @@ function initials(name: string) {
   return name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
 }
 
-export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
+export function Topbar({ isSidebarCollapsed = false, onToggleSidebar }: { isSidebarCollapsed?: boolean; onToggleSidebar?: () => void }) {
   const navigate = useNavigate()
   const { openCreateTicket } = useCreateTicketDrawer()
   const { user, logout } = useAuth()
@@ -82,7 +82,7 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
 
   return <header className="topbar">
     <div className="topbar-brand-area">
-      <button className="mobile-menu-button" type="button" onClick={onToggleSidebar} aria-label="Toggle navigation"><Icon name="menu" /></button>
+      <button className="mobile-menu-button" type="button" onClick={onToggleSidebar} aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-expanded={!isSidebarCollapsed}><Icon name="menu" /></button>
       <Link className="topbar-brand" to="/dashboard"><span className="topbar-brand-mark">T</span><strong>Taskline</strong></Link>
     </div>
 
