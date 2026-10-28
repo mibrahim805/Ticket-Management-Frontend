@@ -4,6 +4,7 @@ import { AuthContext } from '../features/auth/hooks/useAuth'
 import { initialAuthState } from '../features/auth/store/authStore'
 import { storage } from '../services/storage'
 import type { LoginRequest } from '../features/auth/types/auth.types'
+import { ThemeProvider } from '../features/theme/ThemeProvider'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [auth, setAuth] = useState(initialAuthState)
@@ -34,5 +35,5 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
-  return <AuthProvider>{children}</AuthProvider>
+  return <ThemeProvider><AuthProvider>{children}</AuthProvider></ThemeProvider>
 }

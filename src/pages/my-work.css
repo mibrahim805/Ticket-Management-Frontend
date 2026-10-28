@@ -5,7 +5,7 @@
 .work-eyebrow svg { width: 13px; }
 .work-heading h1 { margin: 0 0 6px; color: #14203a; font: 800 28px/1.15 var(--font-heading); letter-spacing: -.55px; }
 .work-heading > div > p:last-child { margin: 0; color: #70819e; font-size: 13px; }
-.work-create-button { display: inline-flex; align-items: center; gap: 8px; height: 39px; padding: 0 16px; color: #fff; border-radius: 8px; background: #176af0; box-shadow: 0 7px 16px #176af027; font-size: 11px; font-weight: 700; }
+.work-create-button { display: inline-flex; align-items: center; gap: 8px; height: 39px; padding: 0 16px; color: #fff; border: 0; border-radius: 8px; background: #176af0; box-shadow: 0 7px 16px #176af027; cursor: pointer; font-size: 11px; font-weight: 700; }
 .work-create-button:hover { background: #0e5edb; box-shadow: 0 9px 20px #176af036; }
 .work-create-button svg { width: 15px; }
 .work-error { margin-bottom: 16px; padding: 11px 14px; color: #aa4055; border: 1px solid #ffd4dc; border-radius: 8px; background: #fff3f5; font-size: 11px; }
@@ -94,16 +94,16 @@
 .work-side-empty p { margin: 4px 0 0; color: #8a97aa; font-size: 9px; }
 .action-card > header > span { color: #6b4cdf; background: #eeeaff; }
 .quick-actions { display: grid; gap: 6px; padding-top: 9px; }
-.quick-actions > a { display: grid; grid-template-columns: 32px minmax(0, 1fr) 13px; align-items: center; gap: 9px; min-height: 48px; padding: 5px 7px; border-radius: 8px; transition: background .14s; }
-.quick-actions > a:hover { background: #f7f9fd; }
+.quick-actions > :is(a, button) { display: grid; width: 100%; grid-template-columns: 32px minmax(0, 1fr) 13px; align-items: center; gap: 9px; min-height: 48px; padding: 5px 7px; color: inherit; border: 0; border-radius: 8px; background: transparent; cursor: pointer; text-align: left; transition: background .14s; }
+.quick-actions > :is(a, button):hover { background: #f7f9fd; }
 .action-icon { display: grid; width: 31px; height: 31px; place-items: center; color: #6c4de0; border-radius: 8px; background: #eeeaff; }
 .action-icon.blue { color: #176af0; background: #e9f1ff; }
 .action-icon.green { color: #159568; background: #e5f6ed; }
 .action-icon svg { width: 14px; }
-.quick-actions > a > span:nth-child(2) strong, .quick-actions > a > span:nth-child(2) small { display: block; }
-.quick-actions > a > span:nth-child(2) strong { color: #3b4a63; font-size: 10px; }
-.quick-actions > a > span:nth-child(2) small { margin-top: 3px; color: #8b97a9; font-size: 8px; }
-.quick-actions > a > svg { width: 11px; color: #93a0b3; }
+.quick-actions > :is(a, button) > span:nth-child(2) strong, .quick-actions > :is(a, button) > span:nth-child(2) small { display: block; }
+.quick-actions > :is(a, button) > span:nth-child(2) strong { color: #3b4a63; font-size: 10px; }
+.quick-actions > :is(a, button) > span:nth-child(2) small { margin-top: 3px; color: #8b97a9; font-size: 8px; }
+.quick-actions > :is(a, button) > svg { width: 11px; color: #93a0b3; }
 
 /* Match the Projects and Dashboard visual system */
 .my-work-page { padding: 28px 32px 48px; color: #292a2e; background: #f4f5f7; font-family: var(--font-body); }
@@ -182,15 +182,15 @@
 .work-deadline > svg { color: #5e6c84; }
 .action-card > header > span { color: #403294; border-color: #c0b6f2; background: #eae6ff; }
 .quick-actions { gap: 0; padding-top: 7px; }
-.quick-actions > a { min-height: 54px; padding: 6px 7px; border-bottom: 1px solid #e1e2e4; border-radius: 0; }
-.quick-actions > a:last-child { border-bottom: 0; }
-.quick-actions > a:hover { background: #f7faff; }
+.quick-actions > :is(a, button) { min-height: 54px; padding: 6px 7px; border-bottom: 1px solid #e1e2e4; border-radius: 0; }
+.quick-actions > :is(a, button):last-child { border-bottom: 0; }
+.quick-actions > :is(a, button):hover { background: #f7faff; }
 .action-icon { color: #403294; border: 1px solid #c0b6f2; border-radius: 4px; background: #eae6ff; }
 .action-icon.blue { color: #0052cc; border-color: #b3d4ff; background: #deebff; }
 .action-icon.green { color: #006644; border-color: #abf5d1; background: #e3fcef; }
-.quick-actions > a > span:nth-child(2) strong { color: #3e4045; font-size: 11px; }
-.quick-actions > a > span:nth-child(2) small { color: #6f737d; font-size: 9px; }
-.quick-actions > a > svg { color: #5e6c84; }
+.quick-actions > :is(a, button) > span:nth-child(2) strong { color: #3e4045; font-size: 11px; }
+.quick-actions > :is(a, button) > span:nth-child(2) small { color: #6f737d; font-size: 9px; }
+.quick-actions > :is(a, button) > svg { color: #5e6c84; }
 
 @media (max-width: 1050px) {
   .work-layout { grid-template-columns: 1fr; }

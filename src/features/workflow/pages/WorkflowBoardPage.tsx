@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getProject, getProjectMembers } from '../../projects/api/projectApi'
 import { assignTicket, deleteTicket, updateTicket } from '../../tickets/api/ticketApi'
+import { useCreateTicketDrawer } from '../../tickets/components/createTicketDrawerContext'
 import type { ProjectMember } from '../../projects/types/project.types'
 import type { Ticket, TicketPriority } from '../../tickets/types/ticket.types'
 import { configureLinearWorkflow, executeTicketTransition, getProjectBoard, getProjectWorkflow, getTicketTransitions } from '../api/workflowApi'
@@ -49,6 +50,7 @@ type EditDraft = { title: string; description: string; priority: TicketPriority 
 
 export function WorkflowBoardPage() {
   const { projectId } = useParams<{ projectId: string }>()
+  const { openCreateTicket } = useCreateTicketDrawer()
   const [projectName, setProjectName] = useState('Project')
   const [board, setBoard] = useState<ProjectBoard | null>(null)
   const [workflowTransitions, setWorkflowTransitions] = useState<ProjectWorkflowTransition[]>([])
@@ -80,6 +82,12 @@ export function WorkflowBoardPage() {
     void loadBoard()
     getProject(projectId).then((response) => setProjectName(response.project.name)).catch(() => undefined)
   }, [projectId, loadBoard])
+
+  useEffect(() => {
+    const refreshBoard = () => void loadBoard()
+    window.addEventListener('ticket-created', refreshBoard)
+    return () => window.removeEventListener('ticket-created', refreshBoard)
+  }, [loadBoard])
 
   function statusOptionsFor(ticket: Ticket) {
     const currentStatusId = String(ticket.current_status_id || '')
@@ -156,9 +164,8 @@ export function WorkflowBoardPage() {
   const workflowLanes = Array.from({ length: laneCount }, (_, laneIndex) => board.columns.filter((_, columnIndex) => columnIndex % laneCount === laneIndex))
 
   return <div className="page-content workflow-page">
-    <div className="ticket-breadcrumb"><Link to="/projects">Projects</Link><span>/</span><Link to={`/projects/${projectId}`}>{projectName}</Link><span>/</span><span>Board</span></div>
     <div className="project-tabs"><Link to={`/projects/${projectId}`}>Summary</Link><Link className="active" to={`/projects/${projectId}/board`}>Board</Link><Link to={`/tickets?project=${projectId}`}>Tickets</Link><span>Reports</span><span>＋</span></div>
-    <section className="workflow-heading"><div><div className="project-title"><span className="project-title-icon">{projectName.slice(0, 1).toUpperCase()}</span><div><p className="eyebrow">Project workspace</p><h1>{projectName}</h1></div></div><p className="subtle">Plan, track, and move work through your project workflow.</p></div><div className="workflow-actions"><Link className="secondary-button" to={`/projects/${projectId}`}>Project overview</Link><Link className="primary-button" to={`/tickets/new?project=${projectId}`}>＋ Create</Link></div></section>
+    <section className="workflow-heading"><div><div className="project-title"><span className="project-title-icon">{projectName.slice(0, 1).toUpperCase()}</span><div><p className="eyebrow">Project workspace</p><h1>{projectName}</h1></div></div><p className="subtle">Plan, track, and move work through your project workflow.</p></div><div className="workflow-actions"><Link className="secondary-button" to={`/projects/${projectId}`}>Project overview</Link><button className="primary-button" type="button" onClick={() => openCreateTicket({ projectId })}>＋ Create</button></div></section>
     {error && <div className="inline-error"><span>{error}</span><button onClick={() => void loadBoard()}>Try again</button></div>}
     {workflowTransitions.length === 0 && board.columns.length > 1 && <div className="workflow-setup-notice"><div><strong>This project has no workflow transitions yet.</strong><p>The statuses are available, but tickets cannot move until transitions are configured.</p></div><button type="button" className="primary-button" onClick={() => void setupLinearWorkflow()} disabled={isConfiguringWorkflow}>{isConfiguringWorkflow ? 'Setting up...' : 'Set up linear workflow'}</button></div>}
     <div className="board-toolbar"><label className="board-search"><span>⌕</span><input placeholder="Search board" aria-label="Search board" /></label><button className="board-filter">☷ Filter</button><button className="board-filter">▱ Group</button><span className="board-scope">{board.scope === 'sprint' ? 'Active sprint' : 'Backlog'} · {board.columns.reduce((total, column) => total + column.tickets.length, 0)} tickets</span></div>

@@ -3,5 +3,6 @@ import { AppProviders } from './providers'
 import { router } from './router'
 import { NotificationsProvider } from '../features/notifications/NotificationsProvider'
 import '../styles/unified-ui.css'
+import '../styles/dark-theme.css'
 
 export function App() { return <AppProviders><NotificationsProvider><RouterProvider router={router} /></NotificationsProvider></AppProviders> }

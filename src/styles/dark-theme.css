@@ -1,0 +1,172 @@
+:root[data-theme='dark'] {
+  --ink: #e7ebf2;
+  --muted: #9aa6b7;
+  --border: #303b4b;
+  --surface: #171e28;
+  --background: #0f141c;
+  --primary: #579dff;
+  --primary-soft: #17365a;
+  --green: #4bce97;
+  color-scheme: dark;
+}
+
+.theme-toggle svg { transition: transform 240ms cubic-bezier(.16, 1, .3, 1); }
+.theme-toggle:hover svg { transform: rotate(18deg) scale(1.08); }
+.theme-toggle[aria-pressed='true'] { color: #f5c96a; }
+.auth-theme-toggle { position: fixed; z-index: 2; top: 22px; right: 24px; width: 38px; height: 38px; border: 1px solid #d9dadd; background: #fff; box-shadow: 0 5px 16px #091e4214; }
+
+[data-theme='dark'] body,
+[data-theme='dark'] .app-frame,
+[data-theme='dark'] .app-shell,
+[data-theme='dark'] .content,
+[data-theme='dark'] .route-transition,
+[data-theme='dark'] .route-transition > *,
+[data-theme='dark'] .page-content,
+[data-theme='dark'] .project-directory-frame,
+[data-theme='dark'] .simple-page,
+[data-theme='dark'] .auth-page,
+[data-theme='dark'] :is(.dashboard-page, .my-work-page, .analytics-page, .profile-page, .user-management-page, .status-management-page, .ticket-detail-page, .ticket-create-page, .tickets-page, .epic-page, .project-page, .project-settings-page, .projects-page, .workflow-page, .sprints-overview-page) {
+  color: var(--ink);
+  background-color: var(--background);
+}
+
+[data-theme='dark'] :is(h1, h2, h3) { color: #f1f4f8; }
+[data-theme='dark'] :is(.subtle, .eyebrow, .section-copy, .settings-muted, .capability-context, .protected-label, .dashboard-empty, .members-empty, .status-empty, .analytics-loading, .work-empty, .favorite-empty) { color: var(--muted); }
+[data-theme='dark'] ::selection { color: #fff; background: #0c66e4; }
+[data-theme='dark'] ::placeholder { color: #718096; opacity: 1; }
+
+/* Application chrome */
+[data-theme='dark'] :is(.topbar, .sidebar) { background: #141b25; border-color: #2b3544; }
+[data-theme='dark'] .topbar-brand-area { border-color: #2b3544; }
+[data-theme='dark'] .topbar-brand { color: #f0f4fa; }
+[data-theme='dark'] .search-box { color: #93a4ba; border-color: #344154; background: #0f1621; box-shadow: none; }
+[data-theme='dark'] .search-box input { color: #e5eaf2; }
+[data-theme='dark'] .search-box kbd { color: #9aa8ba; border-color: #3a4657; background: #202936; box-shadow: none; }
+[data-theme='dark'] .topbar-icon-button { color: #aeb9c8; }
+[data-theme='dark'] .topbar-icon-button:hover { color: #85b8ff; background: #202b39; }
+[data-theme='dark'] .mobile-menu-button { color: #aeb9c8; }
+[data-theme='dark'] .mobile-menu-button:hover { color: #85b8ff; background: #202b39; }
+[data-theme='dark'] .auth-theme-toggle { border-color: #344052; background: #171e28; box-shadow: 0 8px 24px #0005; }
+[data-theme='dark'] .notification-popover { color: #dfe5ed; border-color: #344052; background: #18212c; box-shadow: 0 18px 50px #0008; }
+[data-theme='dark'] .notification-heading { border-color: #303a49; }
+[data-theme='dark'] .notification-item { color: #cbd3df; border-color: #293442; background: #18212c; }
+[data-theme='dark'] :is(.notification-item:hover, .notification-item.unread) { background: #202b39; }
+[data-theme='dark'] .sidebar { box-shadow: 8px 0 28px #0002; }
+[data-theme='dark'] .nav-item { color: #aeb8c7; }
+[data-theme='dark'] .nav-item > svg { color: #93a2b7; }
+[data-theme='dark'] :is(.nav-item:hover, .nav-item.active) { color: #8fbdff; background: #1d2d42; }
+[data-theme='dark'] .nav-item.active > svg { color: #8fbdff; }
+[data-theme='dark'] :is(.account-nav, .favorites, .sidebar-footer) { border-color: #2b3544; }
+[data-theme='dark'] .sidebar-section-title { color: #7f8da1; }
+[data-theme='dark'] .favorite-item { color: #b2bdcb; }
+[data-theme='dark'] :is(.favorite-item:hover, .favorite-item.active) { color: #8fbdff; background: #202b39; }
+[data-theme='dark'] .sidebar-account-trigger { color: #edf1f6; border-color: #344052; background: #18212c; }
+[data-theme='dark'] :is(.sidebar-account-trigger:hover, .sidebar-account-trigger[aria-expanded='true']) { border-color: #579dff; background: #1d2937; }
+[data-theme='dark'] .sidebar-account-avatar { color: #c9beff; background: #30285a; }
+[data-theme='dark'] .sidebar-account-menu { border-color: #344052; background: #18212c; box-shadow: 0 14px 32px #0008; }
+[data-theme='dark'] :is(.sidebar-account-menu a, .sidebar-account-menu button) { color: #cbd3df; }
+[data-theme='dark'] :is(.sidebar-account-menu a:hover, .sidebar-account-menu button:hover) { color: #8fbdff; background: #202b39; }
+
+/* Shared surfaces and controls */
+[data-theme='dark'] :is(.panel, .dashboard-panel, .stat-card, .analytics-card, .analytics-panel, .work-list-card, .work-side-card, .work-list, .sprint-project-card, .jira-project-grid .project-card, .projects-list, .ticket-table-wrap, .ticket-detail-panel, .form-panel, .settings-panel, .create-user-panel, .users-list-panel, .status-form-panel, .status-list-panel, .workflow-column, .board-ticket, .board-edit-modal, .auth-card, .creation-drawer, .project-creation-drawer) {
+  color: var(--ink);
+  border-color: var(--border);
+  background: var(--surface);
+  box-shadow: none;
+}
+[data-theme='dark'] :is(.primary-button, .create-ticket-button, .work-create-button) { color: #fff; }
+[data-theme='dark'] .secondary-button { color: #c4cedb; border-color: #3a4657; background: #1a2330; }
+[data-theme='dark'] .secondary-button:hover:not(:disabled) { color: #8fbdff; border-color: #579dff; background: #1d2a3a; }
+[data-theme='dark'] :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+  color: #e5eaf2;
+  border-color: #3a4657;
+  background-color: #111923;
+}
+[data-theme='dark'] :is(input:not([type='checkbox']):not([type='radio']), select, textarea):focus { border-color: #579dff; box-shadow: 0 0 0 1px #579dff; }
+[data-theme='dark'] select option { color: #e5eaf2; background: #111923; }
+[data-theme='dark'] :is(.form-panel, .settings-panel, .ticket-detail-panel, .analytics-panel, .create-user-panel, .status-form-panel)::before { opacity: .9; }
+[data-theme='dark'] :is(.form-section-heading, .detail-panel-heading, .ticket-fact-grid, .reference-panel-heading, .work-side-card > header, .modal-header, .project-filter-row, .sidebar-footer) { border-color: var(--border); }
+[data-theme='dark'] :is(.form-panel > label, .form-grid label, .project-form label, .user-form label, .status-form label, .settings-form label, .settings-label, .workflow-form label) { color: #c2cbd7; }
+[data-theme='dark'] :is(.form-section-heading p, .form-panel small, .project-form small, .field-help) { color: #8f9caf; }
+[data-theme='dark'] :is(.inline-error, .form-error, .notification-error, .error-message, .dashboard-error, .report-error, .attachment-error, .members-error) { color: #ff9b8a; border-color: #713a35; background: #351f20; }
+[data-theme='dark'] :is(.form-success, .success-message, .members-success) { color: #7ee2b8; border-color: #285b49; background: #17362d; }
+
+/* Tables and lists */
+[data-theme='dark'] :is(.ticket-table-head, .ticket-table th, .users-table th, .report-table th, .work-list-card th, .work-list th, .projects-table-header) { color: #aeb9c8; border-color: var(--border); background: #1c2531; }
+[data-theme='dark'] :is(.ticket-table-row, .ticket-table td, .users-table td, .report-table td, .work-list-card td, .work-list td, .project-list-row, .member-row, .status-row, .settings-list-row, .project-activity-row, .ticket-activity-row, .attachment-row, .comment-row, .detail-transition-row, .ticket-link-list > div) { color: #c0cad7; border-color: #2d3847; }
+[data-theme='dark'] :is(.ticket-table-row:hover, .ticket-table tbody tr:hover, .users-table tbody tr:hover, .report-table tbody tr:hover, .work-list-card tbody tr:hover, .work-list tbody tr:hover, .project-list-row:hover, .member-row:hover, .status-row:hover, .settings-list-row:hover, .project-activity-row:hover, .comment-row:hover) { background: #1d2937; }
+[data-theme='dark'] :is(.ticket-table-row > strong, .ticket-table-title, .users-table td strong, .report-table td strong, .work-issue strong, .work-list td strong, .project-name-cell strong, .member-identity strong, .status-row strong, .settings-list-row strong, .attachment-row strong, .comment-row strong, .detail-transition-row strong, .ticket-link-list strong) { color: #e4e9f0; }
+[data-theme='dark'] :is(.ticket-table-row time, .row-menu, .users-table td small, .work-issue small, .member-identity small, .status-row small, .attachment-row small, .comment-row small, .detail-transition-row small) { color: #8f9caf; }
+
+/* Dashboard */
+[data-theme='dark'] .dashboard-hero { background: transparent; }
+[data-theme='dark'] .dashboard-greeting time { color: #9ba8b9; }
+[data-theme='dark'] .dashboard-greeting h1 { color: #f1f4f8; }
+[data-theme='dark'] .dashboard-greeting p { color: #9aa6b7; }
+[data-theme='dark'] .stat-card:hover { border-color: #579dff; background: #1a2634; }
+[data-theme='dark'] :is(.stat-copy small, .panel-heading p, .project-summary-card header small, .project-meta, .project-summary-card footer, .status-legend p, .activity-item small, .activity-item time) { color: #919fb2; }
+[data-theme='dark'] :is(.stat-copy strong, .panel-heading h2, .side-heading h2, .project-summary-card header strong, .status-donut strong, .status-legend strong, .activity-copy strong) { color: #e9edf3; }
+[data-theme='dark'] :is(.panel-actions select, .side-heading select) { color: #d7dee8; border-color: #3a4657; background: #111923; }
+[data-theme='dark'] .project-summary-card { border-color: #344052; background: #171e28; }
+[data-theme='dark'] .project-summary-card:hover { border-color: #579dff; background: #1d2937; }
+[data-theme='dark'] :is(.ticket-table-head, .project-summary-card footer, .activity-item, .deadline-item) { border-color: #2d3847; }
+[data-theme='dark'] :is(.ticket-table-row, .status-legend > div, .activity-item, .deadline-item) { color: #b4bfcd; }
+[data-theme='dark'] .status-donut::before { background: var(--surface); }
+[data-theme='dark'] .project-progress { background: #303a49; }
+
+/* Projects, tickets, workflow and sprints */
+[data-theme='dark'] :is(.project-detail-tabs, .projects-page .project-tabs, .workflow-page .project-tabs) { color: #aeb9c8; border-color: var(--border); background: #141b25; }
+[data-theme='dark'] :is(.project-detail-tabs a, .projects-page .project-tab, .workflow-page .project-tabs a, .workflow-page .project-tabs span) { color: #aeb9c8; }
+[data-theme='dark'] :is(.project-detail-tabs a.active, .projects-page .project-tab.active, .workflow-page .project-tabs .active) { color: #85b8ff; }
+[data-theme='dark'] :is(.project-search, .ticket-search, .board-search, .sort-control, .view-toggle, .project-table-actions > .secondary-button, .more-button, .board-filter) { color: #c4cedb; border-color: #3a4657; background: #141c27; }
+[data-theme='dark'] :is(.project-filter-chips button, .create-view-button, .order-button, .reset-button) { color: #b9c4d2; border-color: #3a4657; background: #18212c; }
+[data-theme='dark'] :is(.project-filter-chips button:hover, .create-view-button:hover, .order-button:hover, .board-filter:hover) { color: #85b8ff; border-color: #579dff; background: #1d2937; }
+[data-theme='dark'] :is(.project-reference-hero h1, .project-title h1, .ticket-detail-heading h1, .ticket-create-heading h1, .page-heading h1, .workflow-heading h1) { color: #f1f4f8; }
+[data-theme='dark'] :is(.project-reference-hero .subtle, .workflow-heading .subtle, .ticket-description, .comment-row p) { color: #b7c1cf; }
+[data-theme='dark'] :is(.sprint-stats div, .member-assign-box, .workflow-form, .velocity-summary > div) { border-color: var(--border); background: #131b25; }
+[data-theme='dark'] :is(.member-list, .settings-list, .project-activity-list, .ticket-activity-list, .attachment-list, .detail-transition-list, .comment-list, .ticket-link-list, .report-ticket-list, .report-table-wrap) { border-color: var(--border); background: #171e28; }
+[data-theme='dark'] .workflow-column { background: #111923; }
+[data-theme='dark'] .workflow-column-header { border-color: var(--border); background: #1b2430; }
+[data-theme='dark'] .workflow-column-header h2 { color: #e5eaf2; }
+[data-theme='dark'] .workflow-column-body { scrollbar-color: #4b586a #111923; }
+[data-theme='dark'] .board-ticket { border-color: #354153; background: #18212c; }
+[data-theme='dark'] .board-ticket:hover { border-color: #579dff; background: #1d2937; }
+[data-theme='dark'] :is(.board-ticket h3, .sprint-project-card h2, .project-card h2) { color: #e7ebf2; }
+[data-theme='dark'] :is(.board-ticket-description, .board-assignee, .sprint-project-card p, .project-card-description) { color: #9ba8b9; }
+[data-theme='dark'] :is(.empty-column, .projects-empty, .tickets-empty) { color: #8f9caf; border-color: #3a4657; background: #111923; }
+[data-theme='dark'] .ticket-create-drawer-content { background: var(--background); }
+[data-theme='dark'] .ticket-create-drawer-content .ticket-form-actions { border-color: var(--border); background: #0f141cf2; }
+[data-theme='dark'] .project-creation-drawer { background: var(--background); }
+[data-theme='dark'] .creation-drawer-close,
+[data-theme='dark'] .project-creation-drawer .modal-close { color: #aeb9c8; border-color: #3a4657; background: #18212c; }
+
+/* My work, reports and administration */
+[data-theme='dark'] :is(.work-overview article, .work-list-card, .work-side-card) { border-color: var(--border); background: var(--surface); }
+[data-theme='dark'] .work-overview article:hover { border-color: #579dff; background: #1d2937; }
+[data-theme='dark'] :is(.work-heading h1, .analytics-heading h1, .profile-heading h1, .user-management-heading h1, .status-management-heading h1) { color: #f1f4f8; }
+[data-theme='dark'] :is(.work-heading > div > p:last-child, .work-overview p, .work-result-count, .work-side-card header p, .analytics-card p, .analytics-card small, .analytics-panel > p, .section-copy) { color: #99a6b8; }
+[data-theme='dark'] :is(.work-overview strong, .work-side-card h2, .analytics-card strong, .analytics-panel h2, .ranking-row strong, .velocity-summary strong, .active-sprint-report > strong, .profile-grid h2, .user-panel-heading h2, .status-form-panel h2, .status-list-heading h2) { color: #e9edf3; }
+[data-theme='dark'] .work-list-toolbar { border-color: var(--border); }
+[data-theme='dark'] .work-tab { color: #aab6c5; }
+[data-theme='dark'] .work-tab span { color: #aeb9c8; border-color: #3a4657; background: #202936; }
+[data-theme='dark'] .work-tab.active { color: #85b8ff; }
+[data-theme='dark'] :is(.work-deadline, .quick-actions > :is(a, button), .ranking-row) { border-color: #2d3847; }
+[data-theme='dark'] :is(.work-deadline:hover, .quick-actions > :is(a, button):hover) { background: #1d2937; }
+[data-theme='dark'] :is(.work-deadline > span:nth-child(2) strong, .quick-actions > :is(a, button) > span:nth-child(2) strong) { color: #dfe5ed; }
+[data-theme='dark'] :is(.work-deadline > span:nth-child(2) small, .quick-actions > :is(a, button) > span:nth-child(2) small) { color: #8f9caf; }
+[data-theme='dark'] :is(.throughput, .ranking-row, .report-ticket-row, .report-table th, .report-table td) { border-color: var(--border); }
+[data-theme='dark'] :is(.breakdown-row, .ranking-row, .team-row, .report-ticket-row, .report-table td) { color: #bac5d2; }
+[data-theme='dark'] :is(.breakdown-track, .team-track, .sprint-progress, .goal-progress > div) { background: #303a49; }
+[data-theme='dark'] :is(.users-table-wrap, .status-list, .profile-grid > .panel) { background: var(--surface); }
+
+/* Authentication */
+[data-theme='dark'] .auth-card { border-color: #344052; background: #171e28; box-shadow: 0 18px 55px #0007; }
+[data-theme='dark'] :is(.auth-brand span, .auth-heading h1) { color: #f1f4f8; }
+[data-theme='dark'] :is(.auth-heading .subtle, .auth-footer, .auth-links) { color: #9aa6b7; }
+[data-theme='dark'] .login-form label { color: #cbd3df; }
+[data-theme='dark'] .login-form input { color: #e7ebf2; border-color: #3a4657; background: #101722; }
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle svg { transition: none; }
+  .theme-toggle:hover svg { transform: none; }
+}

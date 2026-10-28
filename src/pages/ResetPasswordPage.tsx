@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { resetPassword } from '../features/auth/api/authApi'
+import { ThemeToggle } from '../components/ui/ThemeToggle'
 
 export function ResetPasswordPage() {
   const navigate = useNavigate()
@@ -29,7 +30,7 @@ export function ResetPasswordPage() {
     }
   }
 
-  return <main className="auth-page"><section className="auth-card">
+  return <main className="auth-page"><ThemeToggle className="auth-theme-toggle" /><section className="auth-card">
     <div className="brand auth-brand"><div className="brand-mark">T</div><span>Taskline</span></div>
     <div className="auth-heading"><p className="eyebrow">Account recovery</p><h1>Set a new password</h1><p className="subtle">Use the token from your reset link and choose a new password.</p></div>
     <form className="login-form" onSubmit={submit}>

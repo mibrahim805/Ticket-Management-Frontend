@@ -1,8 +1,8 @@
 .workflow-page { max-width: 1550px; }
 .workflow-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 23px; }
-.project-tabs { display: flex; align-items: center; gap: 25px; min-height: 43px; margin: -28px -30px 25px; padding: 0 30px; background: #fff; border-bottom: 1px solid #dfe1e6; color: #5e6c84; font-size: 12px; }
-.project-tabs a, .project-tabs span { align-self: stretch; display: flex; align-items: center; border-bottom: 2px solid transparent; }
-.project-tabs a:hover, .project-tabs .active { color: #0c66e4; border-color: #0c66e4; }
+.workflow-page .project-tabs { display: flex; align-items: center; gap: 25px; min-height: 43px; margin: -28px -30px 25px; padding: 0 30px; background: #fff; border-bottom: 1px solid #dfe1e6; color: #5e6c84; font-size: 12px; }
+.workflow-page .project-tabs a, .workflow-page .project-tabs span { align-self: stretch; display: flex; align-items: center; border-bottom: 2px solid transparent; }
+.workflow-page .project-tabs a:hover, .workflow-page .project-tabs .active { color: #0c66e4; border-color: #0c66e4; }
 .project-title { display: flex; align-items: center; gap: 11px; }
 .project-title-icon { display: grid; place-items: center; width: 32px; height: 32px; color: #fff; border-radius: 7px; background: #0c66e4; font-weight: 700; }
 .project-title h1 { margin-bottom: 0; }
