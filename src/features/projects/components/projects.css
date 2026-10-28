@@ -52,3 +52,12 @@
 @media (max-width: 760px) { .member-management-grid { grid-template-columns: 1fr; }.member-row { grid-template-columns: 30px minmax(0, 1fr) 90px 50px; } }
 @media (max-width: 620px) { .status-assignment-list { grid-template-columns: 1fr; }.status-migrations label { align-items: flex-start; flex-direction: column; }.status-migrations select { width: 100%; } }
 .project-activity-panel { margin-top: 14px; }.project-activity-list, .ticket-activity-list { display: grid; border: 1px solid #dfe1e6; border-radius: 5px; overflow: hidden; }.project-activity-row, .ticket-activity-row { display: flex; align-items: center; gap: 9px; padding: 10px 11px; border-bottom: 1px solid #edf0f3; }.project-activity-row:last-child, .ticket-activity-row:last-child { border-bottom: 0; }.project-activity-row strong, .project-activity-row small, .ticket-activity-row strong, .ticket-activity-row small { display: block; }.project-activity-row strong, .ticket-activity-row strong { color: #292a2e; font-size: 11px; text-transform: capitalize; }.project-activity-row small, .ticket-activity-row small { margin-top: 4px; color: #7e838e; font-size: 9px; }.project-activity-row .activity-icon, .ticket-activity-row .activity-icon { display: grid; place-items: center; flex: 0 0 25px; width: 25px; height: 25px; color: #fff; border-radius: 50%; background: #8170e8; font-size: 11px; }
+.project-admin-details { margin-top: 18px; }
+.project-admin-details > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; color: #292a2e; border: 1px solid #d9dadd; border-radius: 6px; background: #fff; cursor: pointer; list-style: none; }
+.project-admin-details > summary::-webkit-details-marker { display: none; }
+.project-admin-details > summary::after { color: #69707e; content: '＋'; font-size: 18px; font-weight: 400; }
+.project-admin-details[open] > summary { border-color: #b3d4ff; border-bottom-right-radius: 0; border-bottom-left-radius: 0; }
+.project-admin-details[open] > summary::after { content: '−'; }
+.project-admin-details > summary span { display: grid; gap: 3px; }
+.project-admin-details > summary strong { font-size: 13px; font-weight: 600; }
+.project-admin-details > summary small { color: #7e838e; font-size: 10px; font-weight: 400; }

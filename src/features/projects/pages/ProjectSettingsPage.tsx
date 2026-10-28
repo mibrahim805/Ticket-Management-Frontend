@@ -73,6 +73,7 @@ export function ProjectSettingsPage() {
   const [project, setProject] = useState<Project | null>(null)
   const [projectName, setProjectName] = useState('')
   const [projectCode, setProjectCode] = useState('')
+  const [repositoryUrl, setRepositoryUrl] = useState('')
   const [permissions, setPermissions] = useState<ProjectPermissions | null>(null)
   const [capabilities, setCapabilities] = useState<ProjectCapabilities | null>(null)
   const [myPermissions, setMyPermissions] = useState<MyProjectPermissions | null>(null)
@@ -102,6 +103,7 @@ export function ProjectSettingsPage() {
     setProject(projectResult.project)
     setProjectName(projectResult.project.name)
     setProjectCode(projectResult.project.code)
+    setRepositoryUrl(projectResult.project.repository_url ?? projectResult.project.repo_url ?? projectResult.project.repository ?? '')
 
     const results = await Promise.allSettled([
       getProjectPermissions(id),
@@ -159,8 +161,8 @@ export function ProjectSettingsPage() {
     if (!project) return
     setBusy('project')
     try {
-      await updateProject(project._id, { name: projectName, code: projectCode })
-      setProject((current) => current ? { ...current, name: projectName.trim(), code: projectCode.trim().toUpperCase() } : current)
+      await updateProject(project._id, { name: projectName, code: projectCode, repository_url: repositoryUrl })
+      setProject((current) => current ? { ...current, name: projectName.trim(), code: projectCode.trim().toUpperCase(), repository_url: repositoryUrl.trim() || null } : current)
       showMessage('Project details updated.')
     } catch (requestError) {
       setError(errorMessage(requestError, 'Unable to update project.'))
@@ -360,7 +362,7 @@ export function ProjectSettingsPage() {
     {error && <div className="members-message members-error">{error}</div>}
     {message && <div className="members-message members-success">{message}</div>}
 
-    <section className="panel settings-panel"><div className="reference-panel-heading"><div><h2>Project details</h2><p>Update the project name or project key.</p></div>{user?.role === 'super_admin' && <button className="danger-button" type="button" onClick={() => void archiveProject()} disabled={busy === 'delete-project'}>{busy === 'delete-project' ? 'Archiving...' : 'Archive project'}</button>}</div><form className="settings-form" onSubmit={(event) => void saveProject(event)}><label>Project name<input value={projectName} onChange={(event) => setProjectName(event.target.value)} maxLength={100} required /></label><label>Project key<input value={projectCode} onChange={(event) => setProjectCode(event.target.value.toUpperCase())} minLength={2} maxLength={10} required /></label><button className="primary-button" type="submit" disabled={busy === 'project'}>{busy === 'project' ? 'Saving...' : 'Save project details'}</button></form></section>
+    <section className="panel settings-panel"><div className="reference-panel-heading"><div><h2>Project details</h2><p>Update the project name, key, or repository link.</p></div>{user?.role === 'super_admin' && <button className="danger-button" type="button" onClick={() => void archiveProject()} disabled={busy === 'delete-project'}>{busy === 'delete-project' ? 'Archiving...' : 'Archive project'}</button>}</div><form className="settings-form" onSubmit={(event) => void saveProject(event)}><label>Project name<input value={projectName} onChange={(event) => setProjectName(event.target.value)} maxLength={100} required /></label><label>Project key<input value={projectCode} onChange={(event) => setProjectCode(event.target.value.toUpperCase())} minLength={2} maxLength={10} required /></label><label>Repository URL<input type="url" value={repositoryUrl} onChange={(event) => setRepositoryUrl(event.target.value)} maxLength={2048} placeholder="https://github.com/organization/repository" /></label><button className="primary-button" type="submit" disabled={busy === 'project'}>{busy === 'project' ? 'Saving...' : 'Save project details'}</button></form></section>
 
     <section className="settings-two-column">
       <article className="panel settings-panel"><div className="reference-panel-heading"><div><h2>My access</h2><p>Your effective project access.</p></div><span className="settings-badge">{capabilities?.role || myPermissions?.role || '—'}</span></div><div className="access-summary"><strong>{capabilities?.capabilities.length || myPermissions?.permissions.length || 0}</strong><span>capabilities available</span></div><div className="tag-list">{(capabilities?.capabilities || myPermissions?.permissions || []).map((permission) => <span key={permission}>{capabilityLabels[permission] || permission}</span>)}</div></article>

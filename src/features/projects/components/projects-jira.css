@@ -20,18 +20,43 @@
 .project-table-actions { display: flex; align-items: center; gap: 9px; }
 .more-button { height: 32px; padding: 7px 10px; border: 1px solid #dfe1e6; border-radius: 4px; color: #5e6c84; background: #fff; cursor: pointer; }
 .projects-list { display: grid; gap: 0; border: 1px solid #dfe1e6; border-radius: 4px; overflow: hidden; }
-.projects-table-header, .project-list-row { display: grid; grid-template-columns: minmax(240px, 2fr) 130px 130px 80px 110px 100px 25px; align-items: center; }
+.projects-table-header, .project-list-row { display: grid; grid-template-columns: minmax(240px, 2fr) 150px 130px 130px 80px 110px 100px 25px; align-items: center; }
 .projects-table-header { min-height: 44px; padding: 0 9px; color: #5e6c84; background: #f7f8fa; border-bottom: 1px solid #dfe1e6; font-size: 12px; font-weight: 600; }
 .project-list-row { min-height: 58px; padding: 0 9px; border: 0; border-bottom: 1px solid #dfe1e6; border-radius: 0; background: #fff; box-shadow: none; }
 .project-list-row:last-child { border-bottom: 0; }
 .project-list-row:hover { background: #f7faff; border-color: #dfe1e6; box-shadow: none; }
 .project-name-cell { display: flex; align-items: center; gap: 10px; min-width: 0; }.project-name-cell .project-icon { width: 30px; height: 30px; flex: 0 0 auto; }.project-name-cell div { display: grid; gap: 3px; min-width: 0; }.project-name-cell strong { overflow: hidden; color: #172b4d; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }.project-name-cell small { color: #7a869a; font-size: 10px; }
-.project-status { grid-column: 2; width: fit-content; padding: 2px 6px; color: #42526e; background: #ebecf0; border: 1px solid #c1c7d0; border-radius: 3px; font-size: 11px; }
-.project-date { grid-column: 3; color: #42526e; font-size: 11px; }
-.project-owner { grid-column: 4; display: grid; place-items: center; width: 22px; height: 22px; color: #fff; background: #172b4d; border-radius: 50%; font-size: 8px; }
-.project-following { grid-column: 5; color: #42526e; font-size: 11px; }.project-updated { grid-column: 6; color: #42526e; font-size: 11px; }.project-row-menu { grid-column: 7; color: #5e6c84; }
-@media (max-width: 900px) { .projects-table-header, .project-list-row { grid-template-columns: minmax(180px, 2fr) 100px 110px 60px 90px 70px 20px; } }
-@media (max-width: 680px) { .projects-table-header { display: none; }.project-list-row { grid-template-columns: 1fr 90px 20px; gap: 8px; min-height: 62px; padding: 8px 10px; }.project-status { grid-column: 2; }.project-date, .project-owner, .project-following, .project-updated { display: none; }.project-row-menu { grid-column: 3; }.project-name-cell { grid-column: 1; } }
+.project-repository-cell { grid-column: 2; min-width: 0; }
+.project-repository-link { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; overflow: hidden; color: #0c66e4; font-size: 11px; font-weight: 600; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
+.project-repository-link:hover { color: #0052cc; text-decoration: underline; }
+.project-repository-link span:last-child { overflow: hidden; text-overflow: ellipsis; }
+.project-repository-empty { color: #7a869a; font-size: 11px; }
+.project-repository-add-link { display: inline-flex; align-items: center; min-height: 27px; padding: 3px 0; color: #0c66e4; border: 0; background: transparent; cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 600; text-decoration: none; }
+.project-repository-add-link:hover { color: #0052cc; background: transparent; text-decoration: underline; }
+.repository-link-modal { width: min(100%, 480px); }
+.repository-link-form { display: grid; gap: 15px; margin-top: 22px; }
+.repository-link-project { margin: 0; color: #5e6c84; font-size: 12px; font-weight: 600; }
+.repository-link-form label { display: grid; gap: 7px; color: #56586c; font-size: 11px; font-weight: 600; }
+.repository-link-form input { width: 100%; min-height: 40px; padding: 9px 11px; color: #292a2e; border: 1px solid #b7bdc9; border-radius: 6px; background: #fff; outline: 0; font-size: 13px; }
+.repository-link-form input:focus { border-color: #0c66e4; box-shadow: 0 0 0 1px #0c66e4; }
+.project-name-cell { grid-column: 1; color: inherit; text-decoration: none; }
+.project-status { grid-column: 3; width: fit-content; padding: 2px 6px; color: #42526e; background: #ebecf0; border: 1px solid #c1c7d0; border-radius: 3px; font-size: 11px; }
+.project-date { grid-column: 4; color: #42526e; font-size: 11px; }
+.project-owner { grid-column: 5; display: grid; place-items: center; width: 22px; height: 22px; color: #fff; background: #172b4d; border-radius: 50%; font-size: 8px; }
+.project-following { grid-column: 6; color: #42526e; font-size: 11px; }.project-updated { grid-column: 7; color: #42526e; font-size: 11px; }.project-row-menu { position: relative; grid-column: 8; display: flex; align-items: center; justify-content: flex-end; color: #5e6c84; }
+.project-card-header .project-row-menu { margin-left: auto; }
+.project-menu-button { display: grid; place-items: center; width: 30px; height: 30px; padding: 0; color: inherit; border: 0; border-radius: 6px; background: transparent; cursor: pointer; font-size: 14px; letter-spacing: 1px; }
+.project-menu-button:hover, .project-menu-button[aria-expanded='true'] { color: #0c66e4; background: #deebff; }
+.project-actions-menu { position: absolute; z-index: 30; top: calc(100% + 6px); right: 0; display: grid; min-width: 164px; gap: 2px; padding: 5px; border: 1px solid #d9dadd; border-radius: 7px; background: #fff; box-shadow: 0 12px 28px #091e4233; }
+.project-actions-menu button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 32px; padding: 6px 9px; color: #3e4045; border: 0; border-radius: 5px; background: transparent; cursor: pointer; font-size: 12px; text-align: left; }
+.project-actions-menu button:hover:not(:disabled) { color: #0c66e4; background: #f0f6ff; }
+.project-actions-menu button.danger { color: #b42318; }
+.project-actions-menu button.danger:hover:not(:disabled) { color: #a11b12; background: #fff1f0; }
+.project-actions-menu button:disabled { cursor: wait; opacity: .55; }
+.project-menu-error { display: block; max-width: 220px; padding: 6px 8px; color: #b42318; font-size: 10px; line-height: 1.35; }
+.project-list-row:last-child .project-actions-menu { top: auto; bottom: calc(100% + 6px); }
+@media (max-width: 900px) { .projects-table-header, .project-list-row { grid-template-columns: minmax(180px, 2fr) 120px 100px 110px 60px 90px 70px 20px; } }
+@media (max-width: 680px) { .projects-table-header { display: none; }.project-list-row { grid-template-columns: 1fr 90px 20px; gap: 8px; min-height: 62px; padding: 8px 10px; }.project-repository-cell { display: none; }.project-status { grid-column: 2; }.project-date, .project-owner, .project-following, .project-updated { display: none; }.project-row-menu { grid-column: 3; }.project-name-cell { grid-column: 1; } }
 
 /* Full-width directory view */
 .project-directory-frame { min-height: 100vh; background: #fff; border-top: 1px solid #dfe1e6; }

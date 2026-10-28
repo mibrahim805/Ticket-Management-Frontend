@@ -17,7 +17,7 @@ export function getProjects() {
 export function createProject(request: CreateProjectRequest) {
   return apiClient<{ id: string; message: string }>('/projects', {
     method: 'POST',
-    body: JSON.stringify({ name: request.name.trim(), code: request.code.trim().toUpperCase() }),
+    body: JSON.stringify({ name: request.name.trim(), code: request.code.trim().toUpperCase(), repository_url: request.repository_url?.trim() || null }),
   })
 }
 
@@ -27,6 +27,7 @@ export function updateProject(projectId: string, request: Partial<CreateProjectR
     body: JSON.stringify({
       ...(request.name === undefined ? {} : { name: request.name.trim() }),
       ...(request.code === undefined ? {} : { code: request.code.trim().toUpperCase() }),
+      ...(request.repository_url === undefined ? {} : { repository_url: request.repository_url?.trim() || null }),
     }),
   })
 }
