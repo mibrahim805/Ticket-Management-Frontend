@@ -130,6 +130,9 @@
 
 /* Projects, tickets, workflow and sprints */
 [data-theme='dark'] :is(.project-detail-tabs, .projects-page .project-tabs, .workflow-page .project-tabs) { color: #aeb9c8; border-color: var(--border); background: #141b25; }
+[data-theme='dark'] .project-admin-details > summary { color: #e5eaf2; border-color: var(--border); background: #171e28; }
+[data-theme='dark'] .project-admin-details[open] > summary { border-color: #3a6da8; }
+[data-theme='dark'] .project-admin-details > summary small, [data-theme='dark'] .project-admin-details > summary::after { color: #8f9caf; }
 [data-theme='dark'] :is(.project-detail-tabs a, .projects-page .project-tab, .workflow-page .project-tabs a, .workflow-page .project-tabs span) { color: #aeb9c8; }
 [data-theme='dark'] :is(.project-detail-tabs a.active, .projects-page .project-tab.active, .workflow-page .project-tabs .active) { color: #85b8ff; }
 [data-theme='dark'] :is(.project-search, .ticket-search, .board-search, .sort-control, .view-toggle, .project-table-actions > .secondary-button, .more-button, .board-filter) { color: #c4cedb; border-color: #3a4657; background: #141c27; }
