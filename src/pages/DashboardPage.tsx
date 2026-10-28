@@ -9,6 +9,7 @@ import { getTickets } from '../features/tickets/api/ticketApi'
 import type { Ticket } from '../features/tickets/types/ticket.types'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { apiClient } from '../services/apiClient'
+import { storage } from '../services/storage'
 import './dashboard.css'
 
 type TicketSummary = { total_tickets?: number; open_tickets?: number; closed_tickets?: number }
@@ -26,6 +27,11 @@ const chartColors = ['#aab8d5', '#3977ee', '#7853df', '#24b57a', '#f5a623', '#ef
 const projectColors = ['blue', 'violet', 'green']
 const dashboardDate = new Date()
 const dashboardDateLabel = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' }).format(dashboardDate)
+
+function initialActivityPeriod(): ActivityPeriod {
+  const savedPeriod = storage.getDashboardActivityPeriod()
+  return savedPeriod === 'month' || savedPeriod === 'all' || savedPeriod === 'week' ? savedPeriod : 'week'
+}
 
 function isCompleted(ticket: Ticket) {
   const status = (ticket.current_status_name || '').toLowerCase()
@@ -127,7 +133,7 @@ export function DashboardPage() {
   const [dashboard, setDashboard] = useState<DashboardData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
-  const [activityPeriod, setActivityPeriod] = useState<ActivityPeriod>('week')
+  const [activityPeriod, setActivityPeriod] = useState<ActivityPeriod>(initialActivityPeriod)
   const [projectFilter, setProjectFilter] = useState('')
 
   const loadDashboard = useCallback(async () => {
@@ -154,6 +160,11 @@ export function DashboardPage() {
     const timeout = window.setTimeout(() => void loadDashboard(), 0)
     return () => window.clearTimeout(timeout)
   }, [loadDashboard])
+
+  function changeActivityPeriod(period: ActivityPeriod) {
+    storage.setDashboardActivityPeriod(period)
+    setActivityPeriod(period)
+  }
 
   const visibleTickets = useMemo(() => (dashboard?.tickets || []).filter((ticket) => !projectFilter || ticket.project_key === projectFilter).slice(0, 5), [dashboard?.tickets, projectFilter])
   const currentProjects = dashboard?.projects.slice(0, 3) || []
@@ -233,7 +244,7 @@ export function DashboardPage() {
 
       <aside className="dashboard-side">
         <section className="dashboard-panel status-panel">
-          <div className="side-heading"><h2>Ticket status</h2><select value={activityPeriod} onChange={(event) => setActivityPeriod(event.target.value as ActivityPeriod)} aria-label="Ticket status period"><option value="week">This week</option><option value="month">This month</option><option value="all">All time</option></select></div>
+          <div className="side-heading"><h2>Ticket status</h2><select value={activityPeriod} onChange={(event) => changeActivityPeriod(event.target.value as ActivityPeriod)} aria-label="Ticket status period"><option value="week">This week</option><option value="month">This month</option><option value="all">All time</option></select></div>
           <div className="status-content"><div className="status-donut" style={donutStyle}><span><strong>{activityTotal}</strong><small>Total</small></span></div><div className="status-legend">{statusEntries.map(([name, count], index) => <div key={name}><i style={{ background: chartColors[index] }} /><span>{name}</span><strong>{count}</strong></div>)}{!statusEntries.length && <p>No ticket activity yet.</p>}</div></div>
         </section>
 

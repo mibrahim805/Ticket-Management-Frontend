@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const user = await getProfile()
       setAuth({ token: response.access_token, user })
     },
-    logout: () => { storage.clearToken(); setAuth({ token: null, user: null }) },
+    logout: () => { storage.clearToken(); storage.clearSessionPreferences(); setAuth({ token: null, user: null }) },
     refreshUser: async () => {
       const user = await getProfile()
       setAuth((current) => ({ ...current, user }))
