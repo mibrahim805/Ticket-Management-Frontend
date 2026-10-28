@@ -97,6 +97,19 @@
 [data-theme='dark'] :is(.ticket-table-row, .ticket-table td, .users-table td, .report-table td, .work-list-card td, .work-list td, .project-list-row, .member-row, .status-row, .settings-list-row, .project-activity-row, .ticket-activity-row, .attachment-row, .comment-row, .detail-transition-row, .ticket-link-list > div) { color: #c0cad7; border-color: #2d3847; }
 [data-theme='dark'] :is(.ticket-table-row:hover, .ticket-table tbody tr:hover, .users-table tbody tr:hover, .report-table tbody tr:hover, .work-list-card tbody tr:hover, .work-list tbody tr:hover, .project-list-row:hover, .member-row:hover, .status-row:hover, .settings-list-row:hover, .project-activity-row:hover, .comment-row:hover) { background: #1d2937; }
 [data-theme='dark'] :is(.ticket-table-row > strong, .ticket-table-title, .users-table td strong, .report-table td strong, .work-issue strong, .work-list td strong, .project-name-cell strong, .member-identity strong, .status-row strong, .settings-list-row strong, .attachment-row strong, .comment-row strong, .detail-transition-row strong, .ticket-link-list strong) { color: #e4e9f0; }
+[data-theme='dark'] .projects-page .project-repository-link { color: #85b8ff; }
+[data-theme='dark'] .projects-page .project-repository-empty { color: #8f9caf; }
+[data-theme='dark'] .projects-page .project-repository-add-link { color: #85b8ff; border: 0; background: transparent; }
+[data-theme='dark'] .projects-page .project-repository-add-link:hover { color: #a8ceff; background: transparent; }
+[data-theme='dark'] .repository-link-project { color: #aeb9c8; }
+[data-theme='dark'] .repository-link-form label { color: #c2cbd7; }
+[data-theme='dark'] .repository-link-form input { color: #e5eaf2; border-color: #3a4657; background: #111923; }
+[data-theme='dark'] .projects-page .project-menu-button { color: #aeb9c8; }
+[data-theme='dark'] .projects-page .project-menu-button:hover, [data-theme='dark'] .projects-page .project-menu-button[aria-expanded='true'] { color: #85b8ff; background: #1d2a3a; }
+[data-theme='dark'] .projects-page .project-actions-menu { border-color: #3a4657; background: #141c27; box-shadow: 0 12px 28px #00000066; }
+[data-theme='dark'] .projects-page .project-actions-menu button { color: #d5dde8; }
+[data-theme='dark'] .projects-page .project-actions-menu button:hover:not(:disabled) { color: #85b8ff; background: #1d2937; }
+[data-theme='dark'] .projects-page .project-actions-menu button.danger, [data-theme='dark'] .projects-page .project-menu-error { color: #ff9b8a; }
 [data-theme='dark'] :is(.ticket-table-row time, .row-menu, .users-table td small, .work-issue small, .member-identity small, .status-row small, .attachment-row small, .comment-row small, .detail-transition-row small) { color: #8f9caf; }
 
 /* Dashboard */
