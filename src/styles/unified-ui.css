@@ -412,7 +412,7 @@ body,
 .project-list-row:nth-child(n + 5), .ticket-table-row:nth-child(n + 5), .activity-item:nth-child(n + 5), .deadline-item:nth-child(n + 5) { animation-delay: 360ms; }
 
 /* Navigation and chrome feedback */
-.nav-item, .favorite-item, .topbar-icon-button, .create-ticket-button, .collapse-button {
+.nav-item, .favorite-item, .topbar-icon-button, .create-ticket-button {
   transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 220ms cubic-bezier(.16, 1, .3, 1), box-shadow 220ms ease;
 }
 .nav-item:hover, .favorite-item:hover { transform: translate3d(3px, 0, 0); }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../features/auth/hooks/useAuth'
 import { getProjects } from '../../features/projects/api/projectApi'
@@ -22,9 +22,11 @@ function initials(name: string) {
   return name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
 }
 
-export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boolean; onToggle?: () => void }) {
+export function Sidebar({ isCollapsed = false }: { isCollapsed?: boolean }) {
   const { user, logout } = useAuth()
   const [favorites, setFavorites] = useState<Project[]>([])
+  const [accountOpen, setAccountOpen] = useState(false)
+  const accountMenu = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     let active = true
@@ -34,13 +36,19 @@ export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boole
     return () => { active = false }
   }, [])
 
+  useEffect(() => {
+    function closeOnOutsideClick(event: MouseEvent) {
+      if (!accountMenu.current?.contains(event.target as Node)) setAccountOpen(false)
+    }
+    document.addEventListener('mousedown', closeOnOutsideClick)
+    return () => document.removeEventListener('mousedown', closeOnOutsideClick)
+  }, [])
+
   const accountItems: NavigationItem[] = [
     ...(user?.role === 'super_admin' ? [{ label: 'Users', path: '/users', icon: 'users' as IconName }] : []),
-    { label: 'Profile', path: '/profile', icon: 'profile' },
     ...(user?.role === 'super_admin' ? [{ label: 'Settings', path: '/statuses', icon: 'settings' as IconName }] : []),
   ]
   const displayName = user?.username || user?.email?.split('@')[0] || 'User'
-  const role = user?.role === 'super_admin' ? 'Super Admin' : user?.role === 'admin' ? 'Administrator' : 'Member'
 
   return <aside className={`sidebar ${isCollapsed ? 'sidebar-collapsed' : ''}`} aria-label="Workspace navigation">
     <nav className="main-nav workspace-nav" aria-label="Workspace navigation">
@@ -84,15 +92,16 @@ export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boole
     </section>
 
     <div className="sidebar-footer">
-      <div className="sidebar-account">
-        <NavLink className="sidebar-account-profile" to="/profile" title={isCollapsed ? `${displayName} — ${role}` : undefined} aria-label={isCollapsed ? `Open ${displayName}'s profile` : undefined}>
+      <div className={`sidebar-account ${accountOpen ? 'is-open' : ''}`} ref={accountMenu}>
+        <button className="sidebar-account-trigger" type="button" onClick={() => setAccountOpen((current) => !current)} aria-expanded={accountOpen} aria-haspopup="menu" title={isCollapsed ? displayName : undefined}>
           <span className="sidebar-account-avatar">{initials(displayName)}</span>
-          <span className="sidebar-account-copy"><strong>{displayName}</strong><small>{role}</small></span>
-          <Icon name="arrow-right" />
-        </NavLink>
-        <button className="sidebar-sign-out" type="button" onClick={logout}>Sign out</button>
+          <span className="sidebar-account-copy"><strong>{displayName}</strong></span>
+        </button>
+        {accountOpen && <div className="sidebar-account-menu" role="menu" aria-label="Account options">
+          <NavLink to="/profile" role="menuitem" onClick={() => setAccountOpen(false)}>Profile</NavLink>
+          <button type="button" role="menuitem" onClick={() => { setAccountOpen(false); logout() }}>Logout</button>
+        </div>}
       </div>
-      <button className="collapse-button" type="button" onClick={onToggle} aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}><Icon name="collapse" /> <span>{isCollapsed ? 'Expand' : 'Collapse'}</span></button>
     </div>
   </aside>
 }

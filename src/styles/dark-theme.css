@@ -59,15 +59,13 @@
 [data-theme='dark'] :is(.account-nav, .favorites, .sidebar-footer) { border-color: #2b3544; }
 [data-theme='dark'] .sidebar-section-title { color: #7f8da1; }
 [data-theme='dark'] .favorite-item { color: #b2bdcb; }
-[data-theme='dark'] :is(.favorite-item:hover, .favorite-item.active, .collapse-button:hover) { color: #8fbdff; background: #202b39; }
-[data-theme='dark'] .sidebar-account { border-color: #344052; background: #18212c; }
-[data-theme='dark'] .sidebar-account-profile:hover { background: #1d2937; }
+[data-theme='dark'] :is(.favorite-item:hover, .favorite-item.active) { color: #8fbdff; background: #202b39; }
+[data-theme='dark'] .sidebar-account-trigger { color: #edf1f6; border-color: #344052; background: #18212c; }
+[data-theme='dark'] :is(.sidebar-account-trigger:hover, .sidebar-account-trigger[aria-expanded='true']) { border-color: #579dff; background: #1d2937; }
 [data-theme='dark'] .sidebar-account-avatar { color: #c9beff; background: #30285a; }
-[data-theme='dark'] .sidebar-account-copy strong { color: #edf1f6; }
-[data-theme='dark'] .sidebar-account-copy small { color: #8f9caf; }
-[data-theme='dark'] .sidebar-sign-out { color: #98a6b9; border-color: #303a49; }
-[data-theme='dark'] .sidebar-sign-out:hover { color: #8fbdff; }
-[data-theme='dark'] .collapse-button { color: #98a6b9; }
+[data-theme='dark'] .sidebar-account-menu { border-color: #344052; background: #18212c; box-shadow: 0 14px 32px #0008; }
+[data-theme='dark'] :is(.sidebar-account-menu a, .sidebar-account-menu button) { color: #cbd3df; }
+[data-theme='dark'] :is(.sidebar-account-menu a:hover, .sidebar-account-menu button:hover) { color: #8fbdff; background: #202b39; }
 
 /* Shared surfaces and controls */
 [data-theme='dark'] :is(.panel, .dashboard-panel, .stat-card, .analytics-card, .analytics-panel, .work-list-card, .work-side-card, .work-list, .sprint-project-card, .jira-project-grid .project-card, .projects-list, .ticket-table-wrap, .ticket-detail-panel, .form-panel, .settings-panel, .create-user-panel, .users-list-panel, .status-form-panel, .status-list-panel, .workflow-column, .board-ticket, .board-edit-modal, .auth-card, .creation-drawer, .project-creation-drawer) {

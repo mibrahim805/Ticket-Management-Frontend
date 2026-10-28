@@ -12,7 +12,7 @@ export function AppLayout() {
   return <CreateTicketDrawerProvider><div className={`app-frame ${isSidebarCollapsed ? 'sidebar-is-collapsed' : ''}`}>
     <Topbar isSidebarCollapsed={isSidebarCollapsed} onToggleSidebar={toggleSidebar} />
     <div className="app-shell">
-      <Sidebar isCollapsed={isSidebarCollapsed} onToggle={toggleSidebar} />
+      <Sidebar isCollapsed={isSidebarCollapsed} />
       <main className="content">
         <div className="route-transition" key={location.pathname}>
           <Outlet />
