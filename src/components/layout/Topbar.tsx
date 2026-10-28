@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../features/auth/hooks/useAuth'
 import { getNotification } from '../../features/notifications/api/notificationApi'
 import { useNotifications } from '../../features/notifications/hooks/useNotifications'
 import { useCreateTicketDrawer } from '../../features/tickets/components/createTicketDrawerContext'
@@ -25,27 +24,19 @@ function notificationDate(value: string) {
   return Number.isNaN(date.getTime()) ? '' : date.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })
 }
 
-function initials(name: string) {
-  return name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
-}
-
 export function Topbar({ isSidebarCollapsed = false, onToggleSidebar }: { isSidebarCollapsed?: boolean; onToggleSidebar?: () => void }) {
   const navigate = useNavigate()
   const { openCreateTicket } = useCreateTicketDrawer()
-  const { user, logout } = useAuth()
   const searchInput = useRef<HTMLInputElement>(null)
   const notificationMenu = useRef<HTMLDivElement>(null)
-  const profileMenu = useRef<HTMLDivElement>(null)
   const [search, setSearch] = useState('')
   const [notificationsOpen, setNotificationsOpen] = useState(false)
-  const [profileOpen, setProfileOpen] = useState(false)
   const { notifications, unreadCount, isLoading, error, markAsRead, markAllAsRead } = useNotifications()
 
   useEffect(() => {
     function closeOnOutsideClick(event: MouseEvent) {
       const target = event.target as Node
       if (!notificationMenu.current?.contains(target)) setNotificationsOpen(false)
-      if (!profileMenu.current?.contains(target)) setProfileOpen(false)
     }
     function focusSearch(event: KeyboardEvent) {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
@@ -77,9 +68,6 @@ export function Topbar({ isSidebarCollapsed = false, onToggleSidebar }: { isSide
     navigate(`/tickets/${selected.ticket_id}`)
   }
 
-  const displayName = user?.username || user?.email?.split('@')[0] || 'User'
-  const role = user?.role === 'super_admin' ? 'Super Admin' : user?.role === 'admin' ? 'Administrator' : 'Member'
-
   return <header className="topbar">
     <div className="topbar-brand-area">
       <button className="mobile-menu-button" type="button" onClick={onToggleSidebar} aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-expanded={!isSidebarCollapsed}><Icon name="menu" /></button>
@@ -96,7 +84,7 @@ export function Topbar({ isSidebarCollapsed = false, onToggleSidebar }: { isSide
       <button className="create-ticket-button" type="button" onClick={() => openCreateTicket()}><Icon name="plus" /> <span>Create ticket</span></button>
       <ThemeToggle />
       <div className="notification-menu" ref={notificationMenu}>
-        <button className={`topbar-icon-button ${unreadCount ? 'has-unread' : ''}`} type="button" aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`} aria-expanded={notificationsOpen} onClick={() => { setNotificationsOpen((current) => !current); setProfileOpen(false) }}><Icon name="bell" />{unreadCount > 0 && <span className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</span>}</button>
+        <button className={`topbar-icon-button ${unreadCount ? 'has-unread' : ''}`} type="button" aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`} aria-expanded={notificationsOpen} onClick={() => setNotificationsOpen((current) => !current)}><Icon name="bell" />{unreadCount > 0 && <span className="notification-count">{unreadCount > 9 ? '9+' : unreadCount}</span>}</button>
         {notificationsOpen && <div className="notification-popover" role="dialog" aria-label="Notifications">
           <div className="notification-heading"><div><strong>Notifications</strong><small>{unreadCount ? `${unreadCount} unread` : 'All caught up'}</small></div><button type="button" onClick={() => void markAllAsRead()} disabled={!unreadCount}>Mark all read</button></div>
           {error && <p className="notification-error">{error}</p>}
@@ -106,14 +94,6 @@ export function Topbar({ isSidebarCollapsed = false, onToggleSidebar }: { isSide
         </div>}
       </div>
       <Link className="topbar-icon-button help-button" to="/analytics" aria-label="Help and reports"><Icon name="help" /></Link>
-      <div className="profile-menu" ref={profileMenu}>
-        <button className="profile-trigger" type="button" aria-expanded={profileOpen} onClick={() => { setProfileOpen((current) => !current); setNotificationsOpen(false) }}>
-          <span className="topbar-avatar">{initials(displayName)}</span>
-          <span className="profile-copy"><strong>{displayName}</strong><small>{role}</small></span>
-          <Icon name="chevron-down" />
-        </button>
-        {profileOpen && <div className="profile-popover"><Link to="/profile" onClick={() => setProfileOpen(false)}>View profile</Link>{user?.role === 'super_admin' && <Link to="/users" onClick={() => setProfileOpen(false)}>Manage users</Link>}<button type="button" onClick={logout}>Sign out</button></div>}
-      </div>
     </div>
   </header>
 }

@@ -18,8 +18,12 @@ const workspaceItems: NavigationItem[] = [
 
 const projectColors = ['blue', 'violet', 'green']
 
+function initials(name: string) {
+  return name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
+}
+
 export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boolean; onToggle?: () => void }) {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const [favorites, setFavorites] = useState<Project[]>([])
 
   useEffect(() => {
@@ -35,6 +39,8 @@ export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boole
     { label: 'Profile', path: '/profile', icon: 'profile' },
     ...(user?.role === 'super_admin' ? [{ label: 'Settings', path: '/statuses', icon: 'settings' as IconName }] : []),
   ]
+  const displayName = user?.username || user?.email?.split('@')[0] || 'User'
+  const role = user?.role === 'super_admin' ? 'Super Admin' : user?.role === 'admin' ? 'Administrator' : 'Member'
 
   return <aside className={`sidebar ${isCollapsed ? 'sidebar-collapsed' : ''}`} aria-label="Workspace navigation">
     <nav className="main-nav workspace-nav" aria-label="Workspace navigation">
@@ -78,11 +84,14 @@ export function Sidebar({ isCollapsed = false, onToggle }: { isCollapsed?: boole
     </section>
 
     <div className="sidebar-footer">
-      <NavLink className="workspace-card" to="/profile" title={isCollapsed ? 'My workspace' : undefined} aria-label={isCollapsed ? 'My workspace' : undefined}>
-        <span className="workspace-avatar">T</span>
-        <span><strong>Taskline</strong><small>My workspace</small></span>
-        <Icon name="arrow-right" />
-      </NavLink>
+      <div className="sidebar-account">
+        <NavLink className="sidebar-account-profile" to="/profile" title={isCollapsed ? `${displayName} — ${role}` : undefined} aria-label={isCollapsed ? `Open ${displayName}'s profile` : undefined}>
+          <span className="sidebar-account-avatar">{initials(displayName)}</span>
+          <span className="sidebar-account-copy"><strong>{displayName}</strong><small>{role}</small></span>
+          <Icon name="arrow-right" />
+        </NavLink>
+        <button className="sidebar-sign-out" type="button" onClick={logout}>Sign out</button>
+      </div>
       <button className="collapse-button" type="button" onClick={onToggle} aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}><Icon name="collapse" /> <span>{isCollapsed ? 'Expand' : 'Collapse'}</span></button>
     </div>
   </aside>
