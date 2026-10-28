@@ -164,7 +164,6 @@ export function WorkflowBoardPage() {
   const workflowLanes = Array.from({ length: laneCount }, (_, laneIndex) => board.columns.filter((_, columnIndex) => columnIndex % laneCount === laneIndex))
 
   return <div className="page-content workflow-page">
-    <div className="ticket-breadcrumb"><Link to="/projects">Projects</Link><span>/</span><Link to={`/projects/${projectId}`}>{projectName}</Link><span>/</span><span>Board</span></div>
     <div className="project-tabs"><Link to={`/projects/${projectId}`}>Summary</Link><Link className="active" to={`/projects/${projectId}/board`}>Board</Link><Link to={`/tickets?project=${projectId}`}>Tickets</Link><span>Reports</span><span>＋</span></div>
     <section className="workflow-heading"><div><div className="project-title"><span className="project-title-icon">{projectName.slice(0, 1).toUpperCase()}</span><div><p className="eyebrow">Project workspace</p><h1>{projectName}</h1></div></div><p className="subtle">Plan, track, and move work through your project workflow.</p></div><div className="workflow-actions"><Link className="secondary-button" to={`/projects/${projectId}`}>Project overview</Link><button className="primary-button" type="button" onClick={() => openCreateTicket({ projectId })}>＋ Create</button></div></section>
     {error && <div className="inline-error"><span>{error}</span><button onClick={() => void loadBoard()}>Try again</button></div>}
