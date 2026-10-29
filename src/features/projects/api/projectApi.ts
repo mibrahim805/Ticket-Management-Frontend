@@ -2,12 +2,31 @@ import { apiClient } from '../../../services/apiClient'
 import type { CreateProjectRequest, MyProjectPermissions, Project, ProjectCapabilities, ProjectComponent, ProjectMember, ProjectMemberCandidate, ProjectPermissionRole, ProjectPermissions, ProjectRole, ProjectStatus } from '../types/project.types'
 import type { Ticket, TicketPagination } from '../../tickets/types/ticket.types'
 
+export type ProjectTicketSummary = {
+  total_tickets?: number
+  open_tickets?: number
+  in_progress_tickets?: number
+  on_hold_tickets?: number
+  resolved_tickets?: number
+  closed_tickets?: number
+  urgent_priority_tickets?: number
+  bug_tickets?: number
+  task_tickets?: number
+  story_tickets?: number
+  epic_tickets?: number
+  overdue_tickets?: number
+}
+
 export function getProject(projectId: string) {
   return apiClient<{ project: Project }>(`/projects/${projectId}`)
 }
 
 export function getProjectTickets(projectKey: string) {
   return apiClient<{ data: Ticket[]; pagination: TicketPagination }>(`/tickets/${encodeURIComponent(projectKey)}?page=1&page_size=5&sort_by=created_at&sort_order=desc`)
+}
+
+export function getProjectTicketSummary(projectId: string) {
+  return apiClient<ProjectTicketSummary>(`/tickets_summary?project_id=${encodeURIComponent(projectId)}`)
 }
 
 export function getProjects() {

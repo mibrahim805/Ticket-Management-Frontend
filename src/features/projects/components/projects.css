@@ -61,3 +61,144 @@
 .project-admin-details > summary span { display: grid; gap: 3px; }
 .project-admin-details > summary strong { font-size: 13px; font-weight: 600; }
 .project-admin-details > summary small { color: #7e838e; font-size: 10px; font-weight: 400; }
+
+/* Project dashboard refresh */
+.project-page.project-dashboard-page { min-height: 100%; padding: 28px 32px 64px; color: #253451; background: #f5f7fb; }
+.project-dashboard-page .ticket-breadcrumb { margin-bottom: 16px; color: #8090aa; font-size: 12px; font-weight: 500; }
+.project-dashboard-page .ticket-breadcrumb a { color: #176af0; }
+.project-dashboard-page .project-dashboard-hero { position: relative; min-height: 154px; margin: 0 0 20px; padding: 28px 30px; overflow: hidden; border: 1px solid #e2e8f2; border-radius: 16px; background: linear-gradient(120deg, #fff 0%, #fff 62%, #f2f6ff 100%); box-shadow: 0 8px 26px #1b2f5210; }
+.project-dashboard-page .project-dashboard-hero::after { position: absolute; top: -85px; right: -55px; width: 245px; height: 245px; border: 42px solid #176af00a; border-radius: 50%; content: ''; pointer-events: none; }
+.project-dashboard-page .project-hero-identity { position: relative; z-index: 1; align-items: flex-start; gap: 18px; }
+.project-dashboard-page .project-reference-hero .project-hero-icon { width: 58px; height: 58px; flex: 0 0 auto; border: 1px solid #4c8bf5; border-radius: 14px; color: #fff; background: linear-gradient(145deg, #2f7df4, #245acb); box-shadow: 0 8px 18px #176af035; font: 800 17px var(--font-heading); }
+.project-dashboard-page .project-reference-title { gap: 12px; }
+.project-dashboard-page .project-reference-hero h1 { color: #18243b; font: 800 29px/1.2 var(--font-heading); letter-spacing: -.7px; }
+.project-dashboard-page .project-active-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; color: #08734f; border: 1px solid #b8ead6; border-radius: 999px; background: #e9fbf3; font-size: 10px; font-weight: 700; }
+.project-dashboard-page .project-active-badge i { width: 6px; height: 6px; border-radius: 50%; background: #18a975; box-shadow: 0 0 0 3px #18a9751f; }
+.project-dashboard-page .project-reference-hero .subtle { margin-top: 7px; color: #6f7e98; font-size: 13px; }
+.project-dashboard-page .project-hero-meta { display: flex; flex-wrap: wrap; gap: 7px 18px; margin-top: 15px; color: #7d8ba3; font-size: 11px; }
+.project-dashboard-page .project-hero-meta span { position: relative; }
+.project-dashboard-page .project-hero-meta span + span::before { position: absolute; top: 50%; left: -10px; width: 3px; height: 3px; border-radius: 50%; background: #bac4d4; content: ''; transform: translateY(-50%); }
+.project-dashboard-page .project-hero-actions { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; }
+.project-dashboard-page .project-hero-actions > a { min-height: 40px; padding: 0 14px; border-radius: 8px; font-size: 12px; }
+.project-dashboard-page .project-settings-button { gap: 7px; color: #465673; border-color: #d7dfeb; background: #fff; }
+.project-dashboard-page .project-settings-button:hover { color: #176af0; border-color: #9abff7; background: #f7faff; }
+.project-dashboard-page .project-settings-button svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+.project-dashboard-page .project-create-ticket { gap: 6px; background: #176af0; box-shadow: 0 6px 14px #176af02e; }
+.project-dashboard-page .project-create-ticket:hover { background: #0d5cd8; }
+.project-dashboard-page .project-create-ticket span { font-size: 17px; font-weight: 400; line-height: 1; }
+.project-dashboard-page .project-detail-tabs { gap: 30px; margin: 0 0 20px; padding: 0 4px; border-color: #dfe6f0; background: transparent; }
+.project-dashboard-page .project-detail-tabs a { padding: 9px 1px 12px; color: #66758e; font-size: 12px; font-weight: 600; }
+.project-dashboard-page .project-detail-tabs a:hover { color: #176af0; }
+.project-dashboard-page .project-detail-tabs a.active { color: #176af0; }
+.project-dashboard-page .project-detail-tabs a.active::after { height: 3px; border-radius: 3px 3px 0 0; background: #176af0; }
+
+.project-summary-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.project-summary-strip article { display: flex; min-height: 108px; align-items: center; gap: 14px; padding: 18px; border: 1px solid #e2e8f2; border-radius: 12px; background: #fff; box-shadow: 0 4px 15px #1b2f5209; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.project-summary-strip article:hover { border-color: #bdd2f3; box-shadow: 0 8px 22px #1b2f5212; transform: translateY(-2px); }
+.project-summary-strip .summary-icon { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border-radius: 10px; font-size: 17px; font-weight: 700; }
+.project-summary-strip .summary-icon.total { color: #176af0; background: #eaf2ff; }
+.project-summary-strip .summary-icon.progress { color: #7357e6; background: #f0ecff; }
+.project-summary-strip .summary-icon.complete { color: #0c9163; background: #e5f8f0; }
+.project-summary-strip .summary-icon.overdue { color: #c44a5e; background: #ffedf0; }
+.project-summary-strip article > div { min-width: 0; }
+.project-summary-strip small, .project-summary-strip strong, .project-summary-strip p { display: block; margin: 0; }
+.project-summary-strip small { color: #6d7d96; font-size: 11px; font-weight: 600; }
+.project-summary-strip strong { margin-top: 2px; color: #1b2942; font: 800 25px/1.15 var(--font-heading); }
+.project-summary-strip p { margin-top: 3px; overflow: hidden; color: #94a0b3; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.project-summary-strip article.has-alert { border-color: #f3cdd4; }
+
+.project-dashboard-page .project-overview-grid { grid-template-columns: minmax(0, 1.55fr) minmax(330px, .8fr); gap: 16px; margin-bottom: 16px; }
+.project-dashboard-page .project-detail-lower-grid { grid-template-columns: minmax(0, 1.55fr) minmax(330px, .8fr); gap: 16px; }
+.project-page.project-dashboard-page .panel { padding: 22px; border: 1px solid #e1e7f0; border-radius: 12px; background: #fff; box-shadow: 0 5px 18px #1b2f520b; }
+.project-dashboard-page .reference-panel-heading { align-items: flex-start; margin-bottom: 20px; }
+.project-dashboard-page .panel-eyebrow { display: block; margin-bottom: 5px; color: #7d8ba3; font-size: 9px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; }
+.project-dashboard-page .reference-panel-heading h2, .project-page.project-dashboard-page .panel > h2 { margin-bottom: 5px; color: #1b2942; font: 800 16px/1.25 var(--font-heading); letter-spacing: -.15px; }
+.project-dashboard-page .reference-panel-heading p { color: #8794a9; font-size: 10px; }
+.project-dashboard-page .reference-panel-heading a { display: inline-flex; align-items: center; gap: 5px; padding: 5px 0; color: #176af0; font-size: 10px; font-weight: 700; }
+.project-dashboard-page .reference-panel-heading a:hover { color: #0d55c2; }
+.project-dashboard-page .progress-overview { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 17px; padding: 14px 16px; border: 1px solid #e3eaf4; border-radius: 10px; background: #f8faff; }
+.project-dashboard-page .progress-overview > div:first-child { min-width: 72px; }
+.project-dashboard-page .progress-overview strong, .project-dashboard-page .progress-overview span { display: block; }
+.project-dashboard-page .progress-overview strong { color: #176af0; font: 800 23px/1.15 var(--font-heading); }
+.project-dashboard-page .progress-overview > div:first-child span { margin-top: 2px; color: #8090aa; font-size: 9px; font-weight: 600; text-transform: uppercase; }
+.project-dashboard-page .progress-track { height: 9px; background: #e5ebf4; border-radius: 99px; }
+.project-dashboard-page .progress-track span { background: linear-gradient(90deg, #176af0, #5b8ff4); }
+.project-dashboard-page .sprint-stats { gap: 10px; margin-top: 14px; }
+.project-dashboard-page .sprint-stats div { position: relative; min-height: 82px; padding: 13px 12px 11px; border: 1px solid #e4eaf2; border-radius: 9px; background: #fff; }
+.project-dashboard-page .sprint-stats .status-dot { position: absolute; top: 14px; right: 12px; width: 7px; height: 7px; border-radius: 50%; }
+.project-dashboard-page .status-dot.todo { background: #a7b2c3; }.project-dashboard-page .status-dot.doing { background: #176af0; }.project-dashboard-page .status-dot.hold { background: #f0a03b; }.project-dashboard-page .status-dot.done { background: #1baa79; }
+.project-dashboard-page .sprint-stats small { color: #7a899f; font-size: 9px; font-weight: 600; }
+.project-dashboard-page .sprint-stats strong { margin-top: 12px; color: #1b2942; font: 800 19px var(--font-heading); }
+.project-dashboard-page .breakdown-content { justify-content: center; gap: 30px; min-height: 166px; }
+.project-dashboard-page .donut-chart { position: relative; display: grid; width: 132px; height: 132px; flex: 0 0 auto; place-items: center; padding: 0; border: 0; border-radius: 50%; }
+.project-dashboard-page .donut-chart::before { position: absolute; inset: 13px; border-radius: 50%; background: #fff; content: ''; }
+.project-dashboard-page .donut-chart > span { position: relative; z-index: 1; text-align: center; }
+.project-dashboard-page .donut-chart strong, .project-dashboard-page .donut-chart small { display: block; }
+.project-dashboard-page .donut-chart strong { color: #1b2942; font: 800 24px/1 var(--font-heading); }
+.project-dashboard-page .donut-chart small { margin-top: 5px; color: #8c98ab; font-size: 8px; font-weight: 600; }
+.project-dashboard-page .breakdown-legend { min-width: 126px; gap: 12px; }
+.project-dashboard-page .breakdown-legend span { grid-template-columns: 9px 1fr auto; gap: 8px; color: #65748c; font-size: 10px; }
+.project-dashboard-page .breakdown-legend i { width: 8px; height: 8px; }.project-dashboard-page .legend-bug { background: #f0526b; }.project-dashboard-page .legend-task { background: #635bdf; }.project-dashboard-page .legend-story { background: #f4a340; }.project-dashboard-page .legend-epic { background: #25a77a; }
+.project-dashboard-page .breakdown-legend b { color: #1b2942; font-size: 11px; }
+
+.project-dashboard-page .recent-issues-panel .reference-panel-heading { align-items: center; margin-bottom: 14px; }
+.project-dashboard-page .recent-issues-panel .ticket-table-wrap { overflow: auto; border: 1px solid #e3e8f0; border-radius: 9px; }
+.project-dashboard-page .recent-issues-panel .ticket-table { min-width: 720px; }
+.project-dashboard-page .recent-issues-panel .ticket-table th { height: 39px; padding: 0 10px; color: #7c899d; background: #f8faff; border-color: #e5eaf2; font-size: 9px; letter-spacing: .35px; text-transform: uppercase; }
+.project-dashboard-page .recent-issues-panel .ticket-table td { height: 53px; padding: 8px 10px; color: #607089; border-color: #edf0f5; font-size: 10px; }
+.project-dashboard-page .recent-issues-panel .ticket-table tbody tr:hover { background: #f7faff; }
+.project-dashboard-page .recent-issues-panel .ticket-table-title { color: #253451; }
+.project-dashboard-page .recent-issues-panel .tickets-empty { min-height: 190px; padding: 20px; border: 1px dashed #d8e0ec; box-shadow: none; }
+.project-dashboard-page .project-shortcuts-panel nav { display: grid; gap: 7px; }
+.project-dashboard-page .project-shortcuts-panel nav > a { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: 11px; min-height: 58px; padding: 8px 10px; border: 1px solid transparent; border-radius: 9px; transition: border-color .16s ease, background .16s ease, transform .16s ease; }
+.project-dashboard-page .project-shortcuts-panel nav > a:hover { border-color: #d8e6fa; background: #f7faff; transform: translateX(2px); }
+.project-dashboard-page .shortcut-icon { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 9px; font-size: 17px; }
+.project-dashboard-page .shortcut-icon.board { color: #176af0; background: #eaf2ff; }.project-dashboard-page .shortcut-icon.issues { color: #7357e6; background: #f0ecff; }.project-dashboard-page .shortcut-icon.reports { color: #0b9667; background: #e5f8f0; }
+.project-dashboard-page .project-shortcuts-panel nav strong, .project-dashboard-page .project-shortcuts-panel nav small { display: block; }
+.project-dashboard-page .project-shortcuts-panel nav strong { color: #2a3850; font-size: 11px; }
+.project-dashboard-page .project-shortcuts-panel nav small { margin-top: 4px; color: #8a97aa; font-size: 9px; }
+.project-dashboard-page .project-shortcuts-panel nav b { color: #9aa6b8; font-size: 20px; font-weight: 400; }
+.project-dashboard-page .project-attention { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 10px; margin-top: 16px; padding: 13px 14px; border: 1px solid #e0e7f0; border-radius: 9px; background: #f8faff; }
+.project-dashboard-page .project-attention > span { display: flex; align-items: center; gap: 7px; color: #6d7d96; font-size: 9px; font-weight: 700; text-transform: uppercase; }
+.project-dashboard-page .project-attention i { width: 7px; height: 7px; border-radius: 50%; }.project-dashboard-page .project-attention i.healthy { background: #1baa79; box-shadow: 0 0 0 3px #1baa791c; }.project-dashboard-page .project-attention i.warning { background: #e25b6c; box-shadow: 0 0 0 3px #e25b6c1c; }
+.project-dashboard-page .project-attention strong { color: #253451; font-size: 10px; }.project-dashboard-page .project-attention small { grid-column: 1 / -1; color: #8b97aa; font-size: 9px; }
+
+.project-dashboard-page .project-admin-details { margin-top: 16px; }
+.project-dashboard-page .project-admin-details > summary { min-height: 62px; padding: 14px 18px; border-color: #e1e7f0; border-radius: 11px; box-shadow: 0 4px 14px #1b2f5208; }
+.project-dashboard-page .project-admin-details > summary:hover { border-color: #bdcff0; }
+.project-dashboard-page .project-admin-details > summary strong { color: #253451; font-size: 12px; }.project-dashboard-page .project-admin-details > summary small { color: #8a97aa; font-size: 9px; }
+.project-dashboard-page .project-members-panel { margin-top: 16px; }
+.project-dashboard-page .member-management-grid { gap: 18px; }
+.project-dashboard-page .member-assign-box { border-color: #e1e7f0; border-radius: 9px; background: #f8faff; }
+.project-dashboard-page .member-list { border-color: #e1e7f0; border-radius: 9px; }
+.project-dashboard-page .member-row { min-height: 66px; border-color: #edf0f5; }
+.project-dashboard-page .member-avatar { width: 34px; height: 34px; color: #176af0; background: #eaf2ff; font-size: 9px; }
+
+@media (max-width: 1080px) {
+  .project-summary-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .project-dashboard-page .project-overview-grid, .project-dashboard-page .project-detail-lower-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .project-page.project-dashboard-page { padding: 20px 16px 44px; }
+  .project-dashboard-page .project-dashboard-hero { align-items: flex-start; min-height: 0; padding: 22px 18px; }
+  .project-dashboard-page .project-hero-identity { width: 100%; }
+  .project-dashboard-page .project-reference-hero h1 { font-size: 24px; }
+  .project-dashboard-page .project-hero-actions { width: 100%; }
+  .project-dashboard-page .project-hero-actions > a { flex: 1; }
+  .project-dashboard-page .project-detail-tabs { gap: 22px; overflow-x: auto; }
+  .project-summary-strip { gap: 10px; }
+  .project-summary-strip article { min-height: 94px; padding: 14px; }
+  .project-summary-strip .summary-icon { width: 35px; height: 35px; }
+  .project-summary-strip strong { font-size: 21px; }
+  .project-page.project-dashboard-page .panel { padding: 18px 15px; }
+  .project-dashboard-page .breakdown-content { justify-content: flex-start; }
+  .project-dashboard-page .member-management-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .project-dashboard-page .project-hero-identity { flex-direction: column; }
+  .project-dashboard-page .project-reference-title { align-items: flex-start; flex-direction: column; }
+  .project-dashboard-page .project-hero-meta span + span::before { display: none; }
+  .project-summary-strip { grid-template-columns: 1fr; }
+  .project-dashboard-page .sprint-stats { grid-template-columns: repeat(2, 1fr); }
+  .project-dashboard-page .breakdown-content { align-items: flex-start; flex-direction: column; }
+}

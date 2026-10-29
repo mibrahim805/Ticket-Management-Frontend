@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { TicketTable } from '../../tickets/components/TicketTable'
-import { addProjectMember, assignProjectStatuses, getProject, getProjectAvailableStatuses, getProjectMemberCandidates, getProjectMembers, getProjectTickets, removeProjectMember, updateProjectMemberRole } from '../api/projectApi'
+import { addProjectMember, assignProjectStatuses, getProject, getProjectAvailableStatuses, getProjectMemberCandidates, getProjectMembers, getProjectTickets, getProjectTicketSummary, removeProjectMember, updateProjectMemberRole } from '../api/projectApi'
+import type { ProjectTicketSummary } from '../api/projectApi'
 import type { Project, ProjectMember, ProjectMemberCandidate, ProjectRole, ProjectStatus } from '../types/project.types'
 import type { Ticket } from '../../tickets/types/ticket.types'
 import { getProjectActivity } from '../../activity/api/activityApi'
@@ -12,6 +13,7 @@ export function ProjectPage() {
   const { projectId } = useParams<{ projectId: string }>()
   const [project, setProject] = useState<Project | null>(null)
   const [tickets, setTickets] = useState<Ticket[]>([])
+  const [ticketSummary, setTicketSummary] = useState<ProjectTicketSummary>({})
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [members, setMembers] = useState<ProjectMember[]>([])
@@ -73,8 +75,14 @@ export function ProjectPage() {
         const projectResponse = await getProject(id)
         if (cancelled) return
         setProject(projectResponse.project)
-        const ticketResponse = await getProjectTickets(projectResponse.project.code)
-        if (!cancelled) setTickets(ticketResponse.data)
+        const [ticketResponse, summaryResponse] = await Promise.all([
+          getProjectTickets(projectResponse.project.code),
+          getProjectTicketSummary(projectResponse.project._id).catch(() => ({})),
+        ])
+        if (!cancelled) {
+          setTickets(ticketResponse.data)
+          setTicketSummary(summaryResponse)
+        }
         if (!cancelled) void loadMembers(projectResponse.project._id)
         if (!cancelled) void loadStatuses(projectResponse.project._id, projectResponse.project.assigned_statuses)
         if (!cancelled) void getProjectActivity(projectResponse.project._id).then((response) => { if (!cancelled) setActivities(response.activities) }).catch(() => undefined)
@@ -174,18 +182,46 @@ export function ProjectPage() {
   if (error || !project) return <div className="page-content"><div className="inline-error"><span>{error || 'Project not found.'}</span><Link to="/projects">Back to projects</Link></div></div>
 
   const initials = project.name.split(/\s+/).map((word) => word[0]).join('').slice(0, 2).toUpperCase()
-  const inProgress = tickets.filter((ticket) => ticket.current_status_name?.toLowerCase().includes('progress')).length
-  const completed = tickets.filter((ticket) => ['done', 'closed', 'resolved'].some((status) => ticket.current_status_name?.toLowerCase().includes(status))).length
-  const completion = tickets.length ? Math.round((completed / tickets.length) * 100) : 0
-  return <div className="page-content project-page">
+  const fallbackInProgress = tickets.filter((ticket) => ticket.current_status_name?.toLowerCase().includes('progress')).length
+  const fallbackCompleted = tickets.filter((ticket) => ['done', 'closed', 'resolved'].some((status) => ticket.current_status_name?.toLowerCase().includes(status))).length
+  const totalTickets = ticketSummary.total_tickets ?? project.total_tickets
+  const inProgress = ticketSummary.in_progress_tickets ?? fallbackInProgress
+  const completed = (ticketSummary.resolved_tickets ?? 0) + (ticketSummary.closed_tickets ?? fallbackCompleted)
+  const openTickets = ticketSummary.open_tickets ?? Math.max(totalTickets - inProgress - completed, 0)
+  const onHold = ticketSummary.on_hold_tickets ?? 0
+  const overdue = ticketSummary.overdue_tickets ?? tickets.filter((ticket) => ticket.is_overdue).length
+  const completion = totalTickets ? Math.round((completed / totalTickets) * 100) : 0
+  const bugTickets = ticketSummary.bug_tickets ?? tickets.filter((ticket) => ticket.issue_type === 'bug').length
+  const taskTickets = ticketSummary.task_tickets ?? tickets.filter((ticket) => ticket.issue_type === 'task' || ticket.issue_type === 'subtask').length
+  const storyTickets = ticketSummary.story_tickets ?? tickets.filter((ticket) => ticket.issue_type === 'story').length
+  const epicTickets = ticketSummary.epic_tickets ?? tickets.filter((ticket) => ticket.issue_type === 'epic').length
+  const percent = (value: number) => totalTickets ? (value / totalTickets) * 100 : 0
+  const bugEnd = percent(bugTickets)
+  const taskEnd = bugEnd + percent(taskTickets)
+  const storyEnd = taskEnd + percent(storyTickets)
+  const epicEnd = Math.min(storyEnd + percent(epicTickets), 100)
+  const donutBackground = totalTickets
+    ? `conic-gradient(#f0526b 0 ${bugEnd}%, #635bdf ${bugEnd}% ${taskEnd}%, #f4a340 ${taskEnd}% ${storyEnd}%, #25a77a ${storyEnd}% ${epicEnd}%, #e8edf5 ${epicEnd}% 100%)`
+    : '#e8edf5'
+  const createdLabel = project.created_at ? new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' }).format(new Date(project.created_at)) : 'Active project'
+  return <div className="page-content project-page project-dashboard-page">
     <div className="ticket-breadcrumb"><Link to="/projects">Projects</Link><span>/</span><span>{project.code}</span></div>
-    <section className="project-hero project-reference-hero"><div className="project-hero-identity"><span className="project-hero-icon">{initials}</span><div><div className="project-reference-title"><h1>{project.name}</h1><span className="project-active-badge">● Active</span></div><p className="subtle">Project workspace for {project.code} development and maintenance.</p></div></div><Link className="secondary-button" to={`/projects/${project._id}/settings`}>⚙ Project settings</Link></section>
-    <nav className="project-detail-tabs" aria-label="Project sections"><a className="active" href="#overview">Overview</a><a href="#issues">Issues</a><a href={`/projects/${project._id}/board`}>Sprints</a><Link to="/analytics">Reports</Link></nav>
-    <section className="project-overview-grid" id="overview">
-      <article className="panel sprint-panel"><div className="reference-panel-heading"><div><h2>Current Sprint</h2><p>Sprint 5 · Oct 1 – Oct 14</p></div><Link to={`/projects/${project._id}/board`}>View sprint →</Link></div><div className="progress-track"><span style={{ width: `${Math.max(completion, 12)}%` }} /></div><div className="progress-caption"><strong>{completed} / {tickets.length || project.total_tickets} issues</strong><span>{completion}%</span></div><div className="sprint-stats"><div><small>To do</small><strong>{Math.max(tickets.length - inProgress - completed, 0)}</strong></div><div><small>In progress</small><strong>{inProgress}</strong></div><div><small>In review</small><strong>0</strong></div><div><small>Done</small><strong>{completed}</strong></div></div></article>
-      <article className="panel breakdown-panel"><h2>Ticket breakdown</h2><div className="breakdown-content"><div className="donut-chart"><strong>{project.total_tickets}</strong><small>Total issues</small></div><div className="breakdown-legend"><span><i className="legend-bug" />Bug <b>{tickets.filter((ticket) => ticket.category === 'bug').length}</b></span><span><i className="legend-feature" />Feature <b>0</b></span><span><i className="legend-task" />Task <b>{tickets.filter((ticket) => ticket.issue_type === 'task').length}</b></span><span><i className="legend-story" />Story <b>0</b></span></div></div></article>
+    <section className="project-hero project-reference-hero project-dashboard-hero">
+      <div className="project-hero-identity"><span className="project-hero-icon" aria-hidden="true">{initials}</span><div><div className="project-reference-title"><h1>{project.name}</h1><span className="project-active-badge"><i />Active</span></div><p className="subtle">Plan, track, and deliver work for the {project.code} team.</p><div className="project-hero-meta"><span>{project.code}</span><span>{createdLabel}</span><span>{members.length} {members.length === 1 ? 'member' : 'members'}</span></div></div></div>
+      <div className="project-hero-actions"><Link className="secondary-button project-settings-button" to={`/projects/${project._id}/settings`}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.55V21h-4v-.08A1.7 1.7 0 0 0 8.95 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.58 15 1.7 1.7 0 0 0 3 14H3v-4h.08A1.7 1.7 0 0 0 4.6 8.95a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.58 1.7 1.7 0 0 0 10 3.08V3h4v.08A1.7 1.7 0 0 0 15.05 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.42 9 1.7 1.7 0 0 0 20.92 10H21v4h-.08A1.7 1.7 0 0 0 19.4 15Z"/></svg>Settings</Link><Link className="primary-button project-create-ticket" to={`/tickets/new?project=${project._id}`}><span aria-hidden="true">＋</span>Create ticket</Link></div>
     </section>
-    <section className="project-detail-lower-grid" id="issues"><article className="panel recent-issues-panel"><div className="reference-panel-heading"><h2>Recent issues</h2><Link to={`/tickets?project=${project.code}`}>View all →</Link></div><TicketTable tickets={tickets} /></article><aside className="panel sprint-goals-panel"><h2>Sprint goals</h2><label><input type="checkbox" checked={completed > 0} readOnly /> Complete project integration</label><label><input type="checkbox" readOnly /> Fix authentication flow issues</label><label><input type="checkbox" readOnly /> Update documentation</label><div className="goal-progress"><span>{completed > 0 ? '1/3' : '0/3'} completed</span><div><i style={{ width: `${completed > 0 ? 33 : 0}%` }} /></div></div></aside></section>
+    <nav className="project-detail-tabs" aria-label="Project sections"><a className="active" href="#overview">Overview</a><a href="#issues">Issues</a><a href={`/projects/${project._id}/board`}>Sprints</a><Link to="/analytics">Reports</Link></nav>
+    <section className="project-summary-strip" aria-label="Project summary">
+      <article><span className="summary-icon total" aria-hidden="true">◫</span><div><small>Total issues</small><strong>{totalTickets}</strong><p>Across this project</p></div></article>
+      <article><span className="summary-icon progress" aria-hidden="true">↗</span><div><small>In progress</small><strong>{inProgress}</strong><p>Currently moving</p></div></article>
+      <article><span className="summary-icon complete" aria-hidden="true">✓</span><div><small>Completed</small><strong>{completed}</strong><p>{completion}% completion rate</p></div></article>
+      <article className={overdue > 0 ? 'has-alert' : ''}><span className="summary-icon overdue" aria-hidden="true">!</span><div><small>Overdue</small><strong>{overdue}</strong><p>{overdue > 0 ? 'Needs attention' : 'Everything on track'}</p></div></article>
+    </section>
+    <section className="project-overview-grid" id="overview">
+      <article className="panel sprint-panel"><div className="reference-panel-heading"><div><span className="panel-eyebrow">Delivery</span><h2>Project progress</h2><p>{completed} of {totalTickets} issues completed</p></div><Link to={`/projects/${project._id}/board`}>Open board <span aria-hidden="true">→</span></Link></div><div className="progress-overview"><div><strong>{completion}%</strong><span>complete</span></div><div className="progress-track"><span style={{ width: `${completion}%` }} /></div></div><div className="sprint-stats"><div><span className="status-dot todo" /><small>To do</small><strong>{openTickets}</strong></div><div><span className="status-dot doing" /><small>In progress</small><strong>{inProgress}</strong></div><div><span className="status-dot hold" /><small>On hold</small><strong>{onHold}</strong></div><div><span className="status-dot done" /><small>Done</small><strong>{completed}</strong></div></div></article>
+      <article className="panel breakdown-panel"><div className="reference-panel-heading"><div><span className="panel-eyebrow">Work mix</span><h2>Issue types</h2><p>How work is distributed</p></div></div><div className="breakdown-content"><div className="donut-chart" style={{ background: donutBackground }}><span><strong>{totalTickets}</strong><small>Total issues</small></span></div><div className="breakdown-legend"><span><i className="legend-bug" />Bugs <b>{bugTickets}</b></span><span><i className="legend-task" />Tasks <b>{taskTickets}</b></span><span><i className="legend-story" />Stories <b>{storyTickets}</b></span><span><i className="legend-epic" />Epics <b>{epicTickets}</b></span></div></div></article>
+    </section>
+    <section className="project-detail-lower-grid" id="issues"><article className="panel recent-issues-panel"><div className="reference-panel-heading"><div><span className="panel-eyebrow">Latest activity</span><h2>Recent issues</h2><p>The five most recently created issues</p></div><Link to={`/tickets?project=${project.code}`}>View all issues <span aria-hidden="true">→</span></Link></div><TicketTable tickets={tickets} /></article><aside className="panel project-shortcuts-panel"><div className="reference-panel-heading"><div><span className="panel-eyebrow">Navigate</span><h2>Quick links</h2><p>Jump back into project work</p></div></div><nav aria-label="Project quick links"><Link to={`/projects/${project._id}/board`}><span className="shortcut-icon board" aria-hidden="true">▦</span><span><strong>Sprint board</strong><small>Plan and move active work</small></span><b aria-hidden="true">›</b></Link><Link to={`/tickets?project=${project.code}`}><span className="shortcut-icon issues" aria-hidden="true">☷</span><span><strong>All issues</strong><small>Search and filter {totalTickets} tickets</small></span><b aria-hidden="true">›</b></Link><Link to="/analytics"><span className="shortcut-icon reports" aria-hidden="true">⌁</span><span><strong>Reports</strong><small>Review delivery trends</small></span><b aria-hidden="true">›</b></Link></nav><div className="project-attention"><span><i className={overdue > 0 ? 'warning' : 'healthy'} />Project health</span><strong>{overdue > 0 ? `${overdue} overdue ${overdue === 1 ? 'issue' : 'issues'}` : 'On track'}</strong><small>{ticketSummary.urgent_priority_tickets || 0} urgent priority</small></div></aside></section>
     <details className="project-admin-details">
       <summary><span><strong>Project administration</strong><small>Statuses and activity</small></span></summary>
       {statusAccessChecked && (availableStatuses.length > 0 || statusError) && <section className="panel project-status-panel" id="statuses"><div className="reference-panel-heading"><div><h2>Project statuses</h2><p>Choose the statuses available in this project.</p></div>{availableStatuses.length > 0 && <span className="status-count">{selectedStatusIds.length} selected</span>}</div>{statusError && <div className="members-message members-error">{statusError}</div>}{statusMessage && <div className="members-message members-success">{statusMessage}</div>}{availableStatuses.length > 0 && <><div className="status-assignment-list">{availableStatuses.map((status) => <label className="status-assignment-row" key={status._id}><input type="checkbox" checked={selectedStatusIds.includes(status._id)} onChange={() => toggleStatus(status._id)} /><span className="status-order">{status.order}</span><span><strong>{status.name}</strong><small>{selectedStatusIds.includes(status._id) ? 'Available in this project' : 'Not assigned'}</small></span></label>)}</div>{availableStatuses.some((status) => project.assigned_statuses.includes(status._id) && !selectedStatusIds.includes(status._id)) && <div className="status-migrations"><h3>Move existing tickets</h3><p>Choose where tickets should move when removing a status.</p>{availableStatuses.filter((status) => project.assigned_statuses.includes(status._id) && !selectedStatusIds.includes(status._id)).map((status) => <label key={status._id}>{status.name}<select value={statusMigrations[status._id] || ''} onChange={(event) => setStatusMigrations((current) => ({ ...current, [status._id]: event.target.value }))}><option value="">Select replacement status</option>{availableStatuses.filter((target) => target._id !== status._id && selectedStatusIds.includes(target._id)).map((target) => <option value={target._id} key={target._id}>{target.name}</option>)}</select></label>)}</div>}<button className="primary-button status-save-button" type="button" disabled={isSavingStatuses} onClick={() => void saveStatuses()}>{isSavingStatuses ? 'Saving...' : 'Save statuses'}</button></>}</section>}

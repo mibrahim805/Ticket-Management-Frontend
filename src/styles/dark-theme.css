@@ -183,6 +183,38 @@
 [data-theme='dark'] .login-form label { color: #cbd3df; }
 [data-theme='dark'] .login-form input { color: #e7ebf2; border-color: #3a4657; background: #101722; }
 
+/* Refreshed project dashboard */
+[data-theme='dark'] .project-page.project-dashboard-page { color: #dfe6ef; background: #0f141c; }
+[data-theme='dark'] .project-dashboard-page .project-dashboard-hero { border-color: #303b4b; background: linear-gradient(120deg, #171e28 0%, #171e28 62%, #18263a 100%); box-shadow: none; }
+[data-theme='dark'] .project-dashboard-page .project-dashboard-hero::after { border-color: #579dff0a; }
+[data-theme='dark'] .project-dashboard-page .project-reference-hero h1 { color: #f1f4f8; }
+[data-theme='dark'] .project-dashboard-page .project-reference-hero .subtle { color: #a9b5c5; }
+[data-theme='dark'] .project-dashboard-page .project-hero-meta, [data-theme='dark'] .project-dashboard-page .ticket-breadcrumb { color: #8f9caf; }
+[data-theme='dark'] .project-dashboard-page .project-settings-button { color: #c4cedb; border-color: #3a4657; background: #1a2330; }
+[data-theme='dark'] .project-dashboard-page .project-detail-tabs { border-color: #303b4b; background: transparent; }
+[data-theme='dark'] .project-dashboard-page .project-detail-tabs a { color: #aeb9c8; }
+[data-theme='dark'] .project-dashboard-page .project-detail-tabs a.active { color: #85b8ff; }
+[data-theme='dark'] .project-summary-strip article, [data-theme='dark'] .project-page.project-dashboard-page .panel { color: #dfe6ef; border-color: #303b4b; background: #171e28; box-shadow: none; }
+[data-theme='dark'] .project-summary-strip article:hover { border-color: #579dff; }
+[data-theme='dark'] .project-summary-strip small, [data-theme='dark'] .project-dashboard-page .panel-eyebrow { color: #95a3b7; }
+[data-theme='dark'] .project-summary-strip strong, [data-theme='dark'] .project-dashboard-page .reference-panel-heading h2, [data-theme='dark'] .project-page.project-dashboard-page .panel > h2, [data-theme='dark'] .project-dashboard-page .sprint-stats strong, [data-theme='dark'] .project-dashboard-page .donut-chart strong, [data-theme='dark'] .project-dashboard-page .breakdown-legend b { color: #edf1f6; }
+[data-theme='dark'] .project-summary-strip p, [data-theme='dark'] .project-dashboard-page .reference-panel-heading p { color: #8f9caf; }
+[data-theme='dark'] .project-dashboard-page .progress-overview, [data-theme='dark'] .project-dashboard-page .project-attention { border-color: #303b4b; background: #131b25; }
+[data-theme='dark'] .project-dashboard-page .progress-track { background: #303a49; }
+[data-theme='dark'] .project-dashboard-page .sprint-stats div { border-color: #303b4b; background: #131b25; }
+[data-theme='dark'] .project-dashboard-page .donut-chart::before { background: #171e28; }
+[data-theme='dark'] .project-dashboard-page .breakdown-legend span { color: #bac5d2; }
+[data-theme='dark'] .project-dashboard-page .recent-issues-panel .ticket-table-wrap { border-color: #303b4b; }
+[data-theme='dark'] .project-dashboard-page .recent-issues-panel .ticket-table th { color: #aeb9c8; border-color: #303b4b; background: #1c2531; }
+[data-theme='dark'] .project-dashboard-page .recent-issues-panel .ticket-table td { color: #c0cad7; border-color: #2d3847; }
+[data-theme='dark'] .project-dashboard-page .recent-issues-panel .ticket-table-title { color: #e4e9f0; }
+[data-theme='dark'] .project-dashboard-page .project-shortcuts-panel nav > a:hover { border-color: #344c6b; background: #1d2937; }
+[data-theme='dark'] .project-dashboard-page .project-shortcuts-panel nav strong, [data-theme='dark'] .project-dashboard-page .project-attention strong, [data-theme='dark'] .project-dashboard-page .project-admin-details > summary strong { color: #e5eaf2; }
+[data-theme='dark'] .project-dashboard-page .project-shortcuts-panel nav small, [data-theme='dark'] .project-dashboard-page .project-attention small { color: #8f9caf; }
+[data-theme='dark'] .project-dashboard-page .project-admin-details > summary { border-color: #303b4b; background: #171e28; box-shadow: none; }
+[data-theme='dark'] .project-dashboard-page .member-assign-box { border-color: #303b4b; background: #131b25; }
+[data-theme='dark'] .project-dashboard-page .member-list { border-color: #303b4b; }
+
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle svg { transition: none; }
   .theme-toggle:hover svg { transform: none; }
